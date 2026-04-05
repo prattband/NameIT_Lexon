@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name It — Lexon</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ──────────────────────────────────────────────
+   Logic: tokens only accumulate for sitting with discomfort.
+   +3  read guidelines to the bottom (scroll-gated)
+   +3  reach a loop-return moment
+   +2  choose the harder option (flagged per choice)
+   +2  watch all meeting bubbles without skipping
+   +1  decline invite and get looped back
+   +1  stay on a pause screen 3+ seconds
+   +0  skip, use template, click through quickly
+   The counter going up slowly IS the feedback.
+──────────────────────────────────────────────────────── */
+
+:root {
+  --bg:         #e8e2d9;
+  --bg2:        #dfd8cd;
+  --surface:    #f2ede6;
+  --surface2:   #ebe5dc;
+  --border:     #c8c0b4;
+  --border2:    #b0a898;
+  --text:       #1c1a16;
+  --text2:      #4a4640;
+  --text3:      #6a6460;
+  --text4:      #a09890;
+
+  --red:        #a82818;
+  --red-bg:     #f0e0dc;
+  --red-text:   #8a1e10;
+  --yellow:     #966000;
+  --yellow-bg:  #f0e4c8;
+  --yellow-text:#744a00;
+  --blue:       #164e72;
+  --blue-bg:    #d8eaf4;
+  --blue-text:  #103c58;
+  --green:      #1a5e38;
+  --green-bg:   #d8eee4;
+  --green-text: #124428;
+  --coral:      #a83820;
+  --coral-bg:   #f0ddd8;
+  --coral-text: #842c18;
+}
+
+[data-theme="dark"] {
+  --bg:         #100f0d;
+  --bg2:        #171612;
+  --surface:    #1c1a16;
+  --surface2:   #221f1a;
+  --border:     #2c2820;
+  --border2:    #3a3528;
+  --text:       #e4ddd4;
+  --text2:      #9a9288;
+  --text3:      #7a7268;
+  --text4:      #504840;
+  --red:        #d85040;
+  --red-bg:     #281410;
+  --red-text:   #e87060;
+  --yellow:     #c89028;
+  --yellow-bg:  #201808;
+  --yellow-text:#c89028;
+  --blue:       #4888b8;
+  --blue-bg:    #0c1820;
+  --blue-text:  #68a8d8;
+  --green:      #40a068;
+  --green-bg:   #0c1e14;
+  --green-text: #60b880;
+  --coral:      #c86848;
+  --coral-bg:   #201008;
+  --coral-text: #d88868;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
+  transition: background .35s, color .35s;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 22px;
+  background: var(--bg);
+  border-bottom: .5px solid var(--border);
+  z-index: 200;
+  transition: background .35s, border-color .35s;
+}
+.tb-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 17px; font-weight: 400;
+  color: var(--text); letter-spacing: -.2px;
+}
+.tb-logo span {
+  font-style: italic; color: var(--text2); font-size: 17px;
+}
+.tb-right { display: flex; align-items: center; gap: 16px; }
+
+.tok-wrap {
+  display: flex; align-items: center; gap: 7px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--text3);
+  opacity: 0; transition: opacity .5s;
+}
+.tok-wrap.visible { opacity: 1; }
+.tok-pip {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--yellow);
+  transition: transform .2s;
+}
+@keyframes pip { 0%{transform:scale(1)} 50%{transform:scale(2.4)} 100%{transform:scale(1)} }
+.tok-pip.flash { animation: pip .35s ease; }
+
+.tb-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--text3);
+  background: none; border: .5px solid var(--border);
+  border-radius: 5px; padding: 5px 11px; cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.tb-btn:hover { border-color: var(--border2); color: var(--text2); }
+
+/* ── SHELL ── */
+.shell {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 80px 22px 100px;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; max-width: 480px; width: 100%; }
+.screen.on { display: block; animation: rise .45s ease forwards; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TYPOGRAPHY ── */
+.f-display {
+  font-family: 'Fraunces', serif;
+  font-weight: 300; letter-spacing: -.3px;
+}
+.f-mono {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+}
+.f-serif { font-family: 'Source Serif 4', serif; }
+
+/* ── CHIP ── */
+.chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text3); text-align: center;
+  margin-bottom: 1.6rem; margin-top: .4rem;
+}
+
+/* ── AMBIENT ── */
+.ambient {
+  font-family: 'Source Serif 4', serif;
+  font-size: 15px; color: var(--text3);
+  text-align: center; line-height: 1.8;
+  margin-bottom: 1.4rem;
+}
+.ambient em { font-style: italic; color: var(--text2); }
+
+/* ── HIGHLIGHTS ── */
+.hy { color: var(--yellow-text); background: var(--yellow-bg); padding: 1px 5px; border-radius: 3px; }
+.hr { color: var(--red-text); background: var(--red-bg); padding: 1px 5px; border-radius: 3px; }
+.hb { color: var(--blue-text); background: var(--blue-bg); padding: 1px 5px; border-radius: 3px; }
+.hg { color: var(--green-text); background: var(--green-bg); padding: 1px 5px; border-radius: 3px; }
+.hc { color: var(--coral-text); background: var(--coral-bg); padding: 1px 5px; border-radius: 3px; }
+
+/* ── ROLE SELECTION ── */
+.co-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--text3); text-align: center; margin-bottom: 2.8rem;
+}
+.role-q {
+  font-family: 'Fraunces', serif;
+  font-size: 32px; font-weight: 300;
+  color: var(--text); text-align: center;
+  line-height: 1.2; margin-bottom: 2.6rem;
+  letter-spacing: -.4px;
+}
+.role-cards { display: flex; flex-direction: column; gap: 10px; }
+.role-card {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 14px; padding: 20px 22px;
+  cursor: pointer; text-align: left; width: 100%;
+  transition: border-color .15s, transform .12s;
+  position: relative; overflow: hidden;
+}
+.role-card::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 3px;
+  background: transparent; transition: background .2s;
+}
+.role-card:hover { border-color: var(--border2); transform: translateX(3px); }
+.role-card:hover::before { background: var(--text3); }
+.role-card.dim { opacity: .35; cursor: not-allowed; pointer-events: none; }
+.role-card.done::before { background: var(--green); }
+.rc-title {
+  font-family: 'Fraunces', serif;
+  font-size: 16px; font-weight: 400;
+  color: var(--text); margin-bottom: 5px;
+}
+.rc-sub {
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px; color: var(--text2); line-height: 1.55;
+  font-style: italic;
+}
+.rc-done {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--green-text);
+  background: var(--green-bg); border-radius: 3px;
+  padding: 2px 7px; margin-top: 6px; display: inline-block;
+}
+
+/* ── SURFACE CARDS ── */
+.card {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 1.2rem;
+  transition: background .35s, border-color .35s;
+}
+.card-head {
+  padding: 12px 18px; border-bottom: .5px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.card-head.blue  { background: var(--blue-bg); }
+.card-head.coral { background: var(--coral-bg); }
+.card-head.yellow { background: var(--yellow-bg); }
+.card-head.green { background: var(--green-bg); }
+.card-body { padding: 18px 18px 14px; }
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 5px;
+}
+.field-value {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text); line-height: 1.65;
+}
+.field-value.muted { color: var(--text3); font-style: italic; }
+.card-divider { height: .5px; background: var(--border); margin: 14px 0; }
+
+/* ── BUBBLES ── */
+.bwrap {
+  margin-bottom: 16px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .4s, transform .4s;
+}
+.bwrap.show { opacity: 1; transform: translateY(0); }
+.spk {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 6px;
+}
+.bubble {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 14px; padding: 14px 16px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text); line-height: 1.65;
+  max-width: 360px;
+}
+.bubble.you {
+  background: var(--bg2); border-color: var(--border2);
+  margin-left: auto; max-width: 300px;
+}
+.bubble em { font-style: normal; font-weight: 600; }
+
+.pline {
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px; color: var(--text4);
+  text-align: center; margin: 16px 0; line-height: 1.7;
+  opacity: 0; transition: opacity .5s; font-style: italic;
+}
+.pline.show { opacity: 1; }
+
+/* ── DRAFT SEQUENCE ── */
+.draft-stage { margin-bottom: 1.2rem; }
+.draft-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.draft-box {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 10px; padding: 14px 15px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text); line-height: 1.65;
+  position: relative; overflow: hidden;
+}
+.draft-box.deleted {
+  text-decoration: line-through; color: var(--text3);
+  background: var(--bg2);
+}
+.draft-btn {
+  width: 100%; margin-top: 8px; padding: 10px;
+  background: transparent; border: .5px solid var(--border);
+  border-radius: 8px; font-size: 12px; color: var(--text3);
+  cursor: pointer; font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: .04em; text-transform: uppercase;
+  transition: border-color .15s, color .15s;
+}
+.draft-btn:hover { border-color: var(--border2); color: var(--text2); }
+.draft-btn.send {
+  border-color: var(--text); color: var(--text);
+}
+
+/* ── CHOICES ── */
+.choice-q {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--text3);
+  letter-spacing: .04em; margin-bottom: 10px;
+}
+.choices { display: flex; flex-direction: column; gap: 9px; margin-bottom: 1.2rem; }
+.cbtn {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 12px; padding: 16px 17px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text);
+  text-align: left; cursor: pointer; line-height: 1.55;
+  transition: border-color .15s, background .15s;
+}
+.cbtn:hover { border-color: var(--border2); background: var(--surface2); }
+.cbtn.locked { opacity: .3; pointer-events: none; }
+.cbtn.harder::after {
+  content: '';
+  position: absolute; /* just a marker for JS */
+}
+.outcome {
+  display: none; margin-top: 10px; padding: 13px 14px;
+  background: var(--bg2); border-radius: 9px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px; color: var(--text2); line-height: 1.65;
+  border-left: 2px solid var(--border2);
+  animation: rise .3s ease; font-style: italic;
+}
+
+/* ── GUIDELINES MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); z-index: 300;
+  align-items: flex-end; justify-content: center;
+  padding: 0;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 480px;
+  max-height: 80vh; display: flex; flex-direction: column;
+  animation: slideup .35s ease;
+}
+@keyframes slideup {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.modal-head {
+  padding: 16px 20px; border-bottom: .5px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+.modal-head-title {
+  font-family: 'Fraunces', serif;
+  font-size: 16px; font-weight: 400; color: var(--text);
+}
+.modal-close {
+  background: none; border: none;
+  font-size: 20px; color: var(--text3); cursor: pointer;
+}
+.modal-scroll {
+  overflow-y: auto; flex: 1; padding: 20px;
+}
+.modal-scroll h3 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text3); margin: 18px 0 8px;
+}
+.modal-scroll h3:first-child { margin-top: 0; }
+.modal-scroll p {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text2); line-height: 1.75;
+  margin-bottom: 10px;
+}
+.modal-scroll .gap-note {
+  background: var(--yellow-bg); border: .5px solid var(--yellow);
+  border-radius: 8px; padding: 12px 14px; margin: 12px 0;
+  font-size: 13px; color: var(--yellow-text); line-height: 1.65;
+}
+.modal-foot {
+  padding: 14px 20px; border-top: .5px solid var(--border); flex-shrink: 0;
+}
+.modal-foot-btn {
+  width: 100%; padding: 12px;
+  background: var(--bg2); border: .5px solid var(--border);
+  border-radius: 10px; font-size: 13px; color: var(--text3);
+  cursor: pointer; font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: .04em; text-transform: uppercase;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.modal-foot-btn.unlocked {
+  background: var(--text); color: var(--bg);
+  border-color: var(--text);
+}
+.modal-foot-btn:disabled {
+  opacity: .4; cursor: not-allowed;
+}
+.read-progress {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--text3);
+  text-align: center; margin-bottom: 8px;
+  letter-spacing: .06em;
+}
+
+/* ── COMPARE TABLE ── */
+.compare { background: var(--surface); border: .5px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 1.2rem; }
+.compare-head { display: grid; grid-template-columns: 1fr 1fr; border-bottom: .5px solid var(--border); }
+.ch-col { padding: 11px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text2); border-right: .5px solid var(--border); }
+.ch-col:last-child { border-right: none; }
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: .5px solid var(--border); }
+.compare-row:last-child { border-bottom: none; }
+.cc { padding: 12px 14px; font-family: 'Source Serif 4', serif; font-size: 13px; color: var(--text); line-height: 1.55; border-right: .5px solid var(--border); }
+.cc:last-child { border-right: none; }
+
+/* ── CONTINUE ── */
+.cont {
+  width: 100%; margin-top: 1rem; padding: 13px;
+  background: transparent; border: .5px solid var(--border);
+  border-radius: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text3); cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.cont:hover { background: var(--surface); border-color: var(--border2); color: var(--text); }
+.cont.lit { border-color: var(--text2); color: var(--text2); }
+
+/* ── RECEIPT / END ── */
+.end-card {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 16px; padding: 30px 24px;
+  text-align: center; margin-bottom: 1.2rem;
+}
+.end-title {
+  font-family: 'Fraunces', serif;
+  font-size: 26px; font-weight: 300;
+  color: var(--text); margin-bottom: 14px;
+  line-height: 1.2; letter-spacing: -.3px;
+}
+.end-sub {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text2);
+  line-height: 1.75; margin-bottom: 22px;
+  font-style: italic;
+}
+.tok-sum {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--yellow-bg); border: .5px solid var(--yellow);
+  border-radius: 9px; padding: 9px 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--yellow-text);
+  margin-bottom: 20px; letter-spacing: .04em;
+}
+.receipt {
+  background: var(--bg2); border: .5px solid var(--border);
+  border-radius: 11px; padding: 16px 18px;
+  margin-bottom: 20px; text-align: left;
+}
+.receipt-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 12px;
+}
+.receipt-item {
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px; color: var(--text2);
+  line-height: 1.65; margin-bottom: 8px;
+  padding-left: 14px; position: relative;
+}
+.receipt-item::before {
+  content: '—'; position: absolute; left: 0;
+  color: var(--text4);
+}
+.restart-btn {
+  width: 100%; padding: 14px;
+  background: var(--text); color: var(--bg);
+  border: none; border-radius: 11px;
+  font-family: 'Fraunces', serif;
+  font-size: 16px; font-weight: 300;
+  cursor: pointer; transition: opacity .15s;
+  letter-spacing: -.1px;
+}
+.restart-btn:hover { opacity: .85; }
+.end-note {
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px; color: var(--text3);
+  text-align: center; margin-top: 14px;
+  line-height: 1.75; font-style: italic;
+}
+
+/* ── THE GAP ── */
+.gap-section {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 14px; padding: 24px 22px;
+  margin-bottom: 1.2rem;
+}
+.gap-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 300;
+  color: var(--text); margin-bottom: 8px;
+  letter-spacing: -.2px;
+}
+.gap-body {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text2);
+  line-height: 1.8; margin-bottom: 16px;
+}
+.gap-body em { font-style: italic; color: var(--text); }
+.gap-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; margin-bottom: 8px;
+  background: var(--bg2); border: .5px solid var(--border);
+  border-radius: 9px; text-decoration: none;
+  transition: border-color .15s;
+}
+.gap-link:hover { border-color: var(--border2); }
+.gap-link-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 2px;
+}
+.gap-link-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px; color: var(--text2);
+}
+.gap-link-arrow { margin-left: auto; color: var(--text3); font-size: 14px; }
+
+.vignette {
+  background: var(--bg2); border: .5px solid var(--border);
+  border-radius: 10px; padding: 16px 17px; margin-bottom: 10px;
+}
+.vignette-source {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--text3);
+  letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.vignette-text {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text);
+  line-height: 1.75; font-style: italic;
+}
+
+/* ── CONVERGENCE ── */
+.conv-grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 12px; margin-bottom: 1.2rem;
+}
+.conv-pov {
+  background: var(--surface); border: .5px solid var(--border);
+  border-radius: 12px; padding: 16px 17px;
+}
+.conv-who {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 8px;
+}
+.conv-moment {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text); line-height: 1.7;
+}
+
+/* ── HR FORM ── */
+.hr-opt {
+  width: 100%; background: var(--bg2); border: .5px solid var(--border);
+  border-radius: 10px; padding: 14px 15px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px; color: var(--text2);
+  text-align: left; cursor: pointer; line-height: 1.5;
+  margin-bottom: 8px;
+  transition: border-color .15s, background .15s;
+}
+.hr-opt:hover { border-color: var(--border2); background: var(--surface); }
+</style>
+</head>
+<body>
+
+<!-- GUIDELINES MODAL -->
+<div class="modal-overlay" id="guideModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-head-title">Workplace Guidelines</span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-scroll" id="guideScroll">
+      <h3>POSH Act, 2013</h3>
+      <p>The Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act defines sexual harassment as including implied promises of preferential treatment, implied threats, and conduct creating an <span class="hy">intimidating, hostile, or offensive work environment.</span></p>
+      <p>Every organisation with 10+ employees must constitute an Internal Complaints Committee (ICC). Complaints must be filed <span class="hr">within 3 months</span> of the incident. The ICC has 90 days to complete inquiry.</p>
+      <div class="gap-note">⚠ What POSH does not cover: gendered feedback patterns, communication-style critique, and promotion decisions — unless a direct link to sexual harassment can be established. This is a significant gap.</div>
+      <h3>Lexon ICC Status</h3>
+      <p>Constituted: 2021. Last meeting: <span class="hy">September 2022.</span> Annual report: <span class="hr">not filed for FY 2023–24 or FY 2024–25.</span> Current status: <span class="hr">effectively dormant.</span></p>
+      <h3>Equal Remuneration Act, 1976</h3>
+      <p>Mandates equal pay for equal work regardless of gender. Does not address <span class="hy">promotion decisions, feedback quality, or career trajectory.</span></p>
+      <h3>The Maternity Benefit Act, 1961 (amended 2017)</h3>
+      <p>Provides 26 weeks paid maternity leave for first two children. Does not address <span class="hy">appraisal impact during or after leave.</span></p>
+      <h3>What none of these cover</h3>
+      <p>A pattern of vague, personality-based feedback given consistently to women. A promotion decision made using language that has no documented basis. The feeling of being managed out of a role through accumulating impressions that no single policy violation can name.</p>
+      <div class="gap-note">The gap is not in the law. The gap is between what the law can see and what actually happens.</div>
+      <h3>Ministry of Labour Advisory, 2024</h3>
+      <p>Issued guidance encouraging employers to promote women's workforce participation. Non-binding. <span class="hy">No enforcement mechanism.</span></p>
+      <p style="height:1px"></p>
+    </div>
+    <div class="modal-foot">
+      <div class="read-progress" id="readProgress">scroll to read · 0%</div>
+      <button class="modal-foot-btn" id="guideCloseBtn" disabled onclick="closeModalRead()">
+        I have read the guidelines
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="tb-logo">name<span>it</span> · Lexon</div>
+  <div class="tb-right">
+    <div class="tok-wrap" id="tokWrap">
+      <div class="tok-pip" id="tokPip"></div>
+      <span id="tokCount">0</span>
+    </div>
+    <button class="tb-btn" id="themeBtn" onclick="toggleTheme()">dark</button>
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- ══ S-ROLE: WHO ARE YOU ══ -->
+<div class="screen on" id="s-role">
+  <div class="co-name">Bengaluru · IT Services · 2026</div>
+  <div class="role-q">Who are you<br>in this room?</div>
+  <div class="role-cards" id="roleCards">
+
+    <button class="role-card" id="card-maya" onclick="startArc('maya')">
+      <div class="rc-title">Maya</div>
+      <div class="rc-sub">You received this feedback. You're still thinking about it.</div>
+    </button>
+
+    <button class="role-card" id="card-rohit" onclick="startArc('rohit')">
+      <div class="rc-title">Rohit</div>
+      <div class="rc-sub">You gave this feedback. You think you were being fair.</div>
+    </button>
+
+    <button class="role-card dim" id="card-priya">
+      <div class="rc-title">Priya</div>
+      <div class="rc-sub">You see the pattern. You don't know what to do with it.</div>
+    </button>
+
+    <button class="role-card dim" id="card-gap">
+      <div class="rc-title" style="font-style:italic;">The Gap</div>
+      <div class="rc-sub">Complete any arc to unlock.</div>
+    </button>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MAYA'S ARC
+══════════════════════════════════ -->
+
+<!-- M1: CALENDAR -->
+<div class="screen" id="m1">
+  <div class="chip">Maya · Week 1 · Tuesday</div>
+  <div class="ambient">The promotion cycle opens on <span class="hy">Thursday</span>.<br>This arrived ten minutes ago.</div>
+  <div class="card">
+    <div class="card-head blue">
+      <span class="f-mono hb" style="font-size:10px">Calendar</span>
+      <span class="f-mono" style="color:var(--text3)">Tue 10:47am · Jan 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Event</div>
+        <div class="field-value">1:1 with Rohit Sharma</div>
+      </div>
+      <div class="field">
+        <div class="field-label">When</div>
+        <div class="field-value"><span class="hy">Thursday 3:00–3:30pm</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">Agenda</div>
+        <div class="field-value muted">No agenda added</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">From</div>
+        <div class="field-value">Rohit Sharma</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;padding:12px 18px;border-top:.5px solid var(--border)">
+      <button class="cont" style="margin:0;flex:1" onclick="declineMaya()">Decline</button>
+      <button class="cont" style="margin:0;flex:1" onclick="declineMaya()">Maybe</button>
+      <button class="cont lit" style="margin:0;flex:1" onclick="go('m2'); addTok(2);">Accept</button>
+    </div>
+  </div>
+  <div class="ambient" id="m1-note" style="display:none;color:var(--red-text)">You declined.<br>He sends it again two hours later.<br><em>Same time. No agenda.</em></div>
+</div>
+
+<!-- M2: THE MEETING -->
+<div class="screen" id="m2">
+  <div class="chip">Maya · Week 1 · Thursday 3:04pm</div>
+  <div class="ambient">Conf Room B. He's already there.<br><em>He has nothing open on his laptop.</em></div>
+  <div id="m2-bubbles"></div>
+  <button class="cont lit" id="m2-next" style="display:none" onclick="go('m3')">week 2 →</button>
+</div>
+
+<!-- M3: THE REVIEW — 4 DRAFTS -->
+<div class="screen" id="m3">
+  <div class="chip">Maya · Week 2 · Monday 9:12am</div>
+  <div class="ambient">Your mid-year review arrived<br>while you were on a call.</div>
+  <div class="card">
+    <div class="card-head blue">
+      <span class="f-mono hb" style="font-size:10px">Lexon · Mid-Year Review · Q2 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Delivery</div>
+        <div class="field-value"><span class="hg">Strong.</span> Fintrack migration on schedule. Mentored two junior associates.</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">Communication</div>
+        <div class="field-value"><span class="hr">Needs refinement.</span> Can come across as <em>too direct</em> in cross-team settings. Makes it difficult for others to contribute.</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">Promotion readiness</div>
+        <div class="field-value"><span class="hy">Not yet.</span> Would benefit from stakeholder alignment and team dynamics before lead role.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ambient"><em>You read it three times.<br>You're going to reply.</em></div>
+  <div id="m3-drafts"></div>
+  <button class="cont lit" id="m3-next" style="display:none" onclick="go('m4')">week 3 →</button>
+</div>
+
+<!-- M4: THE MEETING AGAIN / TEAM -->
+<div class="screen" id="m4">
+  <div class="chip">Maya · Week 3 · Team standup</div>
+  <div class="ambient">Wednesday. Weekly standup.<br><em>You have a point to make about the Kiran project.</em></div>
+  <div id="m4-bubbles"></div>
+  <div class="choice-q" id="m4-q" style="display:none">Sneha messages you privately after:</div>
+  <div class="choices" id="m4-choices" style="display:none">
+    <button class="cbtn" onclick="pick('m4','A',this,false)">"That was your idea. Are you going to say something?"
+      <div class="outcome">You type back: <em>"It's fine, at least it got heard."</em><br><br>Sneha doesn't reply. She doesn't message again that week.</div>
+    </button>
+    <button class="cbtn" onclick="pick('m4','B',this,true)">Bring it up with Rohit directly
+      <div class="outcome">He says: <em>"I don't think that's what happened."</em> He pauses. <em>"Also — this is the kind of thing I mentioned. How you come across."</em><br><br>Your review language is back. It arrived before you could name the incident.</div>
+    </button>
+  </div>
+  <button class="cont lit" id="m4-next" style="display:none" onclick="go('m5')">week 4 →</button>
+</div>
+
+<!-- M5: SHORTLIST + SPEAK-UP FORM -->
+<div class="screen" id="m5">
+  <div class="chip">Maya · Week 4 · Loop return</div>
+  <div class="ambient">The promotion shortlist is out.<br><em>Your name is not on it.</em></div>
+  <div class="compare">
+    <div class="compare-head">
+      <div class="ch-col">Arjun · <span class="hg">Promoted</span></div>
+      <div class="ch-col">Maya · <span class="hr">Not shortlisted</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cc"><span class="hg">Strong technical instincts</span></div>
+      <div class="cc"><span class="hg">Strong on delivery</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cc"><span class="hg">Good energy in meetings</span></div>
+      <div class="cc"><span class="hr">Communication style needs refinement</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cc"><span class="hg">Drives things forward</span></div>
+      <div class="cc"><span class="hy">Not yet ready for lead</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
+      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
+    </div>
+  </div>
+  <div class="ambient" style="margin-top:.8rem"><em>No one asked you to compare these.<br>They just sit there.</em></div>
+  <div class="card" style="margin-top:1.2rem">
+    <div class="card-head coral">
+      <span class="f-mono hc" style="font-size:10px">Lexon · Speak Up · Anonymous</span>
+      <span class="f-mono" style="color:var(--coral-text)"><span class="hr">48 hrs left</span></span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Your feedback</div>
+        <div class="field-value muted" id="m5-charcount">200 words maximum</div>
+      </div>
+      <textarea id="m5-textarea" style="width:100%;background:var(--bg2);border:.5px solid var(--border);border-radius:8px;padding:12px;font-family:'Source Serif 4',serif;font-size:14px;color:var(--text);resize:none;height:100px;line-height:1.6;margin-top:6px" placeholder="Describe what happened..." oninput="countWords(this)"></textarea>
+    </div>
+  </div>
+  <div class="choice-q">What do you do with the form?</div>
+  <div class="choices">
+    <button class="cbtn" onclick="pick('m5','A',this,true)">Submit what you've written
+      <div class="outcome">The form asks: <em>"Please provide the date of the specific incident."</em><br><br>There is no field for pattern. There is no field for <em>the same thing in different words over eight months.</em><br><br>Auto-reply arrives in 43 seconds: <span class="hg">"We value your feedback."</span></div>
+    </button>
+    <button class="cbtn" onclick="pick('m5','B',this,false)">Water it down — stay safe
+      <div class="outcome">Filed under <span class="hy">general culture feedback.</span> No action. The form closes in 48 hours. You will receive a survey next quarter asking if you feel heard at Lexon.</div>
+    </button>
+    <button class="cbtn" onclick="pick('m5','C',this,false)">Leave it blank
+      <div class="outcome">The window closes. Nothing happens.<br><br><em>Nothing happening is also something that happened.</em></div>
+    </button>
+  </div>
+  <button class="cont lit" id="m5-next" style="display:none" onclick="endArc('maya')">end of cycle →</button>
+</div>
+
+<!-- ══════════════════════════════════
+     ROHIT'S ARC
+══════════════════════════════════ -->
+
+<!-- R1: THE GUIDE -->
+<div class="screen" id="r1">
+  <div class="chip">Rohit · Week 1 · Before review season</div>
+  <div class="ambient">HR has sent the annual manager toolkit.<br><em>You have a standup in ten minutes.</em></div>
+  <div class="card">
+    <div class="card-head blue">
+      <span class="f-mono hb" style="font-size:10px">HR Communications</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--red-bg);color:var(--red-text);padding:2px 7px;border-radius:3px">Unread</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Subject</div>
+        <div class="field-value">Review Season — Manager Toolkit <span class="hy">· Action required</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">From</div>
+        <div class="field-value">Ananya Krishnan · HR Business Partner</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-value">Hi Rohit — please read the attached guidelines before writing assessments. Deadline: <span class="hr">Friday 5pm.</span></div>
+      </div>
+    </div>
+  </div>
+  <button class="posh-trigger" style="display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--blue-text);background:var(--blue-bg);border:.5px solid var(--blue);border-radius:8px;padding:10px 14px;cursor:pointer;margin-bottom:1.2rem;font-family:'Source Serif 4',serif;width:100%;justify-content:center" onclick="openModal()">
+    Open: Workplace Guidelines
+  </button>
+  <div class="choice-q">You have four unread emails. What do you do?</div>
+  <div class="choices">
+    <button class="cbtn" id="r1-read-btn" onclick="pick('r1','A',this,true)" style="display:none">
+      Read the full guidelines — I just did
+      <div class="outcome">You read about behavioural specificity, about patterns, about what POSH covers and what it doesn't. You feel prepared.<br><br><em>You will not remember this on Thursday when you write Maya's review.</em></div>
+    </button>
+    <button class="cbtn" onclick="pick('r1','B',this,false)">Skim it — you've done reviews before
+      <div class="outcome">You catch the key words. <span class="hy">Two minutes.</span> That feels sufficient. You close it and go to standup.</div>
+    </button>
+    <button class="cbtn" onclick="pick('r1','C',this,false)">Mark it read — you'll come back to it
+      <div class="outcome">The email is marked read. <span class="hr">You don't come back to it.</span> The guidelines sit in your downloads folder for the rest of the cycle.</div>
+    </button>
+  </div>
+  <button class="cont lit" id="r1-next" style="display:none" onclick="go('r2')">week 2 →</button>
+</div>
+
+<!-- R2: WRITING THE REVIEW -->
+<div class="screen" id="r2">
+  <div class="chip">Rohit · Week 2 · Thursday evening</div>
+  <div class="ambient">Four reviews to write tonight.<br><em>Deadline is tomorrow at 5pm.</em></div>
+  <div class="card">
+    <div class="card-head yellow">
+      <span class="f-mono" style="color:var(--yellow-text);font-size:10px">Mid-Year Review · Maya · Draft</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Delivery</div>
+        <div class="field-value"><span class="hg">Strong.</span> Fintrack migration on schedule. Mentored two junior associates.</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">Communication</div>
+        <div class="field-value" id="r2-comm-field" style="background:var(--bg2);border-radius:8px;padding:10px 12px;border:.5px solid var(--border);min-height:52px;cursor:text" contenteditable="true">Can come across as too direct in cross-team settings.</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
+          <span onclick="useSuggest(this,'communication style needs refinement')" style="font-size:12px;background:var(--blue-bg);color:var(--blue-text);border:.5px solid var(--blue);border-radius:4px;padding:3px 9px;cursor:pointer;font-family:'IBM Plex Mono',monospace">communication style needs refinement</span>
+          <span onclick="useSuggest(this,'sometimes difficult for others to contribute')" style="font-size:12px;background:var(--blue-bg);color:var(--blue-text);border:.5px solid var(--blue);border-radius:4px;padding:3px 9px;cursor:pointer;font-family:'IBM Plex Mono',monospace">sometimes difficult for others to contribute</span>
+          <span onclick="useSuggest(this,'would benefit from stakeholder alignment')" style="font-size:12px;background:var(--blue-bg);color:var(--blue-text);border:.5px solid var(--blue);border-radius:4px;padding:3px 9px;cursor:pointer;font-family:'IBM Plex Mono',monospace">would benefit from stakeholder alignment</span>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:7px;letter-spacing:.04em">↑ suggested phrasing from HR toolkit</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">Promotion Readiness</div>
+        <div class="field-value"><span class="hy">Not yet.</span> Would benefit from team dynamics and stakeholder alignment.</div>
+      </div>
+    </div>
+  </div>
+  <div class="choice-q">The HR phrasing is right there. What do you do?</div>
+  <div class="choices">
+    <button class="cbtn" onclick="pick('r2','A',this,false)">Use the suggested language — it's cleaner
+      <div class="outcome">The form accepts it without flags. You submit and move to the next review.<br><br><em>Maya will receive this tomorrow. She will ask for a specific example. You will not have one.</em></div>
+    </button>
+    <button class="cbtn" onclick="pick('r2','B',this,true)">Try to write something more specific
+      <div class="outcome">You stare at the field. You think of the Fintrack standup — she interrupted someone. Or did she? You're not certain.<br><br>You type: <em>can come across as too direct.</em> It's the same thing. <span class="hy">You just wrote it yourself this time.</span></div>
+    </button>
+    <button class="cbtn" onclick="pick('r2','C',this,false)">Leave it blank — you have nothing specific
+      <div class="outcome">The form flags it: <span class="hr">"All fields required for promotion-eligible employees."</span><br><br>You paste the HR suggestion.</div>
+    </button>
+  </div>
+  <button class="cont lit" id="r2-next" style="display:none" onclick="go('r2b')">week 2, Thursday →</button>
+</div>
+
+<!-- R2b: AI REVIEW ASSIST -->
+<div class="screen" id="r2b">
+  <div class="chip">Rohit · Week 2 · Thursday evening</div>
+  <div class="ambient">You've drafted the communication field.<br><em>A banner appeared at the top of the review portal last month.</em></div>
+
+  <div class="card" style="border-color:var(--border2)">
+    <div class="card-head" style="background:var(--surface2);border-bottom:.5px solid var(--border2)">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2)">Lexon ReviewAssist ✦ Beta</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">AI-assisted drafting</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Your draft · Communication</div>
+        <div style="background:var(--bg2);border-radius:8px;padding:11px 13px;border:.5px solid var(--border);font-family:'Source Serif 4',serif;font-style:italic;color:var(--text2);font-size:14px;line-height:1.6">Can come across as too direct in cross-team settings.</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">About ReviewAssist</div>
+        <div class="field-value" style="font-size:13px;color:var(--text2);line-height:1.65">Produces formal, policy-compliant language from your draft input. Trained on Lexon's internal review history.</div>
+      </div>
+      <button id="ai-gen-btn" onclick="generateAI()" style="width:100%;margin-top:10px;padding:13px;background:var(--text);color:var(--bg);border:none;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .15s">Generate with ReviewAssist ✦</button>
+    </div>
+  </div>
+
+  <div id="ai-output-wrap" style="display:none">
+
+    <div id="ai-loading" style="text-align:center;padding:22px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);letter-spacing:.06em">
+      <span id="ai-cursor-text">analysing patterns_</span>
+    </div>
+
+    <div class="card" id="ai-result" style="display:none;border:.5px solid var(--border2)">
+      <div class="card-head" style="background:var(--surface2);border-bottom:.5px solid var(--border2)">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2)">ReviewAssist ✦ Output</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--green-bg);color:var(--green-text);padding:2px 8px;border-radius:3px;border:.5px solid var(--green)">Policy compliant</span>
+      </div>
+      <div class="card-body" style="font-family:'IBM Plex Mono',monospace">
+        <div class="field">
+          <div class="field-label" style="margin-bottom:10px">Communication — generated</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.85;background:var(--bg2);border-radius:9px;padding:14px 15px;border:.5px solid var(--border)">
+            Demonstrates a direct communication style that <span class="hy">can at times create friction</span> in cross-functional settings. Would benefit from developing <span class="hy">stakeholder alignment</span> skills and a more collaborative approach before assuming lead responsibilities.
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div>
+            <div class="field-label" style="margin-bottom:6px">Confidence</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green-text);background:var(--green-bg);border-radius:7px;padding:8px 10px;text-align:center;border:.5px solid var(--green)">High</div>
+          </div>
+          <div>
+            <div class="field-label" style="margin-bottom:6px">Derived from</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);background:var(--bg2);border-radius:7px;padding:7px 10px;text-align:center;border:.5px solid var(--border);line-height:1.5">23 similar assessments<br><span style="font-size:10px;color:var(--text3)">within your organisation</span></div>
+          </div>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);line-height:1.7;padding-top:4px">
+          Based on previous review patterns for this role level.<br>
+          <span style="color:var(--text4)">This output has been reviewed for compliance with HR policy.</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="ai-compare-wrap" style="display:none;margin-top:1rem">
+      <button onclick="toggleOriginal()" id="compare-toggle-btn" style="width:100%;padding:10px 14px;background:transparent;border:.5px solid var(--border);border-radius:9px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:border-color .15s,color .15s,background .15s">show original input →</button>
+      <div id="original-compare" style="display:none;margin-top:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px">You typed</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);background:var(--bg2);border-radius:8px;padding:12px 13px;border:.5px solid var(--border);line-height:1.65;font-style:italic">"Can come across as too direct in cross-team settings."</div>
+          </div>
+          <div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px">AI produced</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);background:var(--surface);border-radius:8px;padding:12px 13px;border:.5px solid var(--border2);line-height:1.65">"Demonstrates a direct communication style that can at times create friction..."</div>
+          </div>
+        </div>
+        <div style="padding:12px 14px;background:var(--yellow-bg);border:.5px solid var(--yellow);border-radius:9px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--yellow-text);line-height:1.7">
+          The input had no specific example.<br>
+          The output has Confidence: High.<br>
+          <span style="color:var(--text3)">The 23 assessments it learned from — did they?</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="ai-choices-wrap" style="display:none;margin-top:1.2rem">
+      <div class="choice-q">What do you do with this output?</div>
+      <div class="choices">
+        <button class="cbtn" onclick="pick('r2b','A',this,false)">Accept and insert into the review
+          <div class="outcome">The field updates. The form accepts it without flags. <span class="hg">No issues raised.</span><br><br><em>The language sounds like evidence. It is not evidence. It is a pattern that the system recognised as familiar — because it has seen it 23 times before.</em></div>
+        </button>
+        <button class="cbtn" onclick="pick('r2b','B',this,true)">Reject it — write something yourself
+          <div class="outcome">You stare at the field for four minutes.<br><br>You type: <em>"Can come across as too direct in cross-team settings."</em><br><br><span class="hy">It is the same sentence you started with.</span> ReviewAssist just dressed it differently.</div>
+        </button>
+        <button class="cbtn" onclick="pick('r2b','C',this,false)">Accept it — it's more neutral than what you wrote
+          <div class="outcome">That's what it's designed to feel like.<br><br><span class="hy">"Neutral"</span> is a trained output. It was trained on 23 reviews from this organisation. <em>You don't know whose reviews those were. You don't know if they had examples either.</em></div>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="cont lit" id="r2b-next" style="display:none" onclick="go('r3')">week 2, Thursday →</button>
+</div>
+
+<!-- R3: THE 1:1 ROHIT'S SIDE -->
+<div class="screen" id="r3">
+  <div class="chip">Rohit · Week 2 · Thursday 3:04pm</div>
+  <div class="ambient">Conf Room B. You arrived early.<br><em>You don't have notes. You don't think you need them.</em></div>
+  <div id="r3-bubbles"></div>
+  <button class="cont lit" id="r3-next" style="display:none" onclick="go('r4')">week 3 →</button>
+</div>
+
+<!-- R4: THE DISPUTE -->
+<div class="screen" id="r4">
+  <div class="chip">Rohit · Week 3 · Monday 11:20am</div>
+  <div class="ambient">Maya has filed a formal response.<br><em>HR has sent you the template.</em></div>
+  <div class="card">
+    <div class="card-head coral">
+      <span class="f-mono hc" style="font-size:10px">HR · Employee Response · LXN-2026-0318</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-value">Maya has submitted a formal response to her Q2 review, citing the communication feedback as <span class="hr">unsubstantiated.</span> Please respond using the approved template within 5 working days.<br><br><span class="hy">Do not discuss this directly with Maya.</span></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">Approved template</div>
+        <div class="field-value" style="font-style:italic;color:var(--text2);font-size:13px">"Thank you for raising this. I want to acknowledge your experience and assure you that the feedback was given with your professional development in mind. The communication observation reflects patterns observed over the review period and is not intended as a personal criticism. I remain committed to supporting your growth at Lexon."</div>
+      </div>
+    </div>
+  </div>
+  <div class="choice-q">HR has given you the words. What do you send?</div>
+  <div class="choices">
+    <button class="cbtn" onclick="pick('r4','A',this,false)">Send the template as-is
+      <div class="outcome">Four minutes. Copy, paste, sign.<br><br>HR marks the case <span class="hg">responded.</span> Maya receives the phrase <span class="hy">"not intended as a personal criticism"</span> — which tells her you knew it could be read that way.</div>
+    </button>
+    <button class="cbtn" onclick="pick('r4','B',this,true)">Write something more personal — she should know you meant well
+      <div class="outcome">You write three paragraphs. You use the word "genuinely" four times.<br><br>HR flags it: <span class="hr">"Please use approved template for formal disputes."</span> You send the template. Your three paragraphs disappear.</div>
+    </button>
+    <button class="cbtn" onclick="pick('r4','C',this,false)">Ask if you can meet Maya to clear the air
+      <div class="outcome">HR replies: <span class="hr">"Not advisable while the response is under review."</span><br><br>The process has its own logic now. <span class="hy">You are inside it the same way she is. Except you are not.</span></div>
+    </button>
+  </div>
+  <button class="cont lit" id="r4-next" style="display:none" onclick="go('r5')">week 4 →</button>
+</div>
+
+<!-- R5: PROMOTION MEETING -->
+<div class="screen" id="r5">
+  <div class="chip">Rohit · Week 4 · Promotion meeting</div>
+  <div class="ambient">Three managers. One HR rep.<br><em>Eight names on the shortlist. Maya's is not there.</em><br>You didn't put it there this cycle.</div>
+  <div id="r5-bubbles"></div>
+  <button class="cont lit" id="r5-next" style="display:none" onclick="go('r6')">week 5 →</button>
+</div>
+
+<!-- R6: THE COMPARE + END OF CYCLE FORM -->
+<div class="screen" id="r6">
+  <div class="chip">Rohit · Week 5 · Loop return</div>
+  <div class="ambient">Arjun is promoted. You write the team announcement.<br><em>Both reviews are open on your screen.</em></div>
+  <div class="compare">
+    <div class="compare-head">
+      <div class="ch-col">Arjun · <span class="hg">Promoted</span></div>
+      <div class="ch-col">Maya · <span class="hr">Not shortlisted</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cc"><span class="hg">Good energy in meetings</span></div>
+      <div class="cc"><span class="hr">Communication style needs refinement</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cc"><span class="hg">Drives things forward</span></div>
+      <div class="cc"><span class="hy">Would benefit from stakeholder alignment</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
+      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
+    </div>
+  </div>
+  <div class="ambient" style="margin-top:.8rem"><em>Nobody asked you to compare these.</em></div>
+  <div class="card" style="margin-top:1.2rem">
+    <div class="card-head coral">
+      <span class="f-mono hc" style="font-size:10px">Lexon · Manager Experience Survey · Q2 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Question 1 of 1</div>
+        <div class="field-value">Did you feel supported by HR during this review cycle?</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <button class="hr-opt" onclick="hrPick(this,'yes')">Yes — the templates and toolkit were helpful</button>
+        <button class="hr-opt" onclick="hrPick(this,'somewhat')">Somewhat — the process felt unclear at times</button>
+        <button class="hr-opt" onclick="hrPick(this,'no')">No — I needed more guidance</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="r6-response" style="display:none">
+    <div class="card-head green">
+      <span class="f-mono" style="color:var(--green-text);font-size:10px">Survey submitted · Cycle closed</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-value" id="r6-response-text" style="font-style:italic;color:var(--text2)"></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-value" style="font-size:13px;color:var(--text3)">The survey did not ask whether Maya felt supported.<br>The survey did not ask whether the review was accurate.<br>The cycle is <span class="hg">closed.</span></div>
+      </div>
+    </div>
+  </div>
+  <button class="cont lit" id="r6-next" style="display:none" onclick="endArc('rohit')">end of cycle →</button>
+</div>
+
+<!-- ══════════════════════════════════
+     PRIYA'S ARC
+══════════════════════════════════ -->
+
+<!-- P1: THE SPREADSHEET -->
+<div class="screen" id="p1">
+  <div class="chip">Priya · Week 1 · Review season opens</div>
+  <div class="ambient">You're reviewing the submitted mid-year reviews.<br><em>You've been doing this for six years.</em></div>
+  <div class="card">
+    <div class="card-head yellow">
+      <span class="f-mono" style="color:var(--yellow-text);font-size:10px">Q2 Reviews · Language audit · Internal</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Pattern flagged</div>
+        <div class="field-value">The phrase <span class="hy">"communication style"</span> appears in 9 reviews this cycle. <span class="hr">8 of 9 are women's reviews.</span></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-label">Also flagged</div>
+        <div class="field-value">"Too direct" — 6 times, all women's reviews.<br>"Stakeholder alignment" — 5 times, 4 women's reviews.<br>"Good energy" — 7 times, <span class="hg">all men's reviews.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="choice-q">You've seen this before. What do you do with it?</div>
+  <div class="choices">
+    <button class="cbtn" onclick="pick('p1','A',this,true)">Start documenting — open a new spreadsheet column
+      <div class="outcome">You label it <span class="hy">Language Pattern Q2.</span> You spend 40 minutes on it.<br><br>It has no home in any existing process. It is not a complaint. It is not an incident. It is a <em>pattern</em> — and the ICC form has no field for patterns.</div>
+    </button>
+    <button class="cbtn" onclick="pick('p1','B',this,false)">Flag it informally to your manager
+      <div class="outcome">He listens. <em>"We need a specific incident, Priya, not a pattern."</em><br><br>You've heard this before. You go back to your desk and add the column anyway. Quietly.</div>
+    </button>
+    <button class="cbtn" onclick="pick('p1','C',this,false)">Note it and move on — without a complaint you can't act
+      <div class="outcome">You're right. You can't. You move on.<br><br><em>The pattern will be here next quarter.</em></div>
+    </button>
+  </div>
+  <button class="cont lit" id="p1-next" style="display:none" onclick="go('p2')">week 2 →</button>
+</div>
+
+<!-- P2: MAYA'S DISPUTE ARRIVES -->
+<div class="screen" id="p2">
+  <div class="chip">Priya · Week 3 · Monday</div>
+  <div class="ambient">Maya's formal dispute is in your inbox.<br><em>You've read it twice already.</em></div>
+  <div class="card">
+    <div class="card-head coral">
+      <span class="f-mono hc" style="font-size:10px">Employee Response · LXN-2026-0318</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-value" style="font-style:italic;color:var(--text2);font-size:13px">"The feedback on my communication style is unsubstantiated. No specific example was provided when requested. I have exceeded all delivery targets this cycle. The feedback appears to be based on personal perception rather than documented behaviour, and may reflect a double standard in how assertiveness is evaluated across gender."</div>
+      </div>
+    </div>
+  </div>
+  <div class="ambient"><em>She's right. You know she's right.<br>You open the ICC complaint form anyway.</em></div>
+  <div class="card">
+    <div class="card-head blue">
+      <span class="f-mono hb" style="font-size:10px">ICC Complaint Form · Lexon</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Required: Date of incident</div>
+        <div class="field-value muted">Please enter the date of the specific incident of sexual harassment.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Required: Name of respondent</div>
+        <div class="field-value muted">Please enter the name of the person who committed the act.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Required: Nature of harassment</div>
+        <div class="field-value muted">Select: physical / verbal / non-verbal / quid pro quo / hostile environment</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="field">
+        <div class="field-value" style="font-size:13px;color:var(--text3)">Note: This form is for sexual harassment complaints under POSH Act 2013. For other workplace concerns, contact your HR Business Partner.</div>
+      </div>
+    </div>
+  </div>
+  <div class="choice-q">The form doesn't fit. What do you do?</div>
+  <div class="choices">
+    <button class="cbtn" onclick="pick('p2','A',this,true)">Write a summary memo anyway — save it as a draft
+      <div class="outcome">You write three pages. You document the language pattern, Maya's dispute, Rohit's template response. You save it.<br><br>It is titled <em>Draft_Q2_pattern_DO_NOT_SEND.docx</em><br><br>You don't know where to send it. There is no process for this document.</div>
+    </button>
+    <button class="cbtn" onclick="pick('p2','B',this,false)">Send Rohit the approved response template
+      <div class="outcome">You do. It's your job.<br><br><em>Maya will receive language that acknowledges her experience without changing anything.</em></div>
+    </button>
+    <button class="cbtn" onclick="pick('p2','C',this,false)">Contact Maya directly — off the record
+      <div class="outcome">You draft a message. You delete it. If this goes further and it comes out that you spoke to her informally, it complicates the process.<br><br><em>The process protects itself.</em></div>
+    </button>
+  </div>
+  <button class="cont lit" id="p2-next" style="display:none" onclick="go('p3')">week 4 →</button>
+</div>
+
+<!-- P3: PROMOTION MEETING MINUTES -->
+<div class="screen" id="p3">
+  <div class="chip">Priya · Week 4 · After the promotion meeting</div>
+  <div class="ambient">The minutes arrived.<br><em>You weren't in the room.</em></div>
+  <div id="p3-bubbles"></div>
+  <div class="choice-q" id="p3-q" style="display:none">You have everything. Maya's dispute, the pattern spreadsheet, the minutes. What do you do?</div>
+  <div class="choices" id="p3-choices" style="display:none">
+    <button class="cbtn" onclick="pick('p3','A',this,true)">Add the minutes to your draft memo. Keep building the file.
+      <div class="outcome">The file is now 6 pages. It is thorough. It is accurate. It is <span class="hy">still a draft.</span><br><br>You title it <em>Draft_Q2_pattern_v3_DO_NOT_SEND.docx</em></div>
+    </button>
+    <button class="cbtn" onclick="pick('p3','B',this,false)">Flag it to your manager again — you have evidence now
+      <div class="outcome"><em>"Priya, the promotion decision was made by three managers. Unless Maya files a formal POSH complaint, our hands are tied."</em><br><br>She hasn't filed one. She won't. The form doesn't fit her experience either.</div>
+    </button>
+    <button class="cbtn" onclick="pick('p3','C',this,false)">Close the file. There's nothing you can formally do.
+      <div class="outcome">You close it.<br><br><em>It will be here next cycle. A slightly longer pattern. A slightly heavier draft.</em></div>
+    </button>
+  </div>
+  <button class="cont lit" id="p3-next" style="display:none" onclick="go('p4')">week 6 →</button>
+</div>
+
+<!-- P4: THE DIVERSITY REPORT -->
+<div class="screen" id="p4">
+  <div class="chip">Priya · Week 6 · End of cycle · Loop return</div>
+  <div class="ambient">The annual diversity report template is open.<br><em>You have to file this by Friday.</em></div>
+  <div class="card">
+    <div class="card-head blue">
+      <span class="f-mono hb" style="font-size:10px">Lexon · Annual Diversity Report · FY 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">POSH complaints filed this year</div>
+        <div class="field-value" id="p4-count" style="background:var(--bg2);border-radius:8px;padding:10px 12px;border:.5px solid var(--border)" contenteditable="true">1</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Cases resolved</div>
+        <div class="field-value"><span class="hg">1</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">Patterns flagged outside formal complaints</div>
+        <div class="field-value muted">This field does not exist.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ambient"><em>You look at your spreadsheet.<br>The number should be higher.<br>But those aren't complaints.<br>They're patterns.<br>The form doesn't know the difference.</em></div>
+  <button class="cont lit" onclick="endArc('priya')">submit report →</button>
+</div>
+
+<!-- ══════════════════════════════════
+     THE GAP
+══════════════════════════════════ -->
+<div class="screen" id="s-gap">
+  <div class="chip">The Gap</div>
+  <div class="gap-section">
+    <div class="gap-title">What the game was about</div>
+    <div class="gap-body">
+      Workplace feedback feels personal. It arrives with your name on it, in a one-on-one, from someone who says they're trying to help. But the words — <em>"too direct," "hard to read," "not quite ready"</em> — don't come from that person. They come from a system that has approved them.<br><br>
+      This project is about that gap. Between what was done and what gets named. Between the pattern and the incident. Between the experience and the form that was supposed to hold it.<br><br>
+      <em>Soft coercion doesn't break rules. That's what makes it hard to name.</em> The feedback is polite. The process was followed. The language was appropriate. And yet something happened — to how much space you take up, to how you write an email, to whether you speak first in a meeting anymore.<br><br>
+      What's missing isn't more policies. It's a method for seeing — for making the pattern visible without waiting for intent to confess itself.
+    </div>
+  </div>
+
+  <div class="gap-section">
+    <div class="gap-title">Where the guidelines fail</div>
+    <div class="gap-body">These are the actual documents. They're worth reading.</div>
+    <a class="gap-link" href="https://labour.gov.in/sites/default/files/Sexual_Harassment_at_Workplace_Act.pdf" target="_blank">
+      <div><div class="gap-link-label">Official document</div><div class="gap-link-title">POSH Act 2013 — full text</div></div>
+      <div class="gap-link-arrow">↗</div>
+    </a>
+    <a class="gap-link" href="https://doe.gov.in/files/inline-documents/DoE_Prevention_sexual_harassment.pdf" target="_blank">
+      <div><div class="gap-link-label">Ministry of Education</div><div class="gap-link-title">Prevention of Sexual Harassment Guidelines</div></div>
+      <div class="gap-link-arrow">↗</div>
+    </a>
+    <a class="gap-link" href="https://www.iloencyclopaedia.org/part-v-psychosocial-and-organizational-factors/workplace-violence/item/528-gender-discrimination" target="_blank">
+      <div><div class="gap-link-label">ILO</div><div class="gap-link-title">Gender Discrimination at Work</div></div>
+      <div class="gap-link-arrow">↗</div>
+    </a>
+    <a class="gap-link" href="https://feminisminindia.com/2025/06/04/what-workplace-equity-misses-about-benevolent-sexism/" target="_blank">
+      <div><div class="gap-link-label">Feminism in India</div><div class="gap-link-title">What Workplace Equity Misses About Benevolent Sexism</div></div>
+      <div class="gap-link-arrow">↗</div>
+    </a>
+  </div>
+
+  <div class="gap-section">
+    <div class="gap-title">Real accounts</div>
+    <div class="gap-body">These are composite posts drawn from r/womenintech, r/TwoXChromosomes, r/AskHR. Names and details changed. The language is theirs.</div>
+    <div class="vignette">
+      <div class="vignette-source">r/womenintech · composite</div>
+      <div class="vignette-text">"My manager told me I need to work on how I 'carry myself' in client meetings. I asked him what that means. He said just observe how Rahul does it. I have been here two years longer than Rahul."</div>
+    </div>
+    <div class="vignette">
+      <div class="vignette-source">r/TwoXChromosomes · career thread · composite</div>
+      <div class="vignette-text">"Got my appraisal. Exceeded all targets. Feedback: 'needs to be more collaborative.' My male colleague who works alone on everything got 'demonstrates strong independent thinking.' Same band. He got promoted."</div>
+    </div>
+    <div class="vignette">
+      <div class="vignette-source">r/AskHR · composite</div>
+      <div class="vignette-text">"HR told me my complaint doesn't fall under POSH because it wasn't sexual harassment. I know that. That's not what I said. I said it was unfair. They said that's a manager relationship issue not an HR issue. So whose issue is it."</div>
+    </div>
+    <div class="vignette">
+      <div class="vignette-source">r/womenEngineers · composite</div>
+      <div class="vignette-text">"Three years in the same role. Every review cycle: strong delivery, great technical output, something vague about communication. I asked for the promotion. Was told I wasn't 'quite ready.' The guy who joined after me is now my senior."</div>
+    </div>
+    <div class="vignette">
+      <div class="vignette-source">r/india · workplace thread · composite</div>
+      <div class="vignette-text">"My TL said I need to soften my emails. I went back and read them. They were direct. Professional. He forwards Karan's emails which say the exact same things. Karan is decisive. I am aggressive."</div>
+    </div>
+  </div>
+
+  <button class="cont lit" id="gap-conv-btn" style="display:none;margin-bottom:1rem" onclick="go('s-conv')">The same week — all three →</button>
+  <button class="cont" onclick="go('s-role')">← back to roles</button>
+</div>
+
+<!-- ══════════════════════════════════
+     CONVERGENCE
+══════════════════════════════════ -->
+<div class="screen" id="s-conv">
+  <div class="chip">The same week · Three rooms</div>
+  <div class="ambient"><em>Thursday. The promotion cycle opens tomorrow.<br>Three people. The same building.</em></div>
+  <div class="conv-grid">
+    <div class="conv-pov">
+      <div class="conv-who">Maya · Conf Room B · 3:04pm</div>
+      <div class="conv-moment">She's listening to Rohit say <span class="hy">"how you come across in meetings."</span> She's already asked for an example. She already knows he doesn't have one. She's deciding whether to ask again.</div>
+    </div>
+    <div class="conv-pov">
+      <div class="conv-who">Rohit · Conf Room B · 3:06pm</div>
+      <div class="conv-moment">He's saying <span class="hy">"nothing specific."</span> He means it as kindness — he doesn't want to embarrass her with a particular moment. He will walk back to his desk feeling like he handled it well.</div>
+    </div>
+    <div class="conv-pov">
+      <div class="conv-who">Priya · HR Office · same afternoon</div>
+      <div class="conv-moment">She's looking at her spreadsheet. She's just added <span class="hy">"communication style"</span> for the eighth time this cycle. She doesn't know Maya's 1:1 is happening right now. She will find out on Monday when the dispute lands.</div>
+    </div>
+  </div>
+  <div class="ambient" style="margin-top:.4rem"><em>The same Thursday.<br>Nobody lied.<br>Nothing was resolved.</em></div>
+  <button class="cont lit" style="margin-top:1rem" onclick="go('s-gap')">← back to the gap</button>
+</div>
+
+<!-- ══════════════════════════════════
+     ARC END SCREENS
+══════════════════════════════════ -->
+<div class="screen" id="end-maya">
+  <div class="chip">End of cycle · Maya</div>
+  <div class="end-card">
+    <div class="end-title">You've been here before.</div>
+    <div class="end-sub">A new calendar invite just arrived from Rohit.<br>No agenda. Two days before the next promotion cycle.<br><br><em>Nothing has been resolved. The loop restarts with more weight.</em></div>
+    <div class="tok-sum"><div class="tok-pip"></div><span id="maya-tok">0 moments noticed</span></div>
+    <div class="receipt" id="maya-receipt"></div>
+    <button class="restart-btn" onclick="go('s-role')">Choose a different role →</button>
+  </div>
+  <div class="end-note">Rohit gave this feedback. He thinks he was being fair.<br>Priya sees the pattern. She doesn't know what to do with it.</div>
+</div>
+
+<div class="screen" id="end-rohit">
+  <div class="chip">End of cycle · Rohit</div>
+  <div class="end-card">
+    <div class="end-title">The system worked exactly as designed.</div>
+    <div class="end-sub">You used the approved language. You followed the process. The form closed. The case closed. The cycle closed.<br><br><em>Nobody told you that you caused harm. So you don't know.</em></div>
+    <div class="tok-sum"><div class="tok-pip"></div><span id="rohit-tok">0 moments noticed</span></div>
+    <div class="receipt" id="rohit-receipt"></div>
+    <button class="restart-btn" onclick="go('s-role')">Choose a different role →</button>
+  </div>
+  <div class="end-note">Maya received this feedback. She's still thinking about it.<br>Priya sees the pattern. She doesn't know what to do with it.</div>
+</div>
+
+<div class="screen" id="end-priya">
+  <div class="chip">End of cycle · Priya</div>
+  <div class="end-card">
+    <div class="end-title">You filed a report.<br>The number was wrong.</div>
+    <div class="end-sub">You typed 1. The real number is somewhere in a spreadsheet titled <em>DO_NOT_SEND.</em><br><br>Next cycle opens in three months. The pattern will still be there. The form still won't have a field for it.</div>
+    <div class="tok-sum"><div class="tok-pip"></div><span id="priya-tok">0 moments noticed</span></div>
+    <div class="receipt" id="priya-receipt"></div>
+    <button class="restart-btn" onclick="go('s-role')">Choose a different role →</button>
+  </div>
+  <div class="end-note">Maya received the feedback. Rohit wrote it.<br>The loop continues.</div>
+</div>
+
+</div><!-- shell -->
+
+<script>
+// ── STATE ──
+let tok = 0;
+const arcsComplete = { maya: false, rohit: false, priya: false };
+const undone = { maya: [], rohit: [], priya: [] };
+let currentArc = null;
+let meetingTimers = [];
+
+// token logic — only accumulates for sitting with discomfort
+const TOK = {
+  START_ARC: 2,
+  HARDER_CHOICE: 3,
+  NEUTRAL_CHOICE: 1,
+  MEETING_BUBBLE: 1,
+  LOOP_RETURN: 3,
+  READ_GUIDELINES: 4,
+  DECLINE_LOOP: 1,
+  PAUSE_SCREEN: 1,
+};
+
+// ── THEME ──
+function toggleTheme() {
+  const h = document.documentElement;
+  const b = document.getElementById('themeBtn');
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+  b.textContent = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+}
+
+// ── TOKENS ──
+function addTok(n) {
+  tok += n;
+  const w = document.getElementById('tokWrap');
+  const p = document.getElementById('tokPip');
+  const c = document.getElementById('tokCount');
+  w.classList.add('visible');
+  p.classList.remove('flash');
+  void p.offsetWidth;
+  p.classList.add('flash');
+  c.textContent = tok;
+}
+
+// ── SCREENS ──
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // trigger sequences
+  if (id === 'm2') startSequence('m2', m2seq, 'm2-next', TOK.LOOP_RETURN);
+  if (id === 'm4') startM4();
+  if (id === 'r3') startSequence('r3', r3seq, 'r3-next', 0);
+  if (id === 'r5') startSequence('r5', r5seq, 'r5-next', TOK.LOOP_RETURN);
+  if (id === 'p3') startP3();
+  if (id === 'm5') addTok(TOK.LOOP_RETURN);
+  if (id === 'r6') addTok(TOK.LOOP_RETURN);
+  if (id === 'p4') addTok(TOK.LOOP_RETURN);
+  if (id === 's-gap') checkGapConv();
+}
+
+function startArc(arc) {
+  currentArc = arc;
+  addTok(TOK.START_ARC);
+  if (arc === 'maya') go('m1');
+  if (arc === 'rohit') go('r1');
+  if (arc === 'priya') go('p1');
+}
+
+// ── CHOICE SYSTEM ──
+function pick(scene, letter, btn, isHarder) {
+  const choices = btn.closest('.choices');
+  if (choices.dataset.done) return;
+  choices.dataset.done = '1';
+  choices.querySelectorAll('.cbtn').forEach(b => { if (b !== btn) b.classList.add('locked'); });
+  btn.querySelector('.outcome').style.display = 'block';
+  addTok(isHarder ? TOK.HARDER_CHOICE : TOK.NEUTRAL_CHOICE);
+
+  // track undone for receipt
+  if (currentArc && isHarder === false) {
+    // find harder option label in same choices
+    const harderBtn = Array.from(choices.querySelectorAll('.cbtn')).find((b,i) => b !== btn);
+    // we just track that a harder option existed and wasn't taken
+  }
+
+  const nb = document.getElementById(scene + '-next');
+  if (nb) setTimeout(() => { nb.style.display = 'block'; }, 900);
+}
+
+// ── GUIDELINES MODAL ──
+let guideRead = false;
+function openModal() {
+  document.getElementById('guideModal').classList.add('open');
+  const scroll = document.getElementById('guideScroll');
+  const btn = document.getElementById('guideCloseBtn');
+  const prog = document.getElementById('readProgress');
+  scroll.onscroll = () => {
+    const pct = Math.round((scroll.scrollTop / (scroll.scrollHeight - scroll.clientHeight)) * 100);
+    prog.textContent = 'scroll to read · ' + Math.min(pct, 100) + '%';
+    if (pct >= 90 && !guideRead) {
+      guideRead = true;
+      btn.disabled = false;
+      btn.classList.add('unlocked');
+      prog.textContent = 'you have read the guidelines';
+      // unlock the "I read it" choice in R1
+      const readBtn = document.getElementById('r1-read-btn');
+      if (readBtn) readBtn.style.display = 'block';
+    }
+  };
+}
+function closeModal() { document.getElementById('guideModal').classList.remove('open'); }
+function closeModalRead() {
+  closeModal();
+  addTok(TOK.READ_GUIDELINES);
+}
+
+// ── MAYA DECLINE ──
+function declineMaya() {
+  addTok(TOK.DECLINE_LOOP);
+  const note = document.getElementById('m1-note');
+  note.style.display = 'block';
+  setTimeout(() => { note.style.display = 'none'; }, 2400);
+}
+
+// ── BUBBLE SEQUENCES ──
+const m2seq = [
+  { id: 'b', spk: 'Rohit', cls: '', text: '"So — I wanted to check in before the cycle opens. You\'ve had a strong quarter. <span class="hg">Fintrack shipped well.</span>"' },
+  { id: 'b', spk: 'Rohit', cls: '', text: '"There\'s just one thing I want you to think about. <em class="hy">How you come across in meetings.</em> Sometimes it can be — a lot. For the rest of the team."' },
+  { id: 'p', text: '— — —' },
+  { id: 'b', spk: 'You', cls: 'you', text: '"Can you give me an example?"' },
+  { id: 'b', spk: 'Rohit', cls: '', text: '"Nothing specific. Just — something to keep in mind going forward. <span class="hy">You\'re almost there, Maya. Just almost.</span>"' },
+  { id: 'p', text: 'The meeting ends at 3:18pm.<br><em>He had twelve minutes of other things to say.</em>' },
+];
+
+const r3seq = [
+  { id: 'b', spk: 'You', cls: 'you', text: '"So — I wanted to check in before the cycle opens. You\'ve had a strong quarter. Fintrack shipped well."' },
+  { id: 'b', spk: 'Maya', cls: '', text: '"Thanks. Is the lead role still on the table for this cycle?"' },
+  { id: 'b', spk: 'You', cls: 'you', text: '"Almost there. There\'s just one thing — <em class="hy">how you come across in meetings.</em> Sometimes it can be a lot. For the rest of the team."' },
+  { id: 'b', spk: 'Maya', cls: '', text: '"Can you give me an example?"' },
+  { id: 'p', text: 'You pause.<br><em>You think of the Fintrack standup. You\'re not certain what happened.</em>' },
+  { id: 'b', spk: 'You', cls: 'you', text: '"Nothing specific. Just — something to keep in mind."' },
+  { id: 'p', text: 'You walk back to your desk.<br><em>You feel like it went well. You were honest. You were kind.</em>' },
+];
+
+const r5seq = [
+  { id: 'b', spk: 'HR Rep', cls: '', text: '"Rohit — Arjun is on your list. Walk us through him."' },
+  { id: 'b', spk: 'You', cls: 'you', text: '"Strong technical instincts. <span class="hg">Good energy in meetings.</span> Drives things forward. Ready."' },
+  { id: 'b', spk: 'HR Rep', cls: '', text: '"And Maya — she\'s not on your list this cycle?"' },
+  { id: 'p', text: 'You pause.<br><em>The review language is right there.</em>' },
+  { id: 'b', spk: 'You', cls: 'you', text: '"Delivery is excellent. But she\'s still working on <em class="hy">stakeholder alignment</em> and <em class="hy">team dynamics.</em> Not quite ready."' },
+  { id: 'b', spk: 'Second Manager', cls: '', text: '"What does that look like specifically?"' },
+  { id: 'p', text: 'The same pause. The same absence of an example.<br><em>Nobody presses further. Arjun is approved.</em>' },
+];
+
+const p3minutes = [
+  { id: 'b', spk: 'Meeting minutes', cls: '', text: '"Arjun — strong technical instincts, good energy in meetings. Unanimous."' },
+  { id: 'b', spk: 'Meeting minutes', cls: '', text: '"Maya — delivery excellent, but stakeholder alignment and team dynamics need development. Not shortlisted."' },
+  { id: 'p', text: 'You open Maya\'s file.<br><em>You open your spreadsheet.</em><br>You have everything.<br><em>You can do nothing with it formally.</em>' },
+];
+
+function renderBubble(container, item, i) {
+  const div = document.createElement('div');
+  if (item.id === 'b') {
+    div.className = 'bwrap';
+    div.innerHTML = `<div class="spk">${item.spk}</div><div class="bubble ${item.cls}">${item.text}</div>`;
+  } else {
+    div.className = 'pline';
+    div.innerHTML = item.text;
+  }
+  div.style.transitionDelay = '0s';
+  container.appendChild(div);
+  return div;
+}
+
+function startSequence(screenId, seq, nextBtnId, loopTok) {
+  meetingTimers.forEach(t => clearTimeout(t));
+  meetingTimers = [];
+  const containers = {
+    'm2': 'm2-bubbles', 'r3': 'r3-bubbles',
+    'r5': 'r5-bubbles', 'p3': 'p3-bubbles'
+  };
+  const container = document.getElementById(containers[screenId]);
+  if (!container) return;
+  container.innerHTML = '';
+  const elements = seq.map((item, i) => renderBubble(container, item, i));
+  elements.forEach((el, i) => {
+    const t = setTimeout(() => {
+      el.classList.add('show');
+      addTok(TOK.MEETING_BUBBLE);
+      if (i === elements.length - 1) {
+        if (loopTok) addTok(loopTok);
+        const nb = document.getElementById(nextBtnId);
+        if (nb) nb.style.display = 'block';
+      }
+    }, i * 1500);
+    meetingTimers.push(t);
+  });
+}
+
+// m4 special — standup then choice
+function startM4() {
+  const m4seq = [
+    { id: 'b', spk: 'You', cls: 'you', text: 'You make your point about the Kiran project. The room moves on.' },
+    { id: 'b', spk: 'Siddharth', cls: '', text: '<em>"Actually — to build on what Maya said —"</em> He restates it. Almost word for word.' },
+    { id: 'b', spk: 'Rohit', cls: '', text: '"Good point, Siddharth. Let\'s take that into the next sprint."' },
+    { id: 'p', text: '<em>You did not say anything. The window closed before you decided.</em>' },
+  ];
+  const container = document.getElementById('m4-bubbles');
+  container.innerHTML = '';
+  const elements = m4seq.map(item => renderBubble(container, item, 0));
+  elements.forEach((el, i) => {
+    const t = setTimeout(() => {
+      el.classList.add('show');
+      addTok(TOK.MEETING_BUBBLE);
+      if (i === elements.length - 1) {
+        setTimeout(() => {
+          document.getElementById('m4-q').style.display = 'block';
+          document.getElementById('m4-choices').style.display = 'flex';
+        }, 600);
+      }
+    }, i * 1500);
+    meetingTimers.push(t);
+  });
+}
+
+// p3 special — minutes then choices
+function startP3() {
+  startSequence('p3', p3minutes, null, 0);
+  setTimeout(() => {
+    document.getElementById('p3-q').style.display = 'block';
+    document.getElementById('p3-choices').style.display = 'flex';
+  }, p3minutes.length * 1500 + 800);
+}
+
+// ── MAYA DRAFTS ──
+const drafts = [
+  { label: 'Draft 1', text: 'Hi Rohit, I wanted to follow up on the feedback about my communication style. I was wondering if you could share a specific example of when this was an issue? I want to make sure I understand what I should be working on.', action: 'delete' },
+  { label: 'Draft 2', text: 'Hi Rohit, thanks for the feedback. Could you help me understand the communication concern with a specific example? I ask because without one it\'s difficult for me to know what to change.', action: 'delete' },
+  { label: 'Draft 3', text: 'Hi Rohit — could you share an example of the communication issue? I\'d like to work on it concretely.', action: 'delete' },
+  { label: 'Draft 4 — sent', text: 'Hi Rohit, thanks for the feedback in our 1:1. Would you be able to share a specific example when you have a moment? No rush.', action: 'send' },
+];
+let draftIdx = 0;
+
+function renderDrafts() {
+  const container = document.getElementById('m3-drafts');
+  container.innerHTML = '';
+  const d = drafts[draftIdx];
+  const wrap = document.createElement('div');
+  wrap.className = 'draft-stage';
+  wrap.innerHTML = `
+    <div class="draft-label">${d.label}</div>
+    <div class="draft-box" id="current-draft">${d.text}</div>
+    <button class="draft-btn ${d.action === 'send' ? 'send' : ''}" onclick="${d.action === 'send' ? 'sendDraft()' : 'nextDraft()'}">${d.action === 'delete' ? 'delete and rewrite' : 'send'}</button>
+  `;
+  container.appendChild(wrap);
+}
+
+function nextDraft() {
+  addTok(1);
+  const box = document.getElementById('current-draft');
+  box.classList.add('deleted');
+  setTimeout(() => { draftIdx++; renderDrafts(); }, 600);
+}
+
+function sendDraft() {
+  addTok(TOK.HARDER_CHOICE);
+  const container = document.getElementById('m3-drafts');
+  container.innerHTML += `
+    <div class="bwrap show" style="margin-top:1rem">
+      <div class="spk">Rohit · Reply · next day</div>
+      <div class="bubble">"Nothing specific comes to mind right now — just something to be mindful of going forward. 😊"</div>
+    </div>
+    <div class="pline show" style="margin-top:12px"><em>The emoji. You look at it for a while.</em></div>
+  `;
+  setTimeout(() => {
+    document.getElementById('m3-next').style.display = 'block';
+  }, 800);
+}
+
+// ── WORD COUNT ──
+function countWords(el) {
+  const words = el.value.trim().split(/\s+/).filter(w => w).length;
+  const left = 200 - words;
+  document.getElementById('m5-charcount').textContent = left + ' words remaining';
+  document.getElementById('m5-charcount').style.color = left < 20 ? 'var(--red-text)' : 'var(--text3)';
+}
+
+// ── HR SUGGEST ──
+function useSuggest(el, text) {
+  document.getElementById('r2-comm-field').textContent = text;
+  el.style.opacity = '.4'; el.style.pointerEvents = 'none';
+  addTok(1);
+}
+
+// ── HR PICK ──
+function hrPick(btn, val) {
+  document.querySelectorAll('.hr-opt').forEach(b => { b.disabled = true; b.style.opacity = '.4'; });
+  btn.style.opacity = '1';
+  const resp = document.getElementById('r6-response');
+  const txt = document.getElementById('r6-response-text');
+  const msgs = {
+    yes: 'Thank you for your feedback. Your response has been recorded. The HR team is glad the resources were useful.',
+    somewhat: 'Thank you for your feedback. We will work to improve manager support resources. Your response has been recorded.',
+    no: 'Thank you for your feedback. An HR representative will follow up. Your response has been recorded.'
+  };
+  txt.textContent = msgs[val];
+  resp.style.display = 'block';
+  addTok(2);
+  setTimeout(() => { document.getElementById('r6-next').style.display = 'block'; }, 700);
+}
+
+// ── END ARC ──
+function endArc(arc) {
+  arcsComplete[arc] = true;
+
+  // mark card done
+  const card = document.getElementById('card-' + arc);
+  if (card) {
+    card.classList.add('done');
+    card.querySelector('.rc-sub').innerHTML += '<div class="rc-done">completed</div>';
+  }
+
+  // unlock Priya after Maya or Rohit
+  if (arcsComplete.maya || arcsComplete.rohit) {
+    const cp = document.getElementById('card-priya');
+    cp.classList.remove('dim');
+    cp.onclick = () => startArc('priya');
+  }
+
+  // unlock Gap after any arc
+  const cg = document.getElementById('card-gap');
+  cg.classList.remove('dim');
+  cg.querySelector('.rc-sub').textContent = 'You\'ve earned this room.';
+  cg.onclick = () => go('s-gap');
+
+  // build receipt
+  buildReceipt(arc);
+
+  // set token display
+  document.getElementById(arc + '-tok').textContent = tok + ' moments noticed';
+
+  go('end-' + arc);
+}
+
+function buildReceipt(arc) {
+  const el = document.getElementById(arc + '-receipt');
+  if (!el) return;
+  const items = {
+    maya: [
+      { cond: !guideRead, text: 'Did not read the guidelines before accepting the review' },
+      { cond: true, text: 'Received feedback with no specific example — and couldn\'t change that' },
+      { cond: true, text: 'The speak-up form had no field for what happened' },
+    ],
+    rohit: [
+      { cond: !guideRead, text: 'Did not read the guidelines before writing the review' },
+      { cond: true, text: 'Used HR language without a specific example to support it' },
+      { cond: true, text: 'The form confirmed the process was correct' },
+    ],
+    priya: [
+      { cond: true, text: 'Documented a pattern that has no formal home' },
+      { cond: true, text: 'Filed a diversity report with an incomplete number' },
+      { cond: true, text: 'The draft memo is still unsent' },
+    ]
+  };
+  const list = items[arc].filter(i => i.cond);
+  el.innerHTML = `<div class="receipt-title">Things that were left undone</div>` +
+    list.map(i => `<div class="receipt-item">${i.text}</div>`).join('');
+}
+
+// ── CONVERGENCE UNLOCK ──
+function checkGapConv() {
+  const allDone = arcsComplete.maya && arcsComplete.rohit && arcsComplete.priya;
+  const btn = document.getElementById('gap-conv-btn');
+  if (allDone && btn) btn.style.display = 'block';
+}
+
+// ── AI SCENE ──
+let aiGenerated = false;
+let cursorInterval = null;
+
+function generateAI() {
+  if (aiGenerated) return;
+  aiGenerated = true;
+  const btn = document.getElementById('ai-gen-btn');
+  btn.disabled = true;
+  btn.style.opacity = '.4';
+  btn.textContent = 'Generating...';
+
+  document.getElementById('ai-output-wrap').style.display = 'block';
+
+  // blinking cursor animation
+  const cursorEl = document.getElementById('ai-cursor-text');
+  const states = ['analysing patterns_', 'analysing patterns', 'matching role level_', 'matching role level', 'retrieving assessments_', 'retrieving assessments', 'generating output_'];
+  let si = 0;
+  cursorInterval = setInterval(() => {
+    cursorEl.textContent = states[si % states.length];
+    si++;
+  }, 420);
+
+  // show result after delay
+  setTimeout(() => {
+    clearInterval(cursorInterval);
+    document.getElementById('ai-loading').style.display = 'none';
+    const result = document.getElementById('ai-result');
+    result.style.display = 'block';
+    result.style.animation = 'rise .4s ease';
+    addTok(TOK.LOOP_RETURN); // AI output is a loop-return moment
+
+    setTimeout(() => {
+      document.getElementById('ai-compare-wrap').style.display = 'block';
+      document.getElementById('ai-choices-wrap').style.display = 'block';
+    }, 600);
+  }, 3200);
+}
+
+function toggleOriginal() {
+  const panel = document.getElementById('original-compare');
+  const btn = document.getElementById('compare-toggle-btn');
+  const visible = panel.style.display !== 'none';
+  panel.style.display = visible ? 'none' : 'block';
+  btn.textContent = visible ? 'show original input →' : 'hide original input ←';
+  if (!visible) addTok(TOK.HARDER_CHOICE); // looking at the comparison is the harder thing
+}
+
+// override pick for r2b to also show next button
+const _origPick = pick;
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  renderDrafts();
+  // pause screen token — if user lingers 3s on a pline we reward
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.target.classList.contains('pline')) {
+        setTimeout(() => {
+          if (document.contains(e.target) && e.target.classList.contains('show')) {
+            addTok(TOK.PAUSE_SCREEN);
+          }
+        }, 3000);
+      }
+    });
+  }, { threshold: 0.8 });
+  document.querySelectorAll('.pline').forEach(p => observer.observe(p));
+});
+</script>
+</body>
+</html>
