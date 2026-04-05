@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NameIT : Lexon</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..144,300;0,8..144,400;1,8..144,300;1,8..144,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:#0a0907;
+  color:#c8c2b8;
+  font-family:'Source Serif 4',Georgia,serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* TOPBAR */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;
+  background:#0a0907;
+  border-bottom:0.5px solid #1c1a16;
+  z-index:200;
+}
+.logo{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;letter-spacing:.16em;color:#6a6460;
+}
+.logo em{font-style:normal;color:#a09890}
+.tb-enter{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:#4a4640;background:none;
+  border:0.5px solid #2a2820;border-radius:5px;
+  padding:7px 16px;cursor:pointer;text-decoration:none;
+  transition:border-color .2s,color .2s;display:inline-block;
+}
+.tb-enter:hover{border-color:#6a6460;color:#a09890}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:90px 24px 80px;
+  text-align:center;
+}
+.hero-kicker{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.2em;text-transform:uppercase;color:#3a3830;
+  margin-bottom:2.2rem;
+  opacity:0;animation:up .7s ease .1s forwards;
+}
+.hero-name{
+  font-family:'Fraunces',serif;font-weight:200;
+  font-size:clamp(52px,10vw,96px);
+  line-height:.95;letter-spacing:-1px;
+  color:#e0dbd2;margin-bottom:.3rem;
+  opacity:0;animation:up .8s ease .3s forwards;
+}
+.hero-name em{font-style:italic;color:#4a4640}
+.hero-colon{
+  font-family:'IBM Plex Mono',monospace;font-size:14px;
+  letter-spacing:.2em;color:#3a3830;
+  margin-bottom:.4rem;
+  opacity:0;animation:up .7s ease .5s forwards;
+}
+.hero-lexon{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:clamp(18px,3vw,26px);color:#5a5450;
+  margin-bottom:3rem;
+  opacity:0;animation:up .7s ease .6s forwards;
+}
+.hero-line{
+  font-family:'Source Serif 4',serif;font-size:15px;
+  color:#6a6460;line-height:1.85;max-width:440px;
+  margin-bottom:2.8rem;
+  opacity:0;animation:up .7s ease .8s forwards;
+}
+.hero-line em{font-style:italic;color:#8a8480}
+.scroll-cue{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;color:#2c2a26;
+  opacity:0;animation:up .6s ease 1.2s forwards;
+}
+.scroll-cue span{display:block;font-size:16px;margin-top:6px;animation:bob 2s ease-in-out infinite}
+
+/* DIVIDER */
+.div{height:0.5px;background:#161412;max-width:600px;margin:0 auto}
+
+/* SECTION WRAPPER */
+.wrap{max-width:600px;margin:0 auto;padding:80px 24px}
+.wrap.tight{padding-top:60px;padding-bottom:60px}
+
+/* LABELS */
+.lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.18em;text-transform:uppercase;color:#3a3830;
+  margin-bottom:2rem;
+}
+
+/* WHAT THIS IS */
+.what-title{
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:clamp(24px,4vw,34px);color:#c0bab0;
+  line-height:1.2;letter-spacing:-.2px;margin-bottom:1.4rem;
+}
+.what-body{
+  font-family:'Source Serif 4',serif;font-size:15px;
+  color:#7a7470;line-height:1.9;
+}
+.what-body em{font-style:italic;color:#9a9490}
+.what-body strong{font-weight:400;color:#b0aaa0}
+
+/* HOW IT WORKS STEPS */
+.steps{display:flex;flex-direction:column;gap:0;margin-top:2rem}
+.step{
+  display:flex;align-items:flex-start;gap:20px;
+  padding:20px 0;border-top:0.5px solid #161412;
+}
+.step:last-child{border-bottom:0.5px solid #161412}
+.step-num{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  color:#2c2a26;width:24px;flex-shrink:0;padding-top:2px;
+}
+.step-text{
+  font-family:'Source Serif 4',serif;font-size:14px;
+  color:#7a7470;line-height:1.75;
+}
+.step-text strong{font-weight:400;color:#b0aaa0}
+
+/* CHARACTERS */
+.char-block{
+  padding:52px 0;border-top:0.5px solid #161412;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .9s ease,transform .9s ease;
+}
+.char-block.vis{opacity:1;transform:translateY(0)}
+.char-top{display:flex;align-items:flex-start;gap:24px;margin-bottom:2rem}
+
+/* SVG AVATAR */
+.avatar-wrap{flex-shrink:0;width:72px;height:72px}
+
+.char-info{}
+.char-name{
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:22px;color:#d0cac0;letter-spacing:-.2px;margin-bottom:4px;
+}
+.char-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;color:#3a3830;
+  margin-bottom:10px;
+}
+.char-trait{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.06em;color:#4a4840;
+  background:#141210;border:0.5px solid #1e1c18;
+  border-radius:4px;padding:3px 9px;margin:2px 3px 2px 0;
+}
+
+.char-lines{margin-top:1.6rem}
+.char-line{
+  font-family:'Source Serif 4',serif;font-size:15px;
+  color:#3a3830;line-height:1.8;
+  padding:12px 0;border-bottom:0.5px solid #121008;
+  opacity:0;transform:translateX(-6px);
+  transition:opacity .55s ease,transform .55s ease,color .5s ease;
+}
+.char-line:last-child{border-bottom:none}
+.char-line.lin{opacity:1;transform:translateX(0);color:#8a8480}
+.char-line em{font-style:italic}
+.char-footnote{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  color:#2a2820;letter-spacing:.06em;margin-top:1.2rem;
+}
+
+/* ENTER CARD — after characters */
+.enter-card{
+  background:#0e0c0a;border:0.5px solid #201e1a;
+  border-radius:16px;padding:40px 32px;text-align:center;
+  margin:60px 0 0;
+}
+.enter-card-title{
+  font-family:'Fraunces',serif;font-weight:200;font-style:italic;
+  font-size:clamp(26px,5vw,40px);color:#4a4840;
+  line-height:1.2;margin-bottom:.6rem;letter-spacing:-.2px;
+}
+.enter-card-title em{font-style:normal;color:#6a6460}
+.enter-card-sub{
+  font-family:'Source Serif 4',serif;font-size:14px;
+  color:#4a4640;line-height:1.8;margin-bottom:2rem;font-style:italic;
+}
+.enter-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:#c8c2b8;background:none;
+  border:0.5px solid #3a3830;border-radius:8px;
+  padding:15px 44px;cursor:pointer;text-decoration:none;
+  display:inline-block;
+  transition:border-color .25s,color .25s,background .25s;
+}
+.enter-btn:hover{border-color:#c8c2b8;background:#c8c2b8;color:#0a0907}
+.enter-meta{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  color:#2a2820;letter-spacing:.06em;margin-top:1.2rem;
+}
+
+/* SETTING CARD */
+.setting-card{
+  background:#0e0c0a;border:0.5px solid #1c1a16;
+  border-radius:12px;padding:28px;
+}
+.setting-title{
+  font-family:'Fraunces',serif;font-weight:300;font-size:18px;
+  color:#7a7470;margin-bottom:1.2rem;
+}
+.srow{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 0;border-bottom:0.5px solid #141210;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+}
+.srow:last-child{border-bottom:none}
+.srow-k{color:#3a3830;letter-spacing:.06em}
+.srow-v{color:#6a6460}
+
+/* GAP SECTION */
+.gap-intro{
+  font-family:'Source Serif 4',serif;font-size:15px;
+  color:#7a7470;line-height:1.9;margin-bottom:2rem;
+}
+.gap-intro em{font-style:italic;color:#9a9490}
+
+.gap-card{
+  background:#0e0c0a;border:0.5px solid #1c1a16;
+  border-radius:10px;margin-bottom:10px;
+  text-decoration:none;display:block;
+  transition:border-color .2s;
+}
+.gap-card:hover{border-color:#3a3830}
+.gap-card-inner{display:flex;align-items:center;gap:16px;padding:18px 20px}
+.gap-icon{
+  width:36px;height:36px;border-radius:8px;
+  background:#141210;border:0.5px solid #201e1a;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:16px;
+}
+.gap-card-info{}
+.gap-card-label{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;color:#3a3830;
+  margin-bottom:3px;
+}
+.gap-card-title{
+  font-family:'Source Serif 4',serif;font-size:14px;color:#8a8480;
+  line-height:1.4;
+}
+.gap-card-arrow{margin-left:auto;color:#2a2820;font-size:14px;flex-shrink:0}
+
+/* VIGNETTES */
+.vignette{
+  background:#0e0c0a;border:0.5px solid #1c1a16;
+  border-radius:10px;padding:20px;margin-bottom:10px;
+}
+.vig-src{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;color:#3a3830;
+  margin-bottom:10px;
+}
+.vig-text{
+  font-family:'Source Serif 4',serif;font-size:14px;
+  color:#7a7470;line-height:1.8;font-style:italic;
+}
+
+/* GAP NOTE */
+.gap-note{
+  background:#141008;border:0.5px solid #2a2010;
+  border-radius:8px;padding:16px 18px;margin:20px 0;
+  font-family:'Source Serif 4',serif;font-size:14px;
+  color:#9a8c60;line-height:1.75;
+}
+.gap-note strong{font-weight:400;color:#b0a070}
+
+/* ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">NAME<em>IT</em> : LEXON</div>
+  <a class="tb-enter" href="nameit_full.html">enter simulation →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">Bengaluru · IT Services · 2024</div>
+  <div class="hero-name">Name<em>IT</em></div>
+  <div class="hero-colon">:</div>
+  <div class="hero-lexon">Lexon</div>
+  <div class="hero-line">
+    A workplace simulation.<br>
+    Three roles. One promotion cycle.<br>
+    <em>The same building. The same week. Three different rooms.</em>
+  </div>
+  <div class="scroll-cue">
+    scroll to meet the people
+    <span>↓</span>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- WHAT THIS IS -->
+<div class="wrap">
+  <div class="lbl">What this is</div>
+  <div class="what-title">A promotion cycle at a mid-size IT firm.<br>Three people. No villains.</div>
+  <div class="what-body">
+    The feedback was given. The process was followed. The language was appropriate.<br><br>
+    <em>Nothing was resolved.</em><br><br>
+    You choose who you are in this room — Maya who received the feedback, Rohit who wrote it, or Priya who sees the pattern and has no formal mechanism to act on it. You play through what they actually face. Not a quiz. Not a training module. <strong>A situation you have to sit inside.</strong>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-text"><strong>Choose a role.</strong> Maya, Rohit, or Priya. Each arc takes about 20 minutes and runs independently.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-text"><strong>Make decisions.</strong> Some choices feel right. Some feel like the only option. Some are neither.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-text"><strong>Complete arcs to unlock more.</strong> Priya's arc unlocks after Maya or Rohit. The Gap unlocks after any arc.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-text"><strong>The loop returns.</strong> The cycle closes. A new calendar invite arrives. Nothing has changed.</div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- CHARACTERS -->
+<div class="wrap tight">
+  <div class="lbl">The people</div>
+
+  <!-- MAYA -->
+  <div class="char-block" id="cb0">
+    <div class="char-top">
+      <div class="avatar-wrap">
+        <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="36" cy="36" r="35.5" fill="#0d1018" stroke="#1e2430"/>
+          <!-- body -->
+          <ellipse cx="36" cy="58" rx="16" ry="10" fill="#1a2035"/>
+          <!-- neck -->
+          <rect x="32" y="44" width="8" height="8" rx="2" fill="#c8a882"/>
+          <!-- head -->
+          <ellipse cx="36" cy="36" rx="14" ry="15" fill="#c8a882"/>
+          <!-- hair — short, pulled back, determined -->
+          <path d="M22 30 Q22 18 36 17 Q50 18 50 30 L50 26 Q48 14 36 13 Q24 14 22 26Z" fill="#2a1f10"/>
+          <ellipse cx="36" cy="17" rx="14" ry="5" fill="#2a1f10"/>
+          <!-- eyes — direct, steady -->
+          <ellipse cx="30" cy="34" rx="2.5" ry="2.5" fill="#1a1410"/>
+          <ellipse cx="42" cy="34" rx="2.5" ry="2.5" fill="#1a1410"/>
+          <circle cx="30.8" cy="33.2" r=".8" fill="#fff"/>
+          <circle cx="42.8" cy="33.2" r=".8" fill="#fff"/>
+          <!-- brows — slightly set, focused -->
+          <path d="M27 30.5 Q30 29.5 33 30.5" stroke="#2a1f10" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M39 30.5 Q42 29.5 45 30.5" stroke="#2a1f10" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- mouth — neutral, composed -->
+          <path d="M32 41 Q36 42.5 40 41" stroke="#a07858" stroke-width="1" stroke-linecap="round" fill="none"/>
+          <!-- jacket collar — professional -->
+          <path d="M20 58 L28 48 L36 52 L44 48 L52 58" fill="#1e2a40" stroke="#2a3850" stroke-width=".5"/>
+        </svg>
+      </div>
+      <div class="char-info">
+        <div class="char-name">Maya</div>
+        <div class="char-tag">Associate · Lexon · 28</div>
+        <span class="char-trait">direct</span>
+        <span class="char-trait">introverted</span>
+        <span class="char-trait">ambitious</span>
+      </div>
+    </div>
+    <div class="char-lines" id="ml0">
+      <div class="char-line">She delivers. Consistently. Better than most people at her level.</div>
+      <div class="char-line">She is direct. She does not soften things she does not believe need softening.</div>
+      <div class="char-line">She is ambitious and does not pretend otherwise. She keeps to herself — not unfriendly, just not performing warmth she does not feel.</div>
+      <div class="char-line">She is in a promotion cycle. She has exceeded every delivery target this quarter.</div>
+      <div class="char-line">In a man, these traits have a different name.</div>
+    </div>
+    <div class="char-footnote">The promotion cycle opens Thursday. She has a 1:1 with Rohit scheduled.</div>
+  </div>
+
+  <!-- ROHIT -->
+  <div class="char-block" id="cb1">
+    <div class="char-top">
+      <div class="avatar-wrap">
+        <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="36" cy="36" r="35.5" fill="#100e08" stroke="#241e14"/>
+          <!-- body -->
+          <ellipse cx="36" cy="58" rx="17" ry="10" fill="#1e1a10"/>
+          <!-- neck -->
+          <rect x="32" y="44" width="8" height="8" rx="2" fill="#c09070"/>
+          <!-- head -->
+          <ellipse cx="36" cy="35" rx="15" ry="16" fill="#c09070"/>
+          <!-- hair — slightly thinning, casual -->
+          <path d="M21 28 Q21 17 36 16 Q51 17 51 28 L50 22 Q48 13 36 12 Q24 13 22 22Z" fill="#1a1208"/>
+          <path d="M21 28 Q21 22 36 20 Q51 22 51 28" fill="#1a1208"/>
+          <!-- eyes — relaxed, not really paying attention -->
+          <ellipse cx="30" cy="34" rx="2.5" ry="2" fill="#1a1008"/>
+          <ellipse cx="42" cy="34" rx="2.5" ry="2" fill="#1a1008"/>
+          <circle cx="30.6" cy="33.4" r=".7" fill="#fff"/>
+          <circle cx="42.6" cy="33.4" r=".7" fill="#fff"/>
+          <!-- brows — relaxed, slightly raised -->
+          <path d="M27.5 30 Q30.5 29 33 30" stroke="#1a1208" stroke-width="1" stroke-linecap="round"/>
+          <path d="M39 30 Q41.5 29 44.5 30" stroke="#1a1208" stroke-width="1" stroke-linecap="round"/>
+          <!-- slight smile — at ease -->
+          <path d="M31 41 Q36 43.5 41 41" stroke="#906850" stroke-width="1" stroke-linecap="round" fill="none"/>
+          <!-- casual collar — open button -->
+          <path d="M19 58 L27 47 L33 51 L36 48 L39 51 L45 47 L53 58" fill="#1c1808" stroke="#2a2410" stroke-width=".5"/>
+        </svg>
+      </div>
+      <div class="char-info">
+        <div class="char-name">Rohit</div>
+        <div class="char-tag">Manager · Lexon · 39</div>
+        <span class="char-trait">laid back</span>
+        <span class="char-trait">well-intentioned</span>
+        <span class="char-trait">unexamined</span>
+      </div>
+    </div>
+    <div class="char-lines" id="ml1">
+      <div class="char-line">He is not cruel. He does not think of himself as someone who causes harm.</div>
+      <div class="char-line">He is laid back. He runs his team loosely. He values people he describes as <em>easy to work with.</em></div>
+      <div class="char-line">He has opinions about how women carry themselves in meetings. He has never examined them.</div>
+      <div class="char-line">He will give Maya feedback on Thursday. He will not have a single specific example to support it.</div>
+      <div class="char-line">He will walk back to his desk feeling like he handled it well.</div>
+    </div>
+    <div class="char-footnote">Four reviews to write. Deadline Friday 5pm. He has a standup in ten minutes.</div>
+  </div>
+
+  <!-- PRIYA -->
+  <div class="char-block" id="cb2">
+    <div class="char-top">
+      <div class="avatar-wrap">
+        <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="36" cy="36" r="35.5" fill="#0d100d" stroke="#1a201a"/>
+          <!-- body -->
+          <ellipse cx="36" cy="58" rx="16" ry="10" fill="#1a2018"/>
+          <!-- neck -->
+          <rect x="32" y="44" width="8" height="8" rx="2" fill="#b89070"/>
+          <!-- head -->
+          <ellipse cx="36" cy="35" rx="14" ry="15" fill="#b89070"/>
+          <!-- hair — greying, pulled back, experienced -->
+          <path d="M22 30 Q22 17 36 16 Q50 17 50 30 L50 24 Q48 13 36 12 Q24 13 22 24Z" fill="#4a4038"/>
+          <path d="M22 28 Q24 20 36 19 Q48 20 50 28" fill="#4a4038"/>
+          <!-- grey streaks -->
+          <path d="M24 22 Q28 18 32 19" stroke="#8a8078" stroke-width="1.2" fill="none"/>
+          <path d="M48 22 Q44 18 40 19" stroke="#8a8078" stroke-width="1.2" fill="none"/>
+          <!-- eyes — knowing, tired, watchful -->
+          <ellipse cx="30" cy="34" rx="2.5" ry="2.2" fill="#1a1008"/>
+          <ellipse cx="42" cy="34" rx="2.5" ry="2.2" fill="#1a1008"/>
+          <circle cx="30.6" cy="33.3" r=".7" fill="#fff"/>
+          <circle cx="42.6" cy="33.3" r=".7" fill="#fff"/>
+          <!-- slight lines under eyes — tiredness, experience -->
+          <path d="M27.5 36.5 Q30 37 32.5 36.5" stroke="#906850" stroke-width=".5" fill="none"/>
+          <path d="M39.5 36.5 Q42 37 44.5 36.5" stroke="#906850" stroke-width=".5" fill="none"/>
+          <!-- brows — slightly furrowed -->
+          <path d="M27 30 Q30 28.8 33 30" stroke="#4a4038" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M39 30 Q42 28.8 45 30" stroke="#4a4038" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- mouth — flat, resigned -->
+          <path d="M32 41.5 Q36 41.5 40 41.5" stroke="#806048" stroke-width="1" stroke-linecap="round" fill="none"/>
+          <!-- formal dupatta / collar -->
+          <path d="M20 58 L27 48 L36 53 L45 48 L52 58" fill="#1e2820" stroke="#283828" stroke-width=".5"/>
+        </svg>
+      </div>
+      <div class="char-info">
+        <div class="char-name">Priya Menon</div>
+        <div class="char-tag">HR Business Partner · Lexon · 45</div>
+        <span class="char-trait">perceptive</span>
+        <span class="char-trait">constrained</span>
+        <span class="char-trait">exhausted</span>
+      </div>
+    </div>
+    <div class="char-lines" id="ml2">
+      <div class="char-line">She has been doing this for six years. She sees the pattern before the cycle ends.</div>
+      <div class="char-line"><em>"Communication style"</em> — the phrase appears in nine reviews this cycle. Eight of nine are women's reviews.</div>
+      <div class="char-line">She opens the ICC form. It asks for a date, a name, an incident. It has no field for a pattern.</div>
+      <div class="char-line">She has a spreadsheet. It is titled <em>DO_NOT_SEND.</em> It is currently on version three.</div>
+      <div class="char-line">She knows. She sighs. She files the report with the number the form allows her to enter.</div>
+    </div>
+    <div class="char-footnote">The annual diversity report is due Friday. The ICC last met in March 2023.</div>
+  </div>
+
+  <!-- ENTER CARD -->
+  <div class="enter-card" id="enter-cta">
+    <div class="enter-card-title">Who are you<br><em>in this room?</em></div>
+    <div class="enter-card-sub">Three arcs. The same week. Nothing will be resolved.<br>Choose carefully — or don't. Either way, the loop returns.</div>
+    <a class="enter-btn" href="nameit_full.html">enter the simulation →</a>
+    <div class="enter-meta">no login · no data collected · ~20 min per arc</div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- SETTING -->
+<div class="wrap tight">
+  <div class="lbl">The organisation</div>
+  <div class="setting-card">
+    <div class="setting-title">Lexon · Bengaluru</div>
+    <div class="srow"><span class="srow-k">Sector</span><span class="srow-v">IT services, mid-size</span></div>
+    <div class="srow"><span class="srow-k">Team size</span><span class="srow-v">14 people, 3 women</span></div>
+    <div class="srow"><span class="srow-k">Review cycle</span><span class="srow-v">Mid-year Q2 2024</span></div>
+    <div class="srow"><span class="srow-k">ICC last convened</span><span class="srow-v">March 2023</span></div>
+    <div class="srow"><span class="srow-k">Diversity report FY 23–24</span><span class="srow-v">Not filed</span></div>
+    <div class="srow"><span class="srow-k">Unlockable arcs</span><span class="srow-v">4 — one requires completing the others</span></div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- THE GAP — RESOURCES -->
+<div class="wrap">
+  <div class="lbl">The gap</div>
+  <div class="what-title" style="font-size:clamp(22px,3.5vw,30px)">Where the law runs out</div>
+  <div class="gap-intro">
+    The feedback was polite. The process was followed. The language was appropriate.
+    And yet something happened — to how much space she takes up, to how she writes an email, to whether she speaks first in a meeting anymore.<br><br>
+    <em>Soft coercion doesn't break rules. That's what makes it hard to name.</em><br><br>
+    These are the actual documents that govern what Priya can and cannot do.
+  </div>
+
+  <div class="gap-note">
+    <strong>What none of these cover:</strong> a pattern of vague, personality-based feedback given consistently to women. A promotion decision made using language that has no documented basis. The feeling of being managed out through accumulating impressions that no single policy violation can name.
+  </div>
+
+  <a class="gap-card" href="https://financialservices.gov.in/beta/sites/default/files/2024-08/HANDBOOK-POSH.pdf" target="_blank" rel="noopener">
+    <div class="gap-card-inner">
+      <div class="gap-icon">📄</div>
+      <div class="gap-card-info">
+        <div class="gap-card-label">Official handbook · Ministry of Finance</div>
+        <div class="gap-card-title">POSH Act 2013 — Handbook for Employers & ICC</div>
+      </div>
+      <div class="gap-card-arrow">↗</div>
+    </div>
+  </a>
+
+  <a class="gap-card" href="https://cag.gov.in/uploads/cms_pages_files/Vishkha-Guidelines-against-Sexual-Harassment-in-Workplace-061de8308de91c7-65164897.pdf" target="_blank" rel="noopener">
+    <div class="gap-card-inner">
+      <div class="gap-icon">⚖️</div>
+      <div class="gap-card-info">
+        <div class="gap-card-label">Supreme Court · 1997</div>
+        <div class="gap-card-title">Vishaka Guidelines — the founding document before POSH</div>
+      </div>
+      <div class="gap-card-arrow">↗</div>
+    </div>
+  </a>
+
+  <a class="gap-card" href="https://www.iloencyclopaedia.org/part-v-psychosocial-and-organizational-factors/workplace-violence/item/528-gender-discrimination" target="_blank" rel="noopener">
+    <div class="gap-card-inner">
+      <div class="gap-icon">🌐</div>
+      <div class="gap-card-info">
+        <div class="gap-card-label">ILO</div>
+        <div class="gap-card-title">Gender Discrimination at Work — international framework</div>
+      </div>
+      <div class="gap-card-arrow">↗</div>
+    </div>
+  </a>
+
+  <a class="gap-card" href="https://feminisminindia.com/2025/06/04/what-workplace-equity-misses-about-benevolent-sexism/" target="_blank" rel="noopener">
+    <div class="gap-card-inner">
+      <div class="gap-icon">✍️</div>
+      <div class="gap-card-info">
+        <div class="gap-card-label">Feminism in India</div>
+        <div class="gap-card-title">What Workplace Equity Misses About Benevolent Sexism</div>
+      </div>
+      <div class="gap-card-arrow">↗</div>
+    </div>
+  </a>
+
+  <!-- REAL ACCOUNTS -->
+  <div style="margin-top:3rem">
+    <div class="lbl">Real accounts</div>
+    <div class="gap-intro" style="margin-bottom:1.5rem">
+      Composite posts drawn from r/womenintech, r/TwoXChromosomes, r/AskIndianWomen, r/womenEngineers. Names and details changed. The language is theirs.
+    </div>
+
+    <div class="vignette">
+      <div class="vig-src">r/womenintech · composite</div>
+      <div class="vig-text">"My manager told me I need to work on how I 'carry myself' in client meetings. I asked him what that means. He said just observe how Rahul does it. I have been here two years longer than Rahul."</div>
+    </div>
+    <div class="vignette">
+      <div class="vig-src">r/TwoXChromosomes · career thread · composite</div>
+      <div class="vig-text">"Got my appraisal. Exceeded all targets. Feedback: 'needs to be more collaborative.' My male colleague who works alone on everything got 'demonstrates strong independent thinking.' Same band. He got promoted."</div>
+    </div>
+    <div class="vignette">
+      <div class="vig-src">r/AskIndianWomen · composite</div>
+      <div class="vig-text">"HR told me my complaint doesn't fall under POSH because it wasn't sexual harassment. I know that. That's not what I said. I said it was unfair. They said that's a manager relationship issue not an HR issue. So whose issue is it."</div>
+    </div>
+    <div class="vignette">
+      <div class="vig-src">r/womenEngineers · composite</div>
+      <div class="vig-text">"Three years in the same role. Every review cycle: strong delivery, great technical output, something vague about communication. I asked for the promotion. Was told I wasn't 'quite ready.' The guy who joined after me is now my senior."</div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- FINAL ENTER -->
+<div class="wrap tight" style="text-align:center;padding-bottom:100px">
+  <div class="enter-card-title" style="font-family:'Fraunces',serif;font-weight:200;font-style:italic;font-size:clamp(28px,5vw,44px);color:#4a4840;line-height:1.2;margin-bottom:.6rem;letter-spacing:-.2px">
+    The loop starts<br><em style="font-style:normal;color:#6a6460">on Thursday.</em>
+  </div>
+  <div style="font-family:'Source Serif 4',serif;font-size:14px;color:#4a4640;line-height:1.8;margin-bottom:2rem;font-style:italic">
+    Three arcs. One promotion cycle.<br>Nobody lied. Nothing was resolved.
+  </div>
+  <a class="enter-btn" href="nameit_full.html">choose a role →</a>
+  <div class="enter-meta" style="margin-top:1.2rem">no login · no data collected · ~20 min per arc</div>
+</div>
+
+<script>
+// Character block observer — reveal on scroll
+const blockObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const block = entry.target;
+    block.classList.add('vis');
+    const idx = block.id.replace('cb','');
+    const lines = document.querySelectorAll('#ml'+idx+' .char-line');
+    lines.forEach((line, i) => {
+      setTimeout(() => {
+        line.classList.add('lin');
+      }, 200 + i * 200);
+    });
+    blockObs.unobserve(block);
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.char-block').forEach(b => blockObs.observe(b));
+
+// Enter CTA observer
+const ctaObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      ctaObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+const cta = document.getElementById('enter-cta');
+if (cta) {
+  cta.style.opacity = '0';
+  cta.style.transform = 'translateY(20px)';
+  cta.style.transition = 'opacity .9s ease, transform .9s ease';
+  ctaObs.observe(cta);
+}
+</script>
+</body>
+</html>
