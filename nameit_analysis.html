@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NameIT : Lexon — Behind the Simulation</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..144,300;0,8..144,400;1,8..144,300;1,8..144,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0ebe2; --bg2: #e6e0d6; --surface: #f8f4ee; --surface2: #efe9e0;
+  --border: #c8c0b4; --border2: #a8a098;
+  --text: #1c1a16; --text2: #4a4640; --text3: #88827a; --text4: #b8b0a6;
+  --yellow: #966000; --yellow-bg: #f0e4c8; --yellow-text: #744a00;
+  --red: #a82818; --red-bg: #f0e0dc; --red-text: #8a1e10;
+  --blue: #164e72; --blue-bg: #d8eaf4; --blue-text: #103c58;
+  --green: #1a5e38; --green-bg: #d8eee4; --green-text: #124428;
+  --coral: #a83820; --coral-bg: #f0ddd8; --coral-text: #842c18;
+  --accent: #5a4a8a;
+}
+[data-theme="dark"] {
+  --bg: #100f0d; --bg2: #171612; --surface: #1c1a16; --surface2: #221f1a;
+  --border: #2c2820; --border2: #3a3528;
+  --text: #e4ddd4; --text2: #9a9288; --text3: #585048; --text4: #38322a;
+  --yellow: #c89028; --yellow-bg: #201808; --yellow-text: #c89028;
+  --red: #d85040; --red-bg: #281410; --red-text: #e87060;
+  --blue: #4888b8; --blue-bg: #0c1820; --blue-text: #68a8d8;
+  --green: #40a068; --green-bg: #0c1e14; --green-text: #60b880;
+  --coral: #c86848; --coral-bg: #201008; --coral-text: #d88868;
+  --accent: #8878c8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  transition:background .3s,color .3s;
+}
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;background:var(--bg);border-bottom:0.5px solid var(--border);
+  z-index:100;transition:background .3s,border-color .3s;
+}
+.logo{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--text3)}
+.logo em{font-style:normal;color:var(--text2)}
+.tb-right{display:flex;gap:10px}
+.tb-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--text3);background:none;
+  border:0.5px solid var(--border);border-radius:5px;padding:6px 13px;
+  cursor:pointer;text-decoration:none;display:inline-block;
+  transition:border-color .2s,color .2s;
+}
+.tb-btn:hover{border-color:var(--border2);color:var(--text2)}
+
+/* layout */
+.wrap{max-width:680px;margin:0 auto;padding:80px 24px 0}
+.wrap.tight{padding-top:60px}
+.section{padding-bottom:72px}
+.div{height:0.5px;background:var(--border);max-width:680px;margin:0 auto}
+
+/* typography */
+.lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:1.6rem}
+.h1{font-family:'Fraunces',serif;font-weight:200;font-size:clamp(36px,6vw,60px);line-height:1.05;letter-spacing:-.5px;color:var(--text);margin-bottom:.6rem}
+.h1 em{font-style:italic;color:var(--text3)}
+.h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(20px,3.5vw,28px);color:var(--text);line-height:1.2;letter-spacing:-.2px;margin-bottom:1rem}
+.body{font-family:'Source Serif 4',serif;font-size:15px;color:var(--text2);line-height:1.9}
+.body em{font-style:italic;color:var(--text)}
+.body strong{font-weight:400;color:var(--text)}
+.sub{font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:18px;color:var(--text3);margin-bottom:2.4rem}
+
+/* disclaimer banner */
+.disclaimer{
+  background:var(--yellow-bg);border:0.5px solid var(--yellow);
+  border-radius:12px;padding:22px 24px;margin-bottom:2rem;
+}
+.disclaimer-head{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow-text);margin-bottom:10px}
+.disclaimer-body{font-family:'Source Serif 4',serif;font-size:14px;color:var(--yellow-text);line-height:1.8}
+
+/* stat grid */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:2rem 0}
+.stat-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:20px 18px;text-align:center}
+.stat-num{font-family:'Fraunces',serif;font-weight:300;font-size:36px;color:var(--text);line-height:1;margin-bottom:6px}
+.stat-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);line-height:1.4}
+
+/* pattern tags */
+.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:1.4rem 0}
+.tag{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;
+  padding:6px 14px;border-radius:20px;border:0.5px solid;
+  transition:opacity .2s;
+}
+.tag.red{background:var(--red-bg);color:var(--red-text);border-color:var(--red)}
+.tag.yellow{background:var(--yellow-bg);color:var(--yellow-text);border-color:var(--yellow)}
+.tag.blue{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue)}
+.tag.green{background:var(--green-bg);color:var(--green-text);border-color:var(--green)}
+.tag.coral{background:var(--coral-bg);color:var(--coral-text);border-color:var(--coral)}
+
+/* post cards */
+.post-cluster{margin-bottom:2.4rem}
+.cluster-head{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;
+  background:var(--surface);border:0.5px solid var(--border);
+  border-radius:12px 12px 0 0;cursor:pointer;
+  transition:background .15s;
+}
+.cluster-head:hover{background:var(--surface2)}
+.cluster-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.cluster-title{font-family:'Source Serif 4',serif;font-size:14px;color:var(--text2);flex:1;font-style:italic;line-height:1.4}
+.cluster-toggle{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text4);flex-shrink:0;transition:transform .3s}
+.cluster-body{
+  background:var(--bg2);border:0.5px solid var(--border);border-top:none;
+  border-radius:0 0 12px 12px;
+  max-height:0;overflow:hidden;transition:max-height .5s ease;
+}
+.cluster-body.open{max-height:2000px}
+.cluster-inner{padding:20px}
+
+.post-text{
+  font-family:'Source Serif 4',serif;font-size:14px;color:var(--text2);
+  line-height:1.8;font-style:italic;
+  padding:14px 16px;
+  background:var(--surface);border:0.5px solid var(--border);
+  border-radius:8px;margin-bottom:12px;
+}
+.post-text em{font-style:normal;font-weight:400;color:var(--text)}
+.comment-block{margin-bottom:10px}
+.comment-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.comment-text{
+  font-family:'Source Serif 4',serif;font-size:13px;color:var(--text2);
+  line-height:1.75;padding:12px 14px;
+  background:var(--surface);border:0.5px solid var(--border);
+  border-radius:8px;border-left:2px solid var(--border2);
+}
+.pattern-note{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;
+  color:var(--yellow-text);background:var(--yellow-bg);
+  border:0.5px solid var(--yellow);border-radius:6px;
+  padding:8px 12px;margin-top:12px;line-height:1.6;
+}
+
+/* the connection section */
+.connection-row{
+  display:flex;align-items:flex-start;gap:16px;
+  padding:18px 0;border-top:0.5px solid var(--border);
+}
+.connection-row:last-child{border-bottom:0.5px solid var(--border)}
+.conn-source{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--text3);width:120px;flex-shrink:0;
+  padding-top:2px;line-height:1.5;
+}
+.conn-real{font-family:'Source Serif 4',serif;font-size:14px;color:var(--text2);line-height:1.7;flex:1;font-style:italic}
+.conn-arrow{color:var(--text4);flex-shrink:0;padding-top:2px}
+.conn-game{font-family:'Source Serif 4',serif;font-size:14px;color:var(--text);line-height:1.7;flex:1}
+
+/* ending note */
+.end-note{
+  background:var(--surface);border:0.5px solid var(--border);
+  border-radius:14px;padding:32px 28px;margin-bottom:80px;text-align:center;
+}
+.end-note-title{font-family:'Fraunces',serif;font-weight:300;font-size:22px;color:var(--text);line-height:1.3;margin-bottom:1rem;letter-spacing:-.2px}
+.end-note-body{font-family:'Source Serif 4',serif;font-size:14px;color:var(--text2);line-height:1.85;font-style:italic}
+
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">NAME<em>IT</em> : LEXON — <em style="color:var(--text3);font-style:italic;font-family:'Source Serif 4',serif;font-size:12px">behind the simulation</em></div>
+  <div class="tb-right">
+    <button class="tb-btn" onclick="toggleTheme()">dark</button>
+    <a class="tb-btn" href="nameit_complete.html">← back to simulation</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="wrap section">
+  <div class="lbl">Research basis</div>
+  <div class="h1">This is<br><em>not fiction.</em></div>
+  <div class="sub">NameIT : Lexon is a simulation. The characters are invented. The situations are not.</div>
+  <div class="disclaimer">
+    <div class="disclaimer-head">What this page is</div>
+    <div class="disclaimer-body">
+      The scenarios in this simulation are drawn from a dataset of 50 Reddit posts and comments collected from r/womenintech, r/TwoXChromosomes, r/womenEngineers, and r/AskIndianWomen. The posts describe real workplace experiences — vague feedback, double standards, patterns that no single policy can name. Maya, Rohit, and Priya are composite characters, but the language they use, the feedback Maya receives, and the bureaucratic walls Priya hits are sourced directly from what real people described online. This page shows you the source material.
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- THE DATA -->
+<div class="wrap tight section">
+  <div class="lbl">The dataset</div>
+  <div class="h2">50 posts. 4 communities. One pattern.</div>
+  <div class="body" style="margin-bottom:1.8rem">
+    The posts were collected from Indian and global tech/professional communities on Reddit. They span 2020–2024. What emerged across all of them was not a set of isolated incidents — it was a vocabulary. The same words, used by different managers, in different companies, about different women, across different years.
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">50</div><div class="stat-label">posts &amp; comments analysed</div></div>
+    <div class="stat-card"><div class="stat-num">17</div><div class="stat-label">unique post threads</div></div>
+    <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">communities</div></div>
+    <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">recurring vocabulary</div></div>
+  </div>
+
+  <div class="lbl" style="margin-top:2rem">The recurring words — used about women, not men</div>
+  <div class="tag-row">
+    <span class="tag red">too direct</span>
+    <span class="tag red">intimidating</span>
+    <span class="tag red">unapproachable</span>
+    <span class="tag red">too confident</span>
+    <span class="tag red">de-humanizing</span>
+    <span class="tag yellow">communication style</span>
+    <span class="tag yellow">tone</span>
+    <span class="tag yellow">curt</span>
+    <span class="tag yellow">blunt</span>
+    <span class="tag yellow">not warm enough</span>
+    <span class="tag yellow">care &amp; compassion</span>
+    <span class="tag blue">not quite ready</span>
+    <span class="tag blue">stakeholder alignment</span>
+    <span class="tag blue">team dynamics</span>
+    <span class="tag blue">almost there</span>
+    <span class="tag green">strong delivery</span>
+    <span class="tag green">good energy</span>
+    <span class="tag green">drives things forward</span>
+  </div>
+  <div class="body" style="margin-top:.6rem;font-size:13px">
+    <em>Green tags = language used about men in the same contexts. Red and yellow = language used exclusively about women.</em>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- SOURCE POSTS -->
+<div class="wrap tight section">
+  <div class="lbl">The source posts</div>
+  <div class="h2">What people actually wrote</div>
+  <div class="body" style="margin-bottom:2rem">
+    Each cluster below is one thread from the dataset — the original post and the responses it received. These are edited for length but the language is unchanged. Click to expand.
+  </div>
+
+  <!-- CLUSTER 1 -->
+  <div class="post-cluster">
+    <div class="cluster-head" onclick="toggle('c1')">
+      <div>
+        <div class="cluster-sub">r/TwoXChromosomes</div>
+        <div class="cluster-title">"I finally learned how to be assertive at work, got told the stern approach is 'de-humanizing.'"</div>
+      </div>
+      <div class="cluster-toggle" id="c1-arrow">+</div>
+    </div>
+    <div class="cluster-body" id="c1">
+      <div class="cluster-inner">
+        <div class="post-text">
+          "Every single performance review I've had since I joined the workforce 5 years ago has told me to be more assertive and speak up. I only managed to do so this ONE TIME because I'm so burnt out I just wanted to get my point across. But whatever — if I was a man and went into a meeting like that no one would bat an eye. <em>They are passionate leaders. I am 'dehumanizing.'</em>"
+        </div>
+        <div class="comment-block">
+          <div class="comment-label">Community response</div>
+          <div class="comment-text">"Yeah, this is SO on brand. People love giving women feedback about the minutia of their personalities and tone policing us to fucking death. I remember when I first decided I'd had it with my conditioning, and that I was going to communicate as succinctly and confidently at work as men always did. Hoo boy, were there reactions. Immediately brought into offices. Where of course I asked them to show me emails from other male colleagues and point out where mine differed. And of course their little faces got all confused as they realized they were fucking identical."</div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text">"I had a coworker ask some tough questions of a consultant. Afterward she was told she cared too much and they were worried about her health. She was concerned that they were paying a consultant who wasn't doing the job. Imagine telling an employee to care less about their work."</div>
+        </div>
+        <div class="pattern-note">Pattern: Assertiveness instructed, then penalised when demonstrated. The double bind is the mechanism — there is no compliant version of this feedback.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 2 -->
+  <div class="post-cluster">
+    <div class="cluster-head" onclick="toggle('c2')">
+      <div>
+        <div class="cluster-sub">r/womenEngineers — thread with 13 responses</div>
+        <div class="cluster-title">"Let's share the irritating and sexist feedback we've received"</div>
+      </div>
+      <div class="cluster-toggle" id="c2-arrow">+</div>
+    </div>
+    <div class="cluster-body" id="c2">
+      <div class="cluster-inner">
+        <div class="post-text">"A recent post about being called 'blunt' in a negative context during a performance review made me think that maybe sharing our experiences would be helpful. I know performance reviews are around this time of year."</div>
+        <div class="comment-block">
+          <div class="comment-label">Responses — direct quotes from reviews</div>
+          <div class="comment-text">"It is sometimes clear she's frustrated and she needs to be careful to modulate that to a client and <em>hold a smile whenever possible.</em>"</div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text"><em>"Her laughter is sharp and piercing. We ask that when she thinks something funny is happening, she close her door first."</em> (I wish I was joking!) <br><br>"She makes too many facial expressions in meetings. I should not be able to see her thoughts just by looking at her face."</div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text">"You should smile more, it makes you seem more warm and approachable." Paired with, "If you're smiling it's hard to know if you're serious about this." <em>Same person.</em></div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text">"I'm a manager. A couple of years ago I was told I wasn't maternal enough towards my team. I responded with, 'would you say that to a man, that he wasn't paternal enough?'"</div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text">"I've been told I'm 'too critical of others' because I was calling out poor performance which was adversely affecting my work. 100% sure if I was a man it would have been praised as being a 'straight shooter'."</div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text">"Intimidating, cold, direct, blunt and my personal favourite — unapproachable. I just have a hard time believing that any man ever in the workplace would've gotten such labels."</div>
+        </div>
+        <div class="pattern-note">Pattern: 13 different women, 13 different companies, the same vocabulary. The feedback is about controlling presence, affect, and physical expression — not performance.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 3 -->
+  <div class="post-cluster">
+    <div class="cluster-head" onclick="toggle('c3')">
+      <div>
+        <div class="cluster-sub">r/womenintech</div>
+        <div class="cluster-title">"Feedback on communication style: anyone else told to use more exclamation points and heart/smiley emojis?"</div>
+      </div>
+      <div class="cluster-toggle" id="c3-arrow">+</div>
+    </div>
+    <div class="cluster-body" id="c3">
+      <div class="cluster-inner">
+        <div class="post-text">
+          "My mostly male colleagues communicate in a very straightforward and blunt written style — no exclamation points, just periods. If I match that energy, I get told my writing style comes across as 'demanding', condescending, and rude. I have been coached to end most of my sentences with exclamation points and to use more heart and smiley face emojis.<br><br>I agreed to do so and the feedback was that my communication style has much improved.<br><br><em>I've been in this field for decades. It feels odd to be told to use more emojis like I'm an enthusiastic teenager.</em>"
+        </div>
+        <div class="pattern-note">Pattern: The standard for 'professional communication' is applied selectively. The same blunt style is competence in men, aggression in women. Warmth is demanded as a tax.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 4 -->
+  <div class="post-cluster">
+    <div class="cluster-head" onclick="toggle('c4')">
+      <div>
+        <div class="cluster-sub">r/womenintech</div>
+        <div class="cluster-title">"Received feedback that I'm not showing up with 'care & compassion' from male manager"</div>
+      </div>
+      <div class="cluster-toggle" id="c4-arrow">+</div>
+    </div>
+    <div class="cluster-body" id="c4">
+      <div class="cluster-inner">
+        <div class="post-text">
+          "My manager was previously my colleague on the same team. He refused to give me specific examples of how I'm not showing up to the team with 'care and compassion.' I asked repeatedly for specific examples. He said he could not share that with me for the sake of their privacy. He wouldn't tell me ANYTHING. Except that multiple people came to him, apparently."
+        </div>
+        <div class="pattern-note">Pattern: Vague feedback that cannot be actioned, cannot be challenged, and cannot be disproven. Privacy of the complainants is used to prevent any accountability for the claim itself. This appears in Maya's arc — Rohit's "nothing specific comes to mind."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 5 -->
+  <div class="post-cluster">
+    <div class="cluster-head" onclick="toggle('c5')">
+      <div>
+        <div class="cluster-sub">r/womenEngineers</div>
+        <div class="cluster-title">"Help — people don't take me seriously"</div>
+      </div>
+      <div class="cluster-toggle" id="c5-arrow">+</div>
+    </div>
+    <div class="cluster-body" id="c5">
+      <div class="cluster-inner">
+        <div class="post-text">"I feel like I'm generally liked at work, but I keep noticing that concerns/questions/ideas I bring up get dismissed — but when most other people talk, they get accepted as good ideas. My team has almost all men and 2 women."</div>
+        <div class="comment-block">
+          <div class="comment-label">Community response</div>
+          <div class="comment-text">"Gender is definitely a factor. I can't tell you how many times I've mentioned something at a meeting and got ignored. Then 20 minutes later, a guy says the same thing, and he's now brilliant. It happens to other women I know, even those that don't work in STEM."</div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text">"So I had to learn how to navigate this because I feel I am the same 'bubbly' personality. When I walk into a meeting where decisions are made, I turn off absolutely all emotion. Very cold. I ask a clarifying question and I do not elaborate or speak before I have a clear concise thought prepared."</div>
+        </div>
+        <div class="pattern-note">Pattern: The standup scene in Maya's arc — her idea repeated by Siddharth and credited to him — comes directly from this. This was described by multiple commenters as a near-universal experience.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 6 -->
+  <div class="post-cluster">
+    <div class="cluster-head" onclick="toggle('c6')">
+      <div>
+        <div class="cluster-sub">r/AskIndianWomen</div>
+        <div class="cluster-title">"I have been subtly shamed by men for being a diversity hire at work"</div>
+      </div>
+      <div class="cluster-toggle" id="c6-arrow">+</div>
+    </div>
+    <div class="cluster-body" id="c6">
+      <div class="cluster-inner">
+        <div class="post-text">"While nobody directly says it, they basically mean to say that I have no merit and have been hired to meet the company's diversity goal. Is it a common experience?"</div>
+        <div class="comment-block">
+          <div class="comment-label">Community response</div>
+          <div class="comment-text">"I have been shamed directly or indirectly in the face for being a diversity hire or hired for my looks. I currently work in a team that has only 2 women in a group of 20 men. I just play dumb and ask them to explain again and again what they mean."</div>
+        </div>
+        <div class="comment-block">
+          <div class="comment-text">"I have seen many men butt hurt that more women are being taken in than men, and are convinced it's only to fill the 'women quota'. They proceed to rant how in the name of equality more opportunities are for women now."</div>
+        </div>
+        <div class="pattern-note">Pattern: The India-specific dimension. Legitimate achievement is attributed to diversity policy rather than competence. This operates as ambient background noise — too diffuse for HR, too constant to ignore.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 7 -->
+  <div class="post-cluster">
+    <div class="cluster-head" onclick="toggle('c7')">
+      <div>
+        <div class="cluster-sub">r/AskIndianWomen</div>
+        <div class="cluster-title">"Subtle misogyny at work ruining my mental peace"</div>
+      </div>
+      <div class="cluster-toggle" id="c7-arrow">+</div>
+    </div>
+    <div class="cluster-body" id="c7">
+      <div class="cluster-inner">
+        <div class="post-text">"I recently got promoted, and ever since, a few male colleagues have been making snide comments like, 'It's a crime to be a man in this company,' 'Women have it easy; you just have to smile, and the work gets done.' One guy in particular keeps making these comments in front of others — like it's a joke."</div>
+        <div class="comment-block">
+          <div class="comment-label">Community response</div>
+          <div class="comment-text">"People tell me — especially my ex-boyfriend — that life will be easier for me at work because I am a pretty woman. I find it misogynistic. Once I complained to a childhood friend about how I couldn't get internships anywhere on LinkedIn. He told me to butter up HR because being a woman is my advantage."</div>
+        </div>
+        <div class="pattern-note">Pattern: Promotion triggers backlash framed as humour. The comment 'can't be taken seriously' as harassment — it doesn't meet any threshold. This is where Priya's spreadsheet lives: patterns with no incident dates.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="div"></div>
+
+<!-- REAL → SIMULATION CONNECTION -->
+<div class="wrap tight section">
+  <div class="lbl">Real → simulation</div>
+  <div class="h2">How the source material became the game</div>
+  <div class="body" style="margin-bottom:2rem">
+    Every significant moment in NameIT : Lexon traces back to something in the data. This is the mapping.
+  </div>
+
+  <div class="connection-row">
+    <div class="conn-source">r/womenintech<br>r/womenEngineers</div>
+    <div class="conn-real">"Nothing specific comes to mind — just something to keep in mind going forward 😊"</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Rohit's 1:1 with Maya. He has no example. He sends the emoji. She looks at it for a while.</div>
+  </div>
+  <div class="connection-row">
+    <div class="conn-source">r/womenEngineers<br>multiple threads</div>
+    <div class="conn-real">"Then 20 minutes later, a guy says the same thing, and he's now brilliant."</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Maya's standup. Her idea. Siddharth repeats it. Rohit credits Siddharth.</div>
+  </div>
+  <div class="connection-row">
+    <div class="conn-source">r/womenintech</div>
+    <div class="conn-real">"Can come across as too direct in cross-team settings. Makes it difficult for others to contribute."</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Maya's mid-year review. The exact HR phrasing. Rohit uses the suggested language from the toolkit.</div>
+  </div>
+  <div class="connection-row">
+    <div class="conn-source">r/AskIndianWomen<br>r/TwoXChromosomes</div>
+    <div class="conn-real">"HR told me my complaint doesn't fall under POSH because it wasn't sexual harassment."</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Priya opens the ICC form. Required fields: date, name, incident. No field for pattern.</div>
+  </div>
+  <div class="connection-row">
+    <div class="conn-source">r/womenEngineers</div>
+    <div class="conn-real">"Communication style needs refinement" appearing in 8 of 9 women's reviews, 0 of men's.</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Priya's language audit spreadsheet. The pattern is documented. It has no formal home.</div>
+  </div>
+  <div class="connection-row">
+    <div class="conn-source">r/TwoXChromosomes</div>
+    <div class="conn-real">"I sometimes feel bad that I have allowed sexism to change my behavior, but I just do my best."</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Maya's fourth draft. She softens it. She sends: "Would you be able to share an example when you have a moment? No rush."</div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- WHAT THE SIMULATION CANNOT DO -->
+<div class="wrap tight section">
+  <div class="lbl">The limits of this simulation</div>
+  <div class="h2">What NameIT does not claim</div>
+  <div class="body">
+    This simulation does not resolve anything. Maya does not get her promotion. Rohit does not have a revelation. Priya's memo remains unsent.<br><br>
+    The simulation is not a training module. It does not teach you what to do. It is designed to let you sit inside a situation long enough to feel what makes it hard to name — not because the harm is subtle, but because the system is designed to make naming it costly.<br><br>
+    <em>The gap is not in the law. The gap is between what the law can see and what actually happens.</em><br><br>
+    The Reddit posts in this dataset were not resolved either. Most of them end with the original poster saying they are still in the same role, still receiving the same feedback, still deciding whether it is worth saying anything.
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ENDING -->
+<div class="wrap tight">
+  <div class="end-note">
+    <div class="end-note-title">These are not edge cases.<br>This is the pattern.</div>
+    <div class="end-note-body">
+      50 posts. 4 communities. Different companies, different sectors, different years.<br>
+      The same words. The same absence of a specific example.<br>
+      The same form with no field for what actually happened.<br><br>
+      Lexon is fictional. The vocabulary it runs on is not.
+    </div>
+  </div>
+</div>
+
+<script>
+function toggle(id) {
+  const body = document.getElementById(id);
+  const arrow = document.getElementById(id+'-arrow');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.textContent = isOpen ? '+' : '−';
+  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(0deg)';
+}
+
+function toggleTheme() {
+  const h = document.documentElement;
+  const b = document.querySelector('.tb-btn');
+  const isDark = h.getAttribute('data-theme') === 'dark';
+  h.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  b.textContent = isDark ? 'dark' : 'light';
+}
+</script>
+</body>
+</html>
