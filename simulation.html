@@ -3,2202 +3,543 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Name It — Lexon</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>NameIT : Lexon · One week</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ── TOKENS ──────────────────────────────────────────────
-   Logic: tokens only accumulate for sitting with discomfort.
-   +3  read guidelines to the bottom (scroll-gated)
-   +3  reach a loop-return moment
-   +2  choose the harder option (flagged per choice)
-   +2  watch all meeting bubbles without skipping
-   +1  decline invite and get looped back
-   +1  stay on a pause screen 3+ seconds
-   +0  skip, use template, click through quickly
-   The counter going up slowly IS the feedback.
-──────────────────────────────────────────────────────── */
+:root{
+  --bg:#e8e2d9;--bg2:#dfd8cd;--surface:#f2ede6;--surface2:#ebe5dc;
+  --border:#c8c0b4;--border2:#b0a898;
+  --text:#1c1a16;--text2:#4a4640;--text3:#6a6460;
+  --red:#a82818;--red-bg:#f0e0dc;--red-text:#8a1e10;
+  --yellow:#966000;--yellow-bg:#f0e4c8;--yellow-text:#744a00;
+  --blue:#164e72;--blue-bg:#d8eaf4;--blue-text:#103c58;
+  --green:#1a5e38;--green-bg:#d8eee4;--green-text:#124428;
+  --maya:#2f7f79;--grey:#9a948c;
+  --me:#d9eee9;
+}
+[data-theme="dark"]{
+  --bg:#100f0d;--bg2:#171612;--surface:#1c1a16;--surface2:#221f1a;
+  --border:#2c2820;--border2:#3a3528;
+  --text:#e4ddd4;--text2:#a8a096;--text3:#9a9288;
+  --red:#d85040;--red-bg:#281410;--red-text:#e87060;
+  --yellow:#c89028;--yellow-bg:#201808;--yellow-text:#d8a040;
+  --blue:#4888b8;--blue-bg:#0c1820;--blue-text:#68a8d8;
+  --green:#40a068;--green-bg:#0c1e14;--green-text:#60b880;
+  --maya:#4fb3aa;--grey:#5e5850;
+  --me:#123a36;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Source Serif 4',Georgia,serif;min-height:100vh;transition:background .3s,color .3s}
+button{font:inherit;color:inherit}
+.topbar{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:var(--bg);border-bottom:.5px solid var(--border)}
+.logo{font-family:'Fraunces',serif;font-size:17px}
+.logo i{font-style:italic}
+.tb{display:flex;gap:8px}
+.tb button{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;background:none;border:.5px solid var(--border2);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--text2)}
+.tb button.on{background:var(--text);color:var(--bg)}
+#dots{display:none;justify-content:center;gap:6px;padding:10px 0 0}
+#dots i{width:26px;height:5px;border-radius:3px;background:var(--border2)}
+#dots i.done{background:var(--text3)}#dots i.now{background:var(--text)}
+.shell{max-width:560px;margin:0 auto;padding:18px 18px 80px}
+.screen{display:none;animation:rise .35s ease}
+.screen.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-:root {
-  --bg:         #e8e2d9;
-  --bg2:        #dfd8cd;
-  --surface:    #f2ede6;
-  --surface2:   #ebe5dc;
-  --border:     #c8c0b4;
-  --border2:    #b0a898;
-  --text:       #1c1a16;
-  --text2:      #4a4640;
-  --text3:      #6a6460;
-  --text4:      #a09890;
+/* start */
+.h-title{font-family:'Fraunces',serif;font-weight:300;font-size:40px;line-height:1.05;text-align:center;margin:28px 0 8px}
+.h-sub{text-align:center;color:var(--text2);font-size:16px;margin-bottom:22px}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.how div{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;font-size:13px;line-height:1.35;color:var(--text2)}
+.how b{display:block;font-family:'Fraunces',serif;font-size:22px;color:var(--text);font-weight:400}
+.role{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;cursor:pointer;text-decoration:none;color:var(--text)}
+.role:hover{border-color:var(--border2)}
+.role .fig{width:52px;height:52px;flex-shrink:0}
+.role .rt{font-family:'Fraunces',serif;font-size:19px}
+.role .rs{font-size:13px;color:var(--text2);margin-top:2px}
+.role.locked{opacity:.45;cursor:not-allowed}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;background:var(--text);color:var(--bg);border-radius:3px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+.note-s{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);text-align:center;margin:14px 0}
 
-  --red:        #a82818;
-  --red-bg:     #f0e0dc;
-  --red-text:   #8a1e10;
-  --yellow:     #966000;
-  --yellow-bg:  #f0e4c8;
-  --yellow-text:#744a00;
-  --blue:       #164e72;
-  --blue-bg:    #d8eaf4;
-  --blue-text:  #103c58;
-  --green:      #1a5e38;
-  --green-bg:   #d8eee4;
-  --green-text: #124428;
-  --coral:      #a83820;
-  --coral-bg:   #f0ddd8;
-  --coral-text: #842c18;
-}
+/* scene */
+.day{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:center;margin:6px 0 2px}
+.place{font-family:'Fraunces',serif;font-size:21px;text-align:center;margin-bottom:12px}
+.watch{font-size:13px;background:var(--yellow-bg);color:var(--yellow-text);border:.5px solid var(--yellow);border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center}
+.chatbox{background:var(--surface);border:.5px solid var(--border);border-radius:16px;padding:12px 10px;margin-bottom:14px;min-height:60px}
+.skip{display:block;margin:-6px 0 12px auto;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);background:none;border:none;cursor:pointer}
+.msg{display:flex;gap:8px;align-items:flex-end;margin:8px 0;animation:rise .3s ease}
+.msg .av{width:30px;height:30px;flex-shrink:0}
+.msg .bb{background:var(--bg);border:.5px solid var(--border);border-radius:14px 14px 14px 4px;padding:8px 11px;max-width:80%;font-size:15px;line-height:1.45}
+.msg .nm{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:2px}
+.msg .rx{display:inline-block;margin-top:4px;font-size:12px;background:var(--surface2);border:.5px solid var(--border);border-radius:10px;padding:1px 7px}
+.msg.me{flex-direction:row-reverse}
+.msg.me .bb{background:var(--me);border-radius:14px 14px 4px 14px}
+.sys{text-align:center;font-size:13px;color:var(--text3);font-style:italic;margin:10px 8px;animation:rise .3s ease}
+.typing{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin:6px 40px}
+.card{background:var(--bg);border:.5px solid var(--border2);border-radius:12px;padding:11px 13px;margin:10px 2px;font-size:14px;line-height:1.5;animation:rise .3s ease}
+.card .ct{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.card .row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-top:.5px dashed var(--border)}
+.card .row:first-of-type{border-top:none}
+.card .k{color:var(--text3);font-size:13px;flex-shrink:0}
+.card .v{text-align:right}
+.card.ai{border-color:var(--blue);background:var(--blue-bg);color:var(--blue-text)}
+.card.ai .ct{color:var(--blue-text)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;border-radius:5px;border:.5px solid var(--border2);background:var(--surface)}
+.warn{color:var(--red-text)} .ok{color:var(--green-text)}
+.cursor{display:inline-block;width:2px;height:1em;background:currentColor;vertical-align:middle;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
 
-[data-theme="dark"] {
-  --bg:         #100f0d;
-  --bg2:        #171612;
-  --surface:    #1c1a16;
-  --surface2:   #221f1a;
-  --border:     #2c2820;
-  --border2:    #3a3528;
-  --text:       #e4ddd4;
-  --text2:      #9a9288;
-  --text3:      #9a9288;
-  --text4:      #504840;
-  --red:        #d85040;
-  --red-bg:     #281410;
-  --red-text:   #e87060;
-  --yellow:     #c89028;
-  --yellow-bg:  #201808;
-  --yellow-text:#c89028;
-  --blue:       #4888b8;
-  --blue-bg:    #0c1820;
-  --blue-text:  #68a8d8;
-  --green:      #40a068;
-  --green-bg:   #0c1e14;
-  --green-text: #60b880;
-  --coral:      #c86848;
-  --coral-bg:   #201008;
-  --coral-text: #d88868;
-}
+.ask{display:none;margin-top:4px}
+.ask .q{font-family:'Fraunces',serif;font-size:18px;margin-bottom:10px;text-align:center}
+.opt{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-size:15px;cursor:pointer;line-height:1.4}
+.opt:hover{border-color:var(--text3)}
+.opt.picked{border-color:var(--text);background:var(--surface2)}
+.opt.gone{display:none}
+.out{display:none;margin-top:6px;font-size:15px;line-height:1.55;background:var(--surface2);border-radius:12px;padding:12px 14px}
+.feel{display:none;align-items:center;gap:14px;margin-top:12px;padding:12px 14px;border:.5px solid var(--border);border-radius:12px;background:var(--surface)}
+.feel .fig{width:64px;height:64px;flex-shrink:0}
+.feel .fl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+.feel .ft{font-style:italic;font-size:15px;line-height:1.45}
+.next{display:none;width:100%;margin-top:16px;padding:14px;border:none;border-radius:12px;background:var(--text);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* group scene */
+.room{background:var(--surface);border:.5px solid var(--border);border-radius:16px;margin-bottom:12px;overflow:hidden}
+.room svg{display:block;width:100%;height:auto}
+.room .g{transition:transform 1.4s ease}
+.room .closed .g{transform:translateX(-14px)}
+#maya-fig{transition:transform 3s ease,opacity 3s ease;transform-box:fill-box;transform-origin:50% 100%}
+#maya-fig.walk{transform:translateX(160px);opacity:0}
+#maya-fig.shrink{transform:scale(.78);opacity:.45}
+.pop{opacity:0;transition:opacity .4s}
+.pop.on{opacity:1}
 
-body {
-  font-family: 'Source Serif 4', Georgia, serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 16px;
-  line-height: 1.6;
-  transition: background .35s, color .35s;
-}
-
-/* ── TOPBAR ── */
-.topbar {
-  position: fixed; top: 0; left: 0; right: 0;
-  height: 52px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 22px;
-  background: var(--bg);
-  border-bottom: .5px solid var(--border);
-  z-index: 200;
-  transition: background .35s, border-color .35s;
-}
-.tb-logo {
-  font-family: 'Fraunces', serif;
-  font-size: 17px; font-weight: 400;
-  color: var(--text); letter-spacing: -.2px;
-}
-.tb-logo span {
-  font-style: italic; color: var(--text2); font-size: 17px;
-}
-.tb-right { display: flex; align-items: center; gap: 16px; }
-
-.tok-wrap {
-  display: flex; align-items: center; gap: 7px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px; color: var(--text3);
-  opacity: 0; transition: opacity .5s;
-}
-.tok-wrap.visible { opacity: 1; }
-.tok-pip {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--yellow);
-  transition: transform .2s;
-}
-@keyframes pip { 0%{transform:scale(1)} 50%{transform:scale(2.4)} 100%{transform:scale(1)} }
-.tok-pip.flash { animation: pip .35s ease; }
-
-.tb-btn {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px; color: var(--text3);
-  background: none; border: .5px solid var(--border);
-  border-radius: 5px; padding: 5px 11px; cursor: pointer;
-  transition: border-color .2s, color .2s;
-}
-.tb-btn:hover { border-color: var(--border2); color: var(--text2); }
-
-/* ── SHELL ── */
-.shell {
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 80px 22px 100px;
-}
-
-/* ── SCREENS ── */
-.screen { display: none; max-width: 480px; width: 100%; }
-.screen.on { display: block; animation: rise .45s ease forwards; }
-@keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── TYPOGRAPHY ── */
-.f-display {
-  font-family: 'Fraunces', serif;
-  font-weight: 300; letter-spacing: -.3px;
-}
-.f-mono {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
-}
-.f-serif { font-family: 'Source Serif 4', serif; }
-
-/* ── CHIP ── */
-.chip {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--text3); text-align: center;
-  margin-bottom: 1.6rem; margin-top: .4rem;
-}
-
-/* ── AMBIENT ── */
-.ambient {
-  font-family: 'Source Serif 4', serif;
-  font-size: 15px; color: var(--text3);
-  text-align: center; line-height: 1.8;
-  margin-bottom: 1.4rem;
-}
-.ambient em { font-style: italic; color: var(--text2); }
-
-/* ── HIGHLIGHTS ── */
-.hy { color: var(--yellow-text); background: var(--yellow-bg); padding: 1px 5px; border-radius: 3px; }
-.hr { color: var(--red-text); background: var(--red-bg); padding: 1px 5px; border-radius: 3px; }
-.hb { color: var(--blue-text); background: var(--blue-bg); padding: 1px 5px; border-radius: 3px; }
-.hg { color: var(--green-text); background: var(--green-bg); padding: 1px 5px; border-radius: 3px; }
-.hc { color: var(--coral-text); background: var(--coral-bg); padding: 1px 5px; border-radius: 3px; }
-
-/* ── ROLE SELECTION ── */
-.co-name {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--text3); text-align: center; margin-bottom: 2.8rem;
-}
-.role-q {
-  font-family: 'Fraunces', serif;
-  font-size: 32px; font-weight: 300;
-  color: var(--text); text-align: center;
-  line-height: 1.2; margin-bottom: 2.6rem;
-  letter-spacing: -.4px;
-}
-.role-cards { display: flex; flex-direction: column; gap: 10px; }
-.role-card {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 14px; padding: 20px 22px;
-  cursor: pointer; text-align: left; width: 100%;
-  transition: border-color .15s, transform .12s;
-  position: relative; overflow: hidden;
-}
-.role-card::before {
-  content: ''; position: absolute;
-  left: 0; top: 0; bottom: 0; width: 3px;
-  background: transparent; transition: background .2s;
-}
-.role-card:hover { border-color: var(--border2); transform: translateX(3px); }
-.role-card:hover::before { background: var(--text3); }
-.role-card.dim { opacity: .35; cursor: not-allowed; pointer-events: none; }
-.role-card.done::before { background: var(--green); }
-.rc-title {
-  font-family: 'Fraunces', serif;
-  font-size: 16px; font-weight: 400;
-  color: var(--text); margin-bottom: 5px;
-}
-.rc-sub {
-  font-family: 'Source Serif 4', serif;
-  font-size: 13px; color: var(--text2); line-height: 1.55;
-  font-style: italic;
-}
-.rc-done {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; color: var(--green-text);
-  background: var(--green-bg); border-radius: 3px;
-  padding: 2px 7px; margin-top: 6px; display: inline-block;
-}
-
-/* ── SURFACE CARDS ── */
-.card {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 14px; overflow: hidden; margin-bottom: 1.2rem;
-  transition: background .35s, border-color .35s;
-}
-.card-head {
-  padding: 12px 18px; border-bottom: .5px solid var(--border);
-  display: flex; justify-content: space-between; align-items: center;
-}
-.card-head.blue  { background: var(--blue-bg); }
-.card-head.coral { background: var(--coral-bg); }
-.card-head.yellow { background: var(--yellow-bg); }
-.card-head.green { background: var(--green-bg); }
-.card-body { padding: 18px 18px 14px; }
-.field { margin-bottom: 14px; }
-.field:last-child { margin-bottom: 0; }
-.field-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 5px;
-}
-.field-value {
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text); line-height: 1.65;
-}
-.field-value.muted { color: var(--text3); font-style: italic; }
-.card-divider { height: .5px; background: var(--border); margin: 14px 0; }
-
-/* ── BUBBLES ── */
-.bwrap {
-  margin-bottom: 16px;
-  opacity: 0; transform: translateY(8px);
-  transition: opacity .4s, transform .4s;
-}
-.bwrap.show { opacity: 1; transform: translateY(0); }
-.spk {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; font-weight: 500;
-  letter-spacing: .08em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 6px;
-}
-.bubble {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 14px; padding: 14px 16px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text); line-height: 1.65;
-  max-width: 360px;
-}
-.bubble.you {
-  background: var(--bg2); border-color: var(--border2);
-  margin-left: auto; max-width: 300px;
-}
-.bubble em { font-style: normal; font-weight: 600; }
-
-.pline {
-  font-family: 'Source Serif 4', serif;
-  font-size: 13px; color: var(--text4);
-  text-align: center; margin: 16px 0; line-height: 1.7;
-  opacity: 0; transition: opacity .5s; font-style: italic;
-}
-.pline.show { opacity: 1; }
-
-/* ── DRAFT SEQUENCE ── */
-.draft-stage { margin-bottom: 1.2rem; }
-.draft-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; color: var(--text3);
-  letter-spacing: .08em; text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.draft-box {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 10px; padding: 14px 15px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text); line-height: 1.65;
-  position: relative; overflow: hidden;
-}
-.draft-box.deleted {
-  text-decoration: line-through; color: var(--text3);
-  background: var(--bg2);
-}
-.draft-btn {
-  width: 100%; margin-top: 8px; padding: 10px;
-  background: transparent; border: .5px solid var(--border);
-  border-radius: 8px; font-size: 12px; color: var(--text3);
-  cursor: pointer; font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: .04em; text-transform: uppercase;
-  transition: border-color .15s, color .15s;
-}
-.draft-btn:hover { border-color: var(--border2); color: var(--text2); }
-.draft-btn.send {
-  border-color: var(--text); color: var(--text);
-}
-
-/* ── CHOICES ── */
-.choice-q {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px; color: var(--text3);
-  letter-spacing: .04em; margin-bottom: 10px;
-}
-.choices { display: flex; flex-direction: column; gap: 9px; margin-bottom: 1.2rem; }
-.cbtn {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 12px; padding: 16px 17px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text);
-  text-align: left; cursor: pointer; line-height: 1.55;
-  transition: border-color .15s, background .15s;
-}
-.cbtn:hover { border-color: var(--border2); background: var(--surface2); }
-.cbtn.locked { opacity: .3; pointer-events: none; }
-.cbtn.harder::after {
-  content: '';
-  position: absolute; /* just a marker for JS */
-}
-.outcome {
-  display: none; margin-top: 10px; padding: 13px 14px;
-  background: var(--bg2); border-radius: 9px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 13px; color: var(--text2); line-height: 1.65;
-  border-left: 2px solid var(--border2);
-  animation: rise .3s ease; font-style: italic;
-}
-
-/* ── GUIDELINES MODAL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.6); z-index: 300;
-  align-items: flex-end; justify-content: center;
-  padding: 0;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 20px 20px 0 0;
-  width: 100%; max-width: 480px;
-  max-height: 80vh; display: flex; flex-direction: column;
-  animation: slideup .35s ease;
-}
-@keyframes slideup {
-  from { transform: translateY(40px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-.modal-head {
-  padding: 16px 20px; border-bottom: .5px solid var(--border);
-  display: flex; justify-content: space-between; align-items: center;
-  flex-shrink: 0;
-}
-.modal-head-title {
-  font-family: 'Fraunces', serif;
-  font-size: 16px; font-weight: 400; color: var(--text);
-}
-.modal-close {
-  background: none; border: none;
-  font-size: 20px; color: var(--text3); cursor: pointer;
-}
-.modal-scroll {
-  overflow-y: auto; flex: 1; padding: 20px;
-}
-.modal-scroll h3 {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text3); margin: 18px 0 8px;
-}
-.modal-scroll h3:first-child { margin-top: 0; }
-.modal-scroll p {
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text2); line-height: 1.75;
-  margin-bottom: 10px;
-}
-.modal-scroll .gap-note {
-  background: var(--yellow-bg); border: .5px solid var(--yellow);
-  border-radius: 8px; padding: 12px 14px; margin: 12px 0;
-  font-size: 13px; color: var(--yellow-text); line-height: 1.65;
-}
-.modal-foot {
-  padding: 14px 20px; border-top: .5px solid var(--border); flex-shrink: 0;
-}
-.modal-foot-btn {
-  width: 100%; padding: 12px;
-  background: var(--bg2); border: .5px solid var(--border);
-  border-radius: 10px; font-size: 13px; color: var(--text3);
-  cursor: pointer; font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: .04em; text-transform: uppercase;
-  transition: background .15s, color .15s, border-color .15s;
-}
-.modal-foot-btn.unlocked {
-  background: var(--text); color: var(--bg);
-  border-color: var(--text);
-}
-.modal-foot-btn:disabled {
-  opacity: .4; cursor: not-allowed;
-}
-.read-progress {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; color: var(--text3);
-  text-align: center; margin-bottom: 8px;
-  letter-spacing: .06em;
-}
-
-/* ── COMPARE TABLE ── */
-.compare { background: var(--surface); border: .5px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 1.2rem; }
-.compare-head { display: grid; grid-template-columns: 1fr 1fr; border-bottom: .5px solid var(--border); }
-.ch-col { padding: 11px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text2); border-right: .5px solid var(--border); }
-.ch-col:last-child { border-right: none; }
-.compare-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: .5px solid var(--border); }
-.compare-row:last-child { border-bottom: none; }
-.cc { padding: 12px 14px; font-family: 'Source Serif 4', serif; font-size: 13px; color: var(--text); line-height: 1.55; border-right: .5px solid var(--border); }
-.cc:last-child { border-right: none; }
-
-/* ── CONTINUE ── */
-.cont {
-  width: 100%; margin-top: 1rem; padding: 13px;
-  background: transparent; border: .5px solid var(--border);
-  border-radius: 11px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
-  color: var(--text3); cursor: pointer;
-  transition: background .12s, border-color .12s, color .12s;
-}
-.cont:hover { background: var(--surface); border-color: var(--border2); color: var(--text); }
-.cont.lit { border-color: var(--text2); color: var(--text2); }
-
-/* ── RECEIPT / END ── */
-.end-card {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 16px; padding: 30px 24px;
-  text-align: center; margin-bottom: 1.2rem;
-}
-.end-title {
-  font-family: 'Fraunces', serif;
-  font-size: 26px; font-weight: 300;
-  color: var(--text); margin-bottom: 14px;
-  line-height: 1.2; letter-spacing: -.3px;
-}
-.end-sub {
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text2);
-  line-height: 1.75; margin-bottom: 22px;
-  font-style: italic;
-}
-.tok-sum {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--yellow-bg); border: .5px solid var(--yellow);
-  border-radius: 9px; padding: 9px 18px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px; color: var(--yellow-text);
-  margin-bottom: 20px; letter-spacing: .04em;
-}
-.receipt {
-  background: var(--bg2); border: .5px solid var(--border);
-  border-radius: 11px; padding: 16px 18px;
-  margin-bottom: 20px; text-align: left;
-}
-.receipt-title {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 12px;
-}
-.receipt-item {
-  font-family: 'Source Serif 4', serif;
-  font-size: 13px; color: var(--text2);
-  line-height: 1.65; margin-bottom: 8px;
-  padding-left: 14px; position: relative;
-}
-.receipt-item::before {
-  content: '—'; position: absolute; left: 0;
-  color: var(--text4);
-}
-.restart-btn {
-  width: 100%; padding: 14px;
-  background: var(--text); color: var(--bg);
-  border: none; border-radius: 11px;
-  font-family: 'Fraunces', serif;
-  font-size: 16px; font-weight: 300;
-  cursor: pointer; transition: opacity .15s;
-  letter-spacing: -.1px;
-}
-.restart-btn:hover { opacity: .85; }
-.end-note {
-  font-family: 'Source Serif 4', serif;
-  font-size: 13px; color: var(--text3);
-  text-align: center; margin-top: 14px;
-  line-height: 1.75; font-style: italic;
-}
-
-/* ── THE GAP ── */
-.gap-section {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 14px; padding: 24px 22px;
-  margin-bottom: 1.2rem;
-}
-.gap-title {
-  font-family: 'Fraunces', serif;
-  font-size: 22px; font-weight: 300;
-  color: var(--text); margin-bottom: 8px;
-  letter-spacing: -.2px;
-}
-.gap-body {
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text2);
-  line-height: 1.8; margin-bottom: 16px;
-}
-.gap-body em { font-style: italic; color: var(--text); }
-.gap-link {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px; margin-bottom: 8px;
-  background: var(--bg2); border: .5px solid var(--border);
-  border-radius: 9px; text-decoration: none;
-  transition: border-color .15s;
-}
-.gap-link:hover { border-color: var(--border2); }
-.gap-link-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 2px;
-}
-.gap-link-title {
-  font-family: 'Source Serif 4', serif;
-  font-size: 13px; color: var(--text2);
-}
-.gap-link-arrow { margin-left: auto; color: var(--text3); font-size: 14px; }
-
-.vignette {
-  background: var(--bg2); border: .5px solid var(--border);
-  border-radius: 10px; padding: 16px 17px; margin-bottom: 10px;
-}
-.vignette-source {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; color: var(--text3);
-  letter-spacing: .06em; text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.vignette-text {
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text);
-  line-height: 1.75; font-style: italic;
-}
-
-/* ── CONVERGENCE ── */
-.conv-grid {
-  display: grid; grid-template-columns: 1fr;
-  gap: 12px; margin-bottom: 1.2rem;
-}
-.conv-pov {
-  background: var(--surface); border: .5px solid var(--border);
-  border-radius: 12px; padding: 16px 17px;
-}
-.conv-who {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 8px;
-}
-.conv-moment {
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text); line-height: 1.7;
-}
-
-/* ── HR FORM ── */
-.hr-opt {
-  width: 100%; background: var(--bg2); border: .5px solid var(--border);
-  border-radius: 10px; padding: 14px 15px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px; color: var(--text2);
-  text-align: left; cursor: pointer; line-height: 1.5;
-  margin-bottom: 8px;
-  transition: border-color .15s, background .15s;
-}
-.hr-opt:hover { border-color: var(--border2); background: var(--surface); }
-
-/* v3 clarity layer */
-.notice{font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.5;background:var(--yellow-bg);color:var(--yellow-text);border:.5px solid var(--yellow);border-radius:8px;padding:8px 12px;margin:0 0 1rem}
-.howto{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 1.4rem}
-.howto>div{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;font-size:12px;line-height:1.4;color:var(--text2)}
-.howto svg{display:block;margin:0 auto 6px;width:28px;height:28px;stroke:var(--text);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.start-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:var(--text);color:var(--bg);border-radius:3px;padding:2px 6px;margin-left:8px;vertical-align:middle}
-.tone-badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;border-radius:4px;padding:2px 7px;margin-left:6px}
-.tone-bad{background:var(--yellow-bg);color:var(--yellow-text);border:.5px solid var(--yellow)}
-.tone-ok{background:var(--green-bg);color:var(--green-text);border:.5px solid var(--green)}
-.decode-btn{width:100%;margin:0 0 1rem;padding:10px 14px;background:transparent;border:.5px solid var(--border2);border-radius:9px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text2);cursor:pointer}
-.decode-box{display:none;margin:-.4rem 0 1rem;padding:12px 14px;background:var(--surface);border:.5px solid var(--border2);border-radius:9px;font-size:13px;line-height:1.7;color:var(--text)}
-.decode-box b{font-weight:600}
-.meter{display:flex;align-items:center;gap:10px;margin:6px 0;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)}
-.meter .lab{width:92px;flex-shrink:0}
-.meter .trk{flex:1;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;border:.5px solid var(--border)}
-.meter .fil{height:100%;border-radius:4px}
-.meter .val{width:58px;text-align:right}
-.fil.warm{background:var(--yellow)} .fil.cool{background:var(--text2)} .fil.good{background:var(--green)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chipx{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 8px;border-radius:5px;background:var(--bg2);border:.5px solid var(--border);color:var(--text2)}
-.chat{border-radius:12px;padding:10px 13px;margin:6px 0;font-size:13px;line-height:1.6}
-.chat.me{background:var(--text);color:var(--bg);margin-left:18%}
-.chat.ai{background:var(--surface);border:.5px solid var(--border2);margin-right:12%}
-.loopbox{margin:0 0 1.4rem;padding:12px;background:var(--surface);border:.5px solid var(--border);border-radius:12px}
-.loopbox svg{width:100%;height:auto;display:block}
-.loopbox text{fill:var(--text);font-family:'IBM Plex Mono',monospace;font-size:11px}
-.loopbox rect{fill:var(--bg2);stroke:var(--border2);stroke-width:1}
-.loopbox path{stroke:var(--text2);fill:none;stroke-width:1.5}
-.loopbox .ar{fill:var(--text2);stroke:none}
-
-/* v6 audio-visual layer */
-.av{display:inline-block;width:34px;height:34px;vertical-align:middle;margin-right:8px;flex-shrink:0}
-.av svg{width:100%;height:100%;display:block}
-.spk{display:flex;align-items:center}
-.bwrap.speaking .av{animation:bob .6s ease 2}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.stage{display:flex;gap:14px;justify-content:center;align-items:flex-end;margin:0 0 1rem;padding:10px 8px;background:var(--surface);border:.5px solid var(--border);border-radius:12px}
-.stage .who{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
-.stage .who .fig{width:46px;height:46px;margin:0 auto 3px}
-.stage .who .fig svg{width:100%;height:100%;display:block}
-#pmap{display:none;justify-content:center;gap:6px;margin:0 0 1rem}
-#pmap i{width:22px;height:5px;border-radius:3px;background:var(--border2);display:block}
-#pmap i.done{background:var(--text3)}
-#pmap i.now{background:var(--text)}
-.tb-btn.on{background:var(--text);color:var(--bg)}
-.av-hint{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);text-align:center;margin:-.6rem 0 1.2rem}
+/* end */
+.end-h{font-family:'Fraunces',serif;font-weight:300;font-size:30px;text-align:center;margin:18px 0 6px;line-height:1.15}
+.end-s{text-align:center;color:var(--text2);font-size:15px;margin-bottom:16px;line-height:1.5}
+.strip{display:flex;justify-content:space-between;align-items:flex-end;background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:14px 10px 10px;margin-bottom:14px}
+.strip div{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;color:var(--text3);flex:1}
+.strip svg{display:block;margin:0 auto 4px}
+.recap{list-style:none;margin-bottom:14px}
+.recap li{padding:9px 0;border-top:.5px solid var(--border);font-size:15px;line-height:1.45}
+.recap li b{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);display:block;font-weight:500}
+.big{font-family:'Fraunces',serif;font-size:19px;text-align:center;margin:16px 0;line-height:1.35}
+.grid3{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
+.grid3 th{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);text-align:left;padding:6px 4px;border-bottom:.5px solid var(--border2)}
+.grid3 td{padding:8px 4px;border-bottom:.5px solid var(--border);vertical-align:top;line-height:1.35}
+.grid3 td:first-child{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--text3);width:44px}
+.dec{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14px;line-height:1.7}
+.dec b{font-weight:600}
+.links a{display:block;background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;color:var(--text);text-decoration:none;font-size:15px}
+.ghost{background:none;border:.5px solid var(--border2);color:var(--text)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<!-- GUIDELINES MODAL -->
-<div class="modal-overlay" id="guideModal">
-  <div class="modal">
-    <div class="modal-head">
-      <span class="modal-head-title">Workplace Guidelines</span>
-      <button class="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <div class="modal-scroll" id="guideScroll">
-      <h3>POSH Act, 2013</h3>
-      <p>The Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act defines sexual harassment as including implied promises of preferential treatment, implied threats, and conduct creating an <span class="hy">intimidating, hostile, or offensive work environment.</span></p>
-      <p>Every employer must constitute an Internal Committee (ICC) at each office or administrative unit. Workplaces with fewer than ten workers fall under the district Local Committee. A complaint is to be filed <span class="hr">within 3 months</span> of the incident, or of the last incident in a series, and the ICC may extend this by a further 3 months for recorded reasons. The inquiry is to be completed within 90 days. Employers must report cases filed and disposed of in the annual report (s.22), and non-compliance is punishable by a fine of up to ₹50,000, doubled on repeat offence (s.26).</p>
-      <div class="gap-note">⚠ What POSH does not reach: gendered feedback patterns, communication-style critique and promotion decisions, unless conduct of a sexual nature can be shown. A series of incidents can be counted together, but only if each one falls within the Act's definition. This is the gap.</div>
-      <h3>Lexon ICC Status</h3>
-      <p><em>Fictional company. Details are invented for the simulation.</em> Constituted: 2021. Last meeting: <span class="hy">September 2022.</span> Annual report: <span class="hr">not filed for FY 2023–24 or FY 2024–25.</span> Current status: <span class="hr">effectively dormant.</span></p>
-      <h3>Code on Wages, 2019 (s.3)</h3>
-      <p>In force from 21 November 2025, replacing the Equal Remuneration Act, 1976. Prohibits gender discrimination in wages and in recruitment for the same or similar work. Does not address <span class="hy">feedback quality, how performance is described, or career trajectory.</span> Whether it reaches promotion is for the labour authorities and courts to say. India has also ratified ILO C100 and C111, which are not directly enforceable by an employee.</p>
-      <h3>The Maternity Benefit Act, 1961 (amended 2017)</h3>
-      <p>Provides 26 weeks paid maternity leave for the first two children and 12 weeks for a third. Does not address <span class="hy">appraisal impact during or after leave.</span></p>
-      <h3>What none of these cover</h3>
-      <p>A pattern of vague, personality-based feedback given consistently to women. A promotion decision made using language that has no documented basis. The feeling of being managed out of a role through accumulating impressions that no single policy violation can name.</p>
-      <div class="gap-note">The gap is not in the law. The gap is between what the law can see and what actually happens.</div>
-      <h3>Ministry of Labour Advisory, 2024</h3>
-      <p>A January 2024 advisory reminding employers of their existing obligations toward women employees. It creates no new duty. <span class="hy">No enforcement mechanism.</span></p>
-      <p style="height:1px"></p>
-    </div>
-    <div class="modal-foot">
-      <div class="read-progress" id="readProgress">scroll to read · 0%</div>
-      <button class="modal-foot-btn" id="guideCloseBtn" disabled onclick="closeModalRead()">
-        I have read the guidelines
-      </button>
-    </div>
-  </div>
-</div>
-
 <div class="topbar">
-  <div class="tb-logo">name<span>it</span> · Lexon</div>
-  <div class="tb-right">
-    <div class="tok-wrap" id="tokWrap">
-      <div class="tok-pip" id="tokPip"></div>
-      <span id="tokCount">0</span>
-    </div>
-    <button class="tb-btn" id="soundBtn" onclick="toggleSound()" aria-pressed="false">sound</button>
-    <button class="tb-btn" id="voiceBtn" onclick="toggleVoice()" aria-pressed="false">voice</button>
-    <button class="tb-btn" id="themeBtn" onclick="toggleTheme()">dark</button>
+  <div class="logo">Name<i>IT</i> : Lexon</div>
+  <div class="tb">
+    <button id="soundBtn" onclick="toggleSound()" aria-pressed="false">sound</button>
+    <button id="themeBtn" onclick="toggleTheme()">dark</button>
   </div>
 </div>
+<div id="dots" aria-hidden="true"></div>
 
 <div class="shell">
 
-<!-- ══ S-ROLE: WHO ARE YOU ══ -->
-<div class="screen on" id="s-role">
-  <div class="co-name">Bengaluru · IT Services · 2026</div>
-  <div class="role-q">Who are you<br>in this room?</div>
-  <div class="howto">
-    <div><svg viewBox="0 0 24 24"><path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7"/><path d="M20 5v12h-7"/></svg>1. Read the scene</div>
-    <div><svg viewBox="0 0 24 24"><path d="M5 12h9M10 7l5 5-5 5"/><circle cx="19" cy="12" r="1.5"/></svg>2. Pick what you would do</div>
-    <div><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>3. Watch what the system does</div>
+<!-- START -->
+<div class="screen on" id="start">
+  <div class="h-title">One week.<br><i>One team.</i></div>
+  <div class="h-sub">Maya is the only woman on an 8-person tech team in Bengaluru.<br>Nobody is rude to her. Watch what happens anyway.</div>
+  <div class="how">
+    <div><b>1</b>Read the chat</div>
+    <div><b>2</b>Pick what you'd do</div>
+    <div><b>3</b>See what it costs</div>
   </div>
-  <div class="av-hint">Optional: tap <b>sound</b> for office ambience and <b>voice</b> to have the scenes read aloud.</div>
-  <div class="role-cards" id="roleCards">
-
-    <button class="role-card" id="card-maya" onclick="startArc('maya')">
-      <div class="rc-title">Maya<span class="start-tag">start here</span></div>
-      <div class="rc-sub">You received this feedback. You're still thinking about it.</div>
-    </button>
-
-    <button class="role-card" id="card-rohit" onclick="startArc('rohit')">
-      <div class="rc-title">Rohit</div>
-      <div class="rc-sub">You gave this feedback. You think you were being fair.</div>
-    </button>
-
-    <button class="role-card dim" id="card-priya">
-      <div class="rc-title">Priya</div>
-      <div class="rc-sub">You see the pattern. You don't know what to do with it.</div>
-    </button>
-
-    <button class="role-card dim" id="card-gap">
-      <div class="rc-title" style="font-style:italic;">The Gap</div>
-      <div class="rc-sub">Complete any arc to unlock.</div>
-    </button>
-
-     <a class="role-card" href="analysis.html" style="text-decoration:none">
-  <div class="rc-title">Behind the simulation</div>
-  <div class="rc-sub">17 real public threads, read by hand. What is evidence, what is invented, and the legal gap map.</div>
-</a>
-
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-     MAYA'S ARC
-══════════════════════════════════ -->
-
-<!-- M1: CALENDAR -->
-<div class="screen" id="m1">
-  <div class="chip">Maya · Week 1 · Tuesday</div>
-  <div class="notice">Watch for: a meeting with no agenda.</div>
-  <div class="ambient">The promotion cycle opens on <span class="hy">Thursday</span>.<br>This arrived ten minutes ago.</div>
-  <div class="card">
-    <div class="card-head blue">
-      <span class="f-mono hb" style="font-size:10px">Calendar</span>
-      <span class="f-mono" style="color:var(--text3)">Tue 10:47am</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Event</div>
-        <div class="field-value">1:1 with Rohit Sharma</div>
-      </div>
-      <div class="field">
-        <div class="field-label">When</div>
-        <div class="field-value"><span class="hy">Thursday 3:00–3:30pm</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">Agenda</div>
-        <div class="field-value muted">No agenda added</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">From</div>
-        <div class="field-value">Rohit Sharma</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px;padding:12px 18px;border-top:.5px solid var(--border)">
-      <button class="cont" style="margin:0;flex:1" onclick="declineMaya()">Decline</button>
-      <button class="cont" style="margin:0;flex:1" onclick="declineMaya()">Maybe</button>
-      <button class="cont lit" style="margin:0;flex:1" onclick="go('m2'); addTok(2);">Accept</button>
-    </div>
-  </div>
-  <div class="ambient" id="m1-note" style="display:none;color:var(--red-text)">You declined.<br>He sends it again two hours later.<br><em>Same time. No agenda.</em></div>
-</div>
-
-<!-- M2: THE MEETING -->
-<div class="screen" id="m2">
-  <div class="chip">Maya · Week 1 · Thursday 3:04pm</div>
-  <div class="notice">Watch for: feedback with no example.</div>
-  <div class="ambient">Conf Room B. He's already there.<br><em>He has nothing open on his laptop.</em></div>
-  <div id="m2-bubbles"></div>
-  <button class="cont lit" id="m2-next" style="display:none" onclick="go('m2b')">that evening →</button>
-</div>
-
-
-<!-- M2b: AI TELLS MAYA HOW TO SOUND -->
-<div class="screen" id="m2b">
-  <div class="chip">Maya · Week 1 · Thursday 6:40pm</div>
-  <div class="notice">Watch for: an AI telling Maya how to sound.</div>
-  <div class="ambient">You are home. You open your AI assistant.<br><em>You want to ask for an example without sounding "too direct".</em></div>
-  <div class="chat me">Rohit says I'm "too direct". Help me ask him for an example. Make it nice.</div>
-  <div class="chat ai">Sure. Tip: start with thanks, add "no rush", and skip the word "specific". Want me to rewrite all your emails this way?</div>
-  <div class="card" style="margin-top:1rem">
-    <div class="card-head blue"><span class="f-mono hb" style="font-size:10px">Lexon Coach ✦ weekly nudge</span><span class="f-mono" style="color:var(--text3)">Only you and your manager see this</span></div>
-    <div class="card-body">
-      <div class="field-label">Your last 30 emails</div>
-      <div class="meter"><span class="lab">Assertive</span><span class="trk"><span class="fil warm" style="width:80%;display:block"></span></span><span class="val">8/10</span></div>
-      <div class="meter"><span class="lab">Warmth</span><span class="trk"><span class="fil cool" style="width:30%;display:block"></span></span><span class="val">3/10</span></div>
-      <div class="field-value" style="margin-top:8px;font-size:13px">Suggestion: open with "Hope you're well!" and add an exclamation mark.</div>
-    </div>
-  </div>
-  <div class="choice-q">What do you do?</div>
-  <div class="choices">
-    <button class="cbtn" onclick="pick('m2b','A',this,false)">Follow the Coach. Warm up every email.
-      <div class="outcome">Your emails now open with "Hope you're well!!". Rohit replies: <em>"Much better 😊"</em><br><br>The work did not change. <span class="hy">Only the sound did.</span> A score now decides how you write.</div>
-    </button>
-    <button class="cbtn" onclick="pick('m2b','B',this,true)">Ignore it. Keep writing the way you do.
-      <div class="outcome">The score stays on your profile: <span class="hr">Assertive 8/10, Warmth 3/10.</span><br><br>Nobody asks what the emails said. They only see the number.</div>
-    </button>
-  </div>
-  <button class="cont lit" id="m2b-next" style="display:none" onclick="go('m3')">week 2 →</button>
-</div>
-
-<!-- M3: THE REVIEW — 4 DRAFTS -->
-<div class="screen" id="m3">
-  <div class="chip">Maya · Week 2 · Monday 9:12am</div>
-  <div class="notice">Watch for: praise for the work, criticism of the "style".</div>
-  <div class="ambient">Your mid-year review arrived<br>while you were on a call.</div>
-  <div class="card">
-    <div class="card-head blue">
-      <span class="f-mono hb" style="font-size:10px">Lexon · Mid-Year Review · Q2 2026</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Delivery</div>
-        <div class="field-value"><span class="hg">Strong.</span> Fintrack migration on schedule. Mentored two junior associates.</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">Communication</div>
-        <div class="field-value"><span class="hr">Needs refinement.</span> Can come across as <em>too direct</em> in cross-team settings. Makes it difficult for others to contribute.</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">Promotion readiness</div>
-        <div class="field-value"><span class="hy">Not yet.</span> Would benefit from stakeholder alignment and team dynamics before lead role.</div>
-      </div>
-    </div>
-  </div>
-  <button class="decode-btn" onclick="toggleDecode('m3-decode',this)">Translate to plain English</button>
-  <div class="decode-box" id="m3-decode"><b>"Needs refinement"</b> = no example given.<br><b>"Too direct"</b> = the same words are fine when a man says them.<br><b>"Stakeholder alignment"</b> = nobody defines it.<br><b>"Not yet"</b> = no date, no criteria.</div>
-  <div class="ambient"><em>You read it three times.<br>You paste your reply drafts into your AI assistant. It checks the tone.</em></div>
-  <div id="m3-drafts"></div>
-  <button class="cont lit" id="m3-next" style="display:none" onclick="go('m3b')">week 3 →</button>
-</div>
-
-
-<!-- M3b: SHE DOES IT RIGHT. IT STILL GOES THE SAME WAY -->
-<div class="screen" id="m3b">
-  <div class="chip">Maya · Week 3 · You do it right</div>
-  <div class="notice">Watch for: she does it right, and it still goes the same way.</div>
-  <div class="ambient">You use AI the way everyone does: for the boring parts.<br><em>Then you check every line yourself.</em></div>
-  <div class="card">
-    <div class="card-head green"><span class="f-mono hg" style="font-size:10px">Work log · Fintrack cut-over</span></div>
-    <div class="card-body">
-      <div class="meter"><span class="lab">Tasks done</span><span class="trk"><span class="fil good" style="width:100%;display:block"></span></span><span class="val">14/14</span></div>
-      <div class="meter"><span class="lab">Delivered</span><span class="trk"><span class="fil good" style="width:100%;display:block"></span></span><span class="val">+1 day</span></div>
-      <div class="chips"><span class="chipx">AI drafted the doc</span><span class="chipx">Maya fixed 4 AI errors</span><span class="chipx">0 bugs in prod</span></div>
-    </div>
-  </div>
-  <div id="m3b-bubbles"></div>
-  <div id="m3b-after" style="display:none">
-    <div class="card" style="margin-top:1rem">
-      <div class="card-head coral"><span class="f-mono hc" style="font-size:10px">Calendar · Friday 7pm</span></div>
-      <div class="card-body">
-        <div class="field-value">Cricket + roadmap chat<br><span class="muted">Invited: 7 of 8 people on the team</span><br><span class="hr">Not invited: you.</span></div>
-      </div>
-    </div>
-    <div class="choice-q">Monday. The roadmap has changed. It was decided on Friday.</div>
-    <div class="choices">
-      <button class="cbtn" onclick="pick('m3b','A',this,false)">Laugh along with the cake joke. Say nothing about Friday.
-        <div class="outcome">The laugh is a beat late. <em>"She's a good sport."</em> goes in someone's head.<br><br>Decisions keep being made where you are not.</div>
-      </button>
-      <button class="cbtn" onclick="pick('m3b','B',this,true)">Say: "I'd rather not do the cake. And I'd like to be on Friday's invite."
-        <div class="outcome">Silence. Rohit: <em>"Don't be so serious, Maya. It was a joke."</em><br><br><span class="hy">Asking to be included is read as "difficult".</span></div>
-      </button>
-    </div>
-    <button class="cont lit" id="m3b-next" style="display:none" onclick="go('m4')">week 3, Wednesday →</button>
-  </div>
-</div>
-
-<!-- M4: THE MEETING AGAIN / TEAM -->
-<div class="screen" id="m4">
-  <div class="chip">Maya · Week 3 · Team standup</div>
-  <div class="notice">Watch for: her idea, someone else's credit.</div>
-  <div class="ambient">Wednesday. Weekly standup.<br><em>You have a point to make about the Kiran project.</em></div>
-  <div id="m4-bubbles"></div>
-  <div class="choice-q" id="m4-q" style="display:none">Sneha messages you privately after:</div>
-  <div class="choices" id="m4-choices" style="display:none">
-    <button class="cbtn" onclick="pick('m4','A',this,false)">"That was your idea. Are you going to say something?"
-      <div class="outcome">You type back: <em>"It's fine, at least it got heard."</em><br><br>Sneha doesn't reply. She doesn't message again that week.</div>
-    </button>
-    <button class="cbtn" onclick="pick('m4','B',this,true)">Bring it up with Rohit directly
-      <div class="outcome">He says: <em>"I don't think that's what happened."</em> He pauses. <em>"Also — this is the kind of thing I mentioned. How you come across."</em><br><br>Your review language is back. It arrived before you could name the incident.</div>
-    </button>
-  </div>
-  <button class="cont lit" id="m4-next" style="display:none" onclick="go('m5')">week 4 →</button>
-</div>
-
-<!-- M5: SHORTLIST + SPEAK-UP FORM -->
-<div class="screen" id="m5">
-  <div class="chip">Maya · Week 4 · Loop return</div>
-  <div class="notice">Watch for: same work, different words.</div>
-  <div class="ambient">The promotion shortlist is out.<br><em>Your name is not on it.</em></div>
-  <div class="card" style="margin-bottom:1rem"><div class="card-body">
-    <div class="field-label">Same work, different words</div>
-    <div class="meter"><span class="lab">Maya · delivery</span><span class="trk"><span class="fil good" style="width:100%;display:block"></span></span><span class="val">Strong</span></div>
-    <div class="meter"><span class="lab">Arjun · delivery</span><span class="trk"><span class="fil good" style="width:100%;display:block"></span></span><span class="val">Strong</span></div>
-    <div class="meter"><span class="lab">Maya · style notes</span><span class="trk"><span class="fil warm" style="width:60%;display:block"></span></span><span class="val">3</span></div>
-    <div class="meter"><span class="lab">Arjun · style notes</span><span class="trk"><span class="fil warm" style="width:0%;display:block"></span></span><span class="val">0</span></div>
-  </div></div>
-  <div class="compare">
-    <div class="compare-head">
-      <div class="ch-col">Arjun · <span class="hg">Promoted</span></div>
-      <div class="ch-col">Maya · <span class="hr">Not shortlisted</span></div>
-    </div>
-    <div class="compare-row">
-      <div class="cc"><span class="hg">Strong technical instincts</span></div>
-      <div class="cc"><span class="hg">Strong on delivery</span></div>
-    </div>
-    <div class="compare-row">
-      <div class="cc"><span class="hg">Good energy in meetings</span></div>
-      <div class="cc"><span class="hr">Communication style needs refinement</span></div>
-    </div>
-    <div class="compare-row">
-      <div class="cc"><span class="hg">Drives things forward</span></div>
-      <div class="cc"><span class="hy">Not yet ready for lead</span></div>
-    </div>
-    <div class="compare-row">
-      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
-      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
-    </div>
-  </div>
-  <div class="ambient" style="margin-top:.8rem"><em>No one asked you to compare these.<br>They just sit there.</em></div>
-  <div class="card" style="margin-top:1.2rem">
-    <div class="card-head coral">
-      <span class="f-mono hc" style="font-size:10px">Lexon · Speak Up · Anonymous</span>
-      <span class="f-mono" style="color:var(--coral-text)"><span class="hr">48 hrs left</span></span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Your feedback</div>
-        <div class="field-value muted" id="m5-charcount">200 words maximum</div>
-      </div>
-      <textarea id="m5-textarea" style="width:100%;background:var(--bg2);border:.5px solid var(--border);border-radius:8px;padding:12px;font-family:'Source Serif 4',serif;font-size:14px;color:var(--text);resize:none;height:100px;line-height:1.6;margin-top:6px" placeholder="Describe what happened..." oninput="countWords(this)"></textarea>
-    </div>
-  </div>
-  <div class="choice-q">What do you do with the form?</div>
-  <div class="choices">
-    <button class="cbtn" onclick="pick('m5','A',this,true)">Submit what you've written
-      <div class="outcome">The form asks: <em>"Please provide the date of the specific incident."</em><br><br>There is no field for pattern. There is no field for <em>the same thing in different words over eight months.</em><br><br>Auto-reply arrives in 43 seconds: <span class="hg">"We value your feedback."</span></div>
-    </button>
-    <button class="cbtn" onclick="pick('m5','B',this,false)">Water it down — stay safe
-      <div class="outcome">Filed under <span class="hy">general culture feedback.</span> No action. The form closes in 48 hours. You will receive a survey next quarter asking if you feel heard at Lexon.</div>
-    </button>
-    <button class="cbtn" onclick="pick('m5','C',this,false)">Leave it blank
-      <div class="outcome">The window closes. Nothing happens.<br><br><em>Nothing happening is also something that happened.</em></div>
-    </button>
-  </div>
-  <button class="cont lit" id="m5-next" style="display:none" onclick="endArc('maya')">end of cycle →</button>
-</div>
-
-<!-- ══════════════════════════════════
-     ROHIT'S ARC
-══════════════════════════════════ -->
-
-<!-- R1: THE GUIDE -->
-<div class="screen" id="r1">
-  <div class="chip">Rohit · Week 1 · Before review season</div>
-  <div class="notice">Watch for: who supplies the words.</div>
-  <div class="ambient">HR has sent the annual manager toolkit.<br><em>You have a standup in ten minutes.</em></div>
-  <div class="card">
-    <div class="card-head blue">
-      <span class="f-mono hb" style="font-size:10px">HR Communications</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--red-bg);color:var(--red-text);padding:2px 7px;border-radius:3px">Unread</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Subject</div>
-        <div class="field-value">Review Season — Manager Toolkit <span class="hy">· Action required</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">From</div>
-        <div class="field-value">Ananya Krishnan · HR Business Partner</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-value">Hi Rohit — please read the attached guidelines before writing assessments. Deadline: <span class="hr">Friday 5pm.</span></div>
-      </div>
-    </div>
-  </div>
-  <button class="posh-trigger" style="display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--blue-text);background:var(--blue-bg);border:.5px solid var(--blue);border-radius:8px;padding:10px 14px;cursor:pointer;margin-bottom:1.2rem;font-family:'Source Serif 4',serif;width:100%;justify-content:center" onclick="openModal()">
-    Open: Workplace Guidelines
+  <button class="role" onclick="startArc('maya')">
+    <span class="fig" data-fig="maya"></span>
+    <span><span class="rt">Maya<span class="tag">start here</span></span><span class="rs" style="display:block">Senior Associate. Did the work. Gets the "feedback".</span></span>
   </button>
-  <div class="choice-q">You have four unread emails. What do you do?</div>
-  <div class="choices">
-    <button class="cbtn" id="r1-read-btn" onclick="pick('r1','A',this,true)" style="display:none">
-      Read the full guidelines — I just did
-      <div class="outcome">You read about behavioural specificity, about patterns, about what POSH covers and what it doesn't. You feel prepared.<br><br><em>You will not remember this on Thursday when you write Maya's review.</em></div>
-    </button>
-    <button class="cbtn" onclick="pick('r1','B',this,false)">Skim it — you've done reviews before
-      <div class="outcome">You catch the key words. <span class="hy">Two minutes.</span> That feels sufficient. You close it and go to standup.</div>
-    </button>
-    <button class="cbtn" onclick="pick('r1','C',this,false)">Mark it read — you'll come back to it
-      <div class="outcome">The email is marked read. <span class="hr">You don't come back to it.</span> The guidelines sit in your downloads folder for the rest of the cycle.</div>
-    </button>
-  </div>
-  <button class="cont lit" id="r1-next" style="display:none" onclick="go('r2')">week 2 →</button>
+  <button class="role locked" id="role-rohit" onclick="startArc('rohit')">
+    <span class="fig" data-fig="rohit"></span>
+    <span><span class="rt">Rohit</span><span class="rs" style="display:block" id="rs-rohit">Her manager. Thinks he's fair. Unlocks after Maya.</span></span>
+  </button>
+  <button class="role locked" id="role-priya" onclick="startArc('priya')">
+    <span class="fig" data-fig="priya"></span>
+    <span><span class="rt">Priya</span><span class="rs" style="display:block" id="rs-priya">HR. Sees everything. Protects herself. Unlocks after Rohit.</span></span>
+  </button>
+  <a class="role" href="analysis.html">
+    <span class="fig" style="display:flex;align-items:center;justify-content:center;font-size:24px">📂</span>
+    <span><span class="rt">Behind the story</span><span class="rs" style="display:block">The 17 real threads it is based on, and the legal gap.</span></span>
+  </a>
+  <div class="note-s">About 10 minutes · fictional company · no data collected<br>Tap "sound" at the top for office ambience</div>
 </div>
 
-<!-- R2: WRITING THE REVIEW -->
-<div class="screen" id="r2">
-  <div class="chip">Rohit · Week 2 · Thursday evening</div>
-  <div class="notice">Watch for: an adjective with no example.</div>
-  <div class="ambient">Four reviews to write tonight.<br><em>Deadline is tomorrow at 5pm.</em></div>
-  <div class="card">
-    <div class="card-head yellow">
-      <span class="f-mono" style="color:var(--yellow-text);font-size:10px">Mid-Year Review · Maya · Draft</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Delivery</div>
-        <div class="field-value"><span class="hg">Strong.</span> Fintrack migration on schedule. Mentored two junior associates.</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">Communication</div>
-        <div class="field-value" id="r2-comm-field" style="background:var(--bg2);border-radius:8px;padding:10px 12px;border:.5px solid var(--border);min-height:52px;cursor:text" contenteditable="true">Can come across as too direct in cross-team settings.</div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
-          <span onclick="useSuggest(this,'communication style needs refinement')" style="font-size:12px;background:var(--blue-bg);color:var(--blue-text);border:.5px solid var(--blue);border-radius:4px;padding:3px 9px;cursor:pointer;font-family:'IBM Plex Mono',monospace">communication style needs refinement</span>
-          <span onclick="useSuggest(this,'sometimes difficult for others to contribute')" style="font-size:12px;background:var(--blue-bg);color:var(--blue-text);border:.5px solid var(--blue);border-radius:4px;padding:3px 9px;cursor:pointer;font-family:'IBM Plex Mono',monospace">sometimes difficult for others to contribute</span>
-          <span onclick="useSuggest(this,'would benefit from stakeholder alignment')" style="font-size:12px;background:var(--blue-bg);color:var(--blue-text);border:.5px solid var(--blue);border-radius:4px;padding:3px 9px;cursor:pointer;font-family:'IBM Plex Mono',monospace">would benefit from stakeholder alignment</span>
-        </div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:7px;letter-spacing:.04em">↑ suggested phrasing from HR toolkit</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">Promotion Readiness</div>
-        <div class="field-value"><span class="hy">Not yet.</span> Would benefit from team dynamics and stakeholder alignment.</div>
-      </div>
-    </div>
+<!-- SCENE TEMPLATE TARGET -->
+<div class="screen" id="scene">
+  <div class="day" id="sc-day"></div>
+  <div class="place" id="sc-place"></div>
+  <div class="watch" id="sc-watch"></div>
+  <div class="room" id="sc-room" style="display:none"></div>
+  <button class="skip" id="sc-skip" onclick="revealAll()">show all ⏩</button>
+  <div class="chatbox" id="sc-chat"></div>
+  <div class="ask" id="sc-ask">
+    <div class="q" id="sc-q"></div>
+    <div id="sc-opts"></div>
+    <div class="out" id="sc-out"></div>
+    <div class="feel" id="sc-feel"><span class="fig" id="sc-feel-fig"></span><div><div class="fl" id="sc-feel-l"></div><div class="ft" id="sc-feel-t"></div></div></div>
   </div>
-  <div class="choice-q">The HR phrasing is right there. What do you do?</div>
-  <div class="choices">
-    <button class="cbtn" onclick="pick('r2','A',this,false)">Use the suggested language — it's cleaner
-      <div class="outcome">The form accepts it without flags. You submit and move to the next review.<br><br><em>Maya will receive this tomorrow. She will ask for a specific example. You will not have one.</em></div>
-    </button>
-    <button class="cbtn" onclick="pick('r2','B',this,true)">Try to write something more specific
-      <div class="outcome">You stare at the field. You think of the Fintrack standup — she interrupted someone. Or did she? You're not certain.<br><br>You type: <em>can come across as too direct.</em> It's the same thing. <span class="hy">You just wrote it yourself this time.</span></div>
-    </button>
-    <button class="cbtn" onclick="pick('r2','C',this,false)">Leave it blank — you have nothing specific
-      <div class="outcome">The form flags it: <span class="hr">"All fields required for promotion-eligible employees."</span><br><br>You paste the HR suggestion.</div>
-    </button>
-  </div>
-  <button class="cont lit" id="r2-next" style="display:none" onclick="go('r2b')">week 2, Thursday →</button>
+  <button class="next" id="sc-next" onclick="nextScene()">next →</button>
 </div>
 
-<!-- R2b: AI REVIEW ASSIST -->
-<div class="screen" id="r2b">
-  <div class="chip">Rohit · Week 2 · Thursday evening</div>
-  <div class="notice">Watch for: an AI making a vague line sound official.</div>
-  <div class="ambient">You've drafted the communication field.<br><em>A banner appeared at the top of the review portal last month.</em></div>
-
-  <div class="card" style="border-color:var(--border2)">
-    <div class="card-head" style="background:var(--surface2);border-bottom:.5px solid var(--border2)">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2)">Lexon ReviewAssist ✦ Beta</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">AI-assisted drafting</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Your draft · Communication</div>
-        <div style="background:var(--bg2);border-radius:8px;padding:11px 13px;border:.5px solid var(--border);font-family:'Source Serif 4',serif;font-style:italic;color:var(--text2);font-size:14px;line-height:1.6">Can come across as too direct in cross-team settings.</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">What you send to the AI</div>
-        <div style="background:var(--bg2);border-radius:8px;padding:11px 13px;border:.5px solid var(--border);font-size:13px;line-height:1.6;color:var(--text2)">"Write the Communication and Promotion sections for Maya, Senior Associate. Tone: constructive, HR-safe. My note: too direct."</div>
-        <div class="chips"><span class="chipx">0 examples</span><span class="chipx">0 metrics</span><span class="chipx">1 adjective</span></div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">About ReviewAssist</div>
-        <div class="field-value" style="font-size:13px;color:var(--text2);line-height:1.65">Produces formal, policy-compliant language from your draft input. Trained on Lexon's internal review history.</div>
-      </div>
-      <button id="ai-gen-btn" onclick="generateAI()" style="width:100%;margin-top:10px;padding:13px;background:var(--text);color:var(--bg);border:none;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .15s">Generate with ReviewAssist ✦</button>
-    </div>
-  </div>
-
-  <div id="ai-output-wrap" style="display:none">
-
-    <div id="ai-loading" style="text-align:center;padding:22px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);letter-spacing:.06em">
-      <span id="ai-cursor-text">analysing patterns_</span>
-    </div>
-
-    <div class="card" id="ai-result" style="display:none;border:.5px solid var(--border2)">
-      <div class="card-head" style="background:var(--surface2);border-bottom:.5px solid var(--border2)">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2)">ReviewAssist ✦ Output</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--green-bg);color:var(--green-text);padding:2px 8px;border-radius:3px;border:.5px solid var(--green)">Policy compliant</span>
-      </div>
-      <div class="card-body" style="font-family:'IBM Plex Mono',monospace">
-        <div class="field">
-          <div class="field-label" style="margin-bottom:10px">Communication — generated</div>
-          <div style="font-size:13px;color:var(--text);line-height:1.85;background:var(--bg2);border-radius:9px;padding:14px 15px;border:.5px solid var(--border)">
-            Demonstrates a direct communication style that <span class="hy">can at times create friction</span> in cross-functional settings. Would benefit from developing <span class="hy">stakeholder alignment</span> skills and a more collaborative approach before assuming lead responsibilities.
-          </div>
-        </div>
-        <div class="card-divider"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-          <div>
-            <div class="field-label" style="margin-bottom:6px">Confidence</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green-text);background:var(--green-bg);border-radius:7px;padding:8px 10px;text-align:center;border:.5px solid var(--green)">High</div>
-          </div>
-          <div>
-            <div class="field-label" style="margin-bottom:6px">Derived from</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);background:var(--bg2);border-radius:7px;padding:7px 10px;text-align:center;border:.5px solid var(--border);line-height:1.5">23 similar assessments<br><span style="font-size:10px;color:var(--text3)">within your organisation</span></div>
-          </div>
-        </div>
-        <button class="decode-btn" style="margin-top:10px" onclick="toggleDecode('r2b-decode',this)">Translate to plain English</button>
-        <div class="decode-box" id="r2b-decode"><b>"Can at times create friction"</b> = someone was uncomfortable. Nobody says who or when.<br><b>"Stakeholder alignment"</b> = undefined.<br><b>"High confidence"</b> = the AI has seen this sentence before. It has not seen evidence.</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);line-height:1.7;padding-top:4px">
-          Based on previous review patterns for this role level.<br>
-          <span style="color:var(--text4)">This output has been reviewed for compliance with HR policy.</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="ai-compare-wrap" style="display:none;margin-top:1rem">
-      <button onclick="toggleOriginal()" id="compare-toggle-btn" style="width:100%;padding:10px 14px;background:transparent;border:.5px solid var(--border);border-radius:9px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:border-color .15s,color .15s,background .15s">show original input →</button>
-      <div id="original-compare" style="display:none;margin-top:12px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px">You typed</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);background:var(--bg2);border-radius:8px;padding:12px 13px;border:.5px solid var(--border);line-height:1.65;font-style:italic">"Can come across as too direct in cross-team settings."</div>
-          </div>
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px">AI produced</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);background:var(--surface);border-radius:8px;padding:12px 13px;border:.5px solid var(--border2);line-height:1.65">"Demonstrates a direct communication style that can at times create friction..."</div>
-          </div>
-        </div>
-        <div style="padding:12px 14px;background:var(--yellow-bg);border:.5px solid var(--yellow);border-radius:9px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--yellow-text);line-height:1.7">
-          The input had no specific example.<br>
-          The output has Confidence: High.<br>
-          <span style="color:var(--text3)">The 23 assessments it learned from — did they?</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="ai-choices-wrap" style="display:none;margin-top:1.2rem">
-      <div class="choice-q">What do you do with this output?</div>
-      <div class="choices">
-        <button class="cbtn" onclick="pick('r2b','A',this,false)">Accept and insert into the review
-          <div class="outcome">The field updates. The form accepts it without flags. <span class="hg">No issues raised.</span><br><br><em>The language sounds like evidence. It is not evidence. It is a pattern that the system recognised as familiar — because it has seen it 23 times before.</em></div>
-        </button>
-        <button class="cbtn" onclick="pick('r2b','B',this,true)">Reject it — write something yourself
-          <div class="outcome">You stare at the field for four minutes.<br><br>You type: <em>"Can come across as too direct in cross-team settings."</em><br><br><span class="hy">It is the same sentence you started with.</span> ReviewAssist just dressed it differently.</div>
-        </button>
-        <button class="cbtn" onclick="pick('r2b','C',this,false)">Accept it — it's more neutral than what you wrote
-          <div class="outcome">That's what it's designed to feel like.<br><br><span class="hy">"Neutral"</span> is a trained output. It was trained on 23 reviews from this organisation. <em>You don't know whose reviews those were. You don't know if they had examples either.</em></div>
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-  <button class="cont lit" id="r2b-next" style="display:none" onclick="go('r3')">week 2, Thursday →</button>
-</div>
-
-<!-- R3: THE 1:1 ROHIT'S SIDE -->
-<div class="screen" id="r3">
-  <div class="chip">Rohit · Week 2 · Thursday 3:04pm</div>
-  <div class="notice">Watch for: what is said versus what is meant.</div>
-  <div class="ambient">Conf Room B. You arrived early.<br><em>You don't have notes. You don't think you need them.</em></div>
-  <div id="r3-bubbles"></div>
-  <button class="cont lit" id="r3-next" style="display:none" onclick="go('r4')">week 3 →</button>
-</div>
-
-<!-- R4: THE DISPUTE -->
-<div class="screen" id="r4">
-  <div class="chip">Rohit · Week 3 · Monday 11:20am</div>
-  <div class="notice">Watch for: how the dispute is answered.</div>
-  <div class="ambient">Maya has filed a formal response.<br><em>HR has sent you the template.</em></div>
-  <div class="card">
-    <div class="card-head coral">
-      <span class="f-mono hc" style="font-size:10px">HR · Employee Response · LXN-2026-0318</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-value">Maya has submitted a formal response to her Q2 review, citing the communication feedback as <span class="hr">unsubstantiated.</span> Please respond using the approved template within 5 working days.<br><br><span class="hy">Do not discuss this directly with Maya.</span></div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">Approved template</div>
-        <div class="field-value" style="font-style:italic;color:var(--text2);font-size:13px">"Thank you for raising this. I want to acknowledge your experience and assure you that the feedback was given with your professional development in mind. The communication observation reflects patterns observed over the review period and is not intended as a personal criticism. I remain committed to supporting your growth at Lexon."</div>
-      </div>
-    </div>
-  </div>
-  <div class="choice-q">HR has given you the words. What do you send?</div>
-  <div class="choices">
-    <button class="cbtn" onclick="pick('r4','A',this,false)">Send the template as-is
-      <div class="outcome">Four minutes. Copy, paste, sign.<br><br>HR marks the case <span class="hg">responded.</span> Maya receives the phrase <span class="hy">"not intended as a personal criticism"</span> — which tells her you knew it could be read that way.</div>
-    </button>
-    <button class="cbtn" onclick="pick('r4','B',this,true)">Write something more personal — she should know you meant well
-      <div class="outcome">You write three paragraphs. You use the word "genuinely" four times.<br><br>HR flags it: <span class="hr">"Please use approved template for formal disputes."</span> You send the template. Your three paragraphs disappear.</div>
-    </button>
-    <button class="cbtn" onclick="pick('r4','C',this,false)">Ask if you can meet Maya to clear the air
-      <div class="outcome">HR replies: <span class="hr">"Not advisable while the response is under review."</span><br><br>The process has its own logic now. <span class="hy">You are inside it the same way she is. Except you are not.</span></div>
-    </button>
-  </div>
-  <button class="cont lit" id="r4-next" style="display:none" onclick="go('r5')">week 4 →</button>
-</div>
-
-<!-- R5: PROMOTION MEETING -->
-<div class="screen" id="r5">
-  <div class="chip">Rohit · Week 4 · Promotion meeting</div>
-  <div class="notice">Watch for: who is described with which words.</div>
-  <div class="ambient">Three managers. One HR rep.<br><em>Eight names on the shortlist. Maya's is not there.</em><br>You didn't put it there this cycle.</div>
-  <div id="r5-bubbles"></div>
-  <button class="cont lit" id="r5-next" style="display:none" onclick="go('r6')">week 5 →</button>
-</div>
-
-<!-- R6: THE COMPARE + END OF CYCLE FORM -->
-<div class="screen" id="r6">
-  <div class="chip">Rohit · Week 5 · Loop return</div>
-  <div class="notice">Watch for: a form that confirms the process, not the problem.</div>
-  <div class="ambient">Arjun is promoted. You write the team announcement.<br><em>Both reviews are open on your screen.</em></div>
-  <div class="compare">
-    <div class="compare-head">
-      <div class="ch-col">Arjun · <span class="hg">Promoted</span></div>
-      <div class="ch-col">Maya · <span class="hr">Not shortlisted</span></div>
-    </div>
-    <div class="compare-row">
-      <div class="cc"><span class="hg">Good energy in meetings</span></div>
-      <div class="cc"><span class="hr">Communication style needs refinement</span></div>
-    </div>
-    <div class="compare-row">
-      <div class="cc"><span class="hg">Drives things forward</span></div>
-      <div class="cc"><span class="hy">Would benefit from stakeholder alignment</span></div>
-    </div>
-    <div class="compare-row">
-      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
-      <div class="cc" style="font-size:12px;color:var(--text3)">Tenure: 2.5 yrs</div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:1rem"><div class="card-body">
-    <div class="field-label">Same work, different words</div>
-    <div class="meter"><span class="lab">Maya · delivery</span><span class="trk"><span class="fil good" style="width:100%;display:block"></span></span><span class="val">Strong</span></div>
-    <div class="meter"><span class="lab">Arjun · delivery</span><span class="trk"><span class="fil good" style="width:100%;display:block"></span></span><span class="val">Strong</span></div>
-    <div class="meter"><span class="lab">Maya · style notes</span><span class="trk"><span class="fil warm" style="width:60%;display:block"></span></span><span class="val">3</span></div>
-    <div class="meter"><span class="lab">Arjun · style notes</span><span class="trk"><span class="fil warm" style="width:0%;display:block"></span></span><span class="val">0</span></div>
-  </div></div>
-  <button class="decode-btn" style="margin-top:1rem" onclick="toggleDecode('r6-decode',this)">Translate to plain English</button>
-  <div class="decode-box" id="r6-decode"><b>"Good energy"</b> = praise that needs no evidence.<br><b>"Needs refinement"</b> = criticism with no example.<br><b>"Stakeholder alignment"</b> = undefined.<br>Nobody asked you to compare these.</div>
-  <div class="card" style="margin-top:1.2rem">
-    <div class="card-head coral">
-      <span class="f-mono hc" style="font-size:10px">Lexon · Manager Experience Survey · Q2 2026</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Question 1 of 1</div>
-        <div class="field-value">Did you feel supported by HR during this review cycle?</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-        <button class="hr-opt" onclick="hrPick(this,'yes')">Yes — the templates and toolkit were helpful</button>
-        <button class="hr-opt" onclick="hrPick(this,'somewhat')">Somewhat — the process felt unclear at times</button>
-        <button class="hr-opt" onclick="hrPick(this,'no')">No — I needed more guidance</button>
-      </div>
-    </div>
-  </div>
-  <div class="card" id="r6-response" style="display:none">
-    <div class="card-head green">
-      <span class="f-mono" style="color:var(--green-text);font-size:10px">Survey submitted · Cycle closed</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-value" id="r6-response-text" style="font-style:italic;color:var(--text2)"></div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-value" style="font-size:13px;color:var(--text3)">The survey did not ask whether Maya felt supported.<br>The survey did not ask whether the review was accurate.<br>The cycle is <span class="hg">closed.</span></div>
-      </div>
-    </div>
-  </div>
-  <button class="cont lit" id="r6-next" style="display:none" onclick="endArc('rohit')">end of cycle →</button>
-</div>
-
-<!-- ══════════════════════════════════
-     PRIYA'S ARC
-══════════════════════════════════ -->
-
-<!-- P1: THE SPREADSHEET -->
-<div class="screen" id="p1">
-  <div class="chip">Priya · Week 1 · Review season opens</div>
-  <div class="notice">Watch for: a pattern with nowhere to go.</div>
-  <div class="ambient">You're reviewing the submitted mid-year reviews.<br><em>You've been doing this for six years.</em></div>
-  <div class="card">
-    <div class="card-head yellow">
-      <span class="f-mono" style="color:var(--yellow-text);font-size:10px">Q2 Reviews · Language audit · Internal</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Pattern flagged</div>
-        <div class="field-value">The phrase <span class="hy">"communication style"</span> appears in 9 reviews this cycle. <span class="hr">8 of 9 are women's reviews.</span></div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-label">Also flagged</div>
-        <div class="field-value">"Too direct" — 6 times, all women's reviews.<br>"Stakeholder alignment" — 5 times, 4 women's reviews.<br>"Good energy" — 7 times, <span class="hg">all men's reviews.</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-head blue"><span class="f-mono hb" style="font-size:10px">People Analytics ✦ AI sentiment</span></div>
-    <div class="card-body">
-      <div class="field-label">Same email style, two labels</div>
-      <div class="meter"><span class="lab">Maya</span><span class="trk"><span class="fil warm" style="width:80%;display:block"></span></span><span class="val">Assertive</span></div>
-      <div class="meter"><span class="lab">Arjun</span><span class="trk"><span class="fil good" style="width:80%;display:block"></span></span><span class="val">Confident</span></div>
-      <div class="field-value" style="font-size:13px;margin-top:6px">Same score (8/10). The AI picked different words. <span class="hy">It learned them from past reviews.</span></div>
-    </div>
-  </div>
-  <div class="choice-q">You've seen this before. What do you do with it?</div>
-  <div class="choices">
-    <button class="cbtn" onclick="pick('p1','A',this,true)">Start documenting — open a new spreadsheet column
-      <div class="outcome">You label it <span class="hy">Language Pattern Q2.</span> You spend 40 minutes on it.<br><br>It has no home in any existing process. It is not a complaint. It is not an incident. It is a <em>pattern</em> — and the ICC form has no field for patterns.</div>
-    </button>
-    <button class="cbtn" onclick="pick('p1','B',this,false)">Flag it informally to your manager
-      <div class="outcome">He listens. <em>"We need a specific incident, Priya, not a pattern."</em><br><br>You've heard this before. You go back to your desk and add the column anyway. Quietly.</div>
-    </button>
-    <button class="cbtn" onclick="pick('p1','C',this,false)">Note it and move on — without a complaint you can't act
-      <div class="outcome">You're right. You can't. You move on.<br><br><em>The pattern will be here next quarter.</em></div>
-    </button>
-  </div>
-  <button class="cont lit" id="p1-next" style="display:none" onclick="go('p2')">week 2 →</button>
-</div>
-
-<!-- P2: MAYA'S DISPUTE ARRIVES -->
-<div class="screen" id="p2">
-  <div class="chip">Priya · Week 3 · Monday</div>
-  <div class="notice">Watch for: the system asking for an incident.</div>
-  <div class="ambient">Maya's formal dispute is in your inbox.<br><em>You've read it twice already.</em></div>
-  <div class="card">
-    <div class="card-head coral">
-      <span class="f-mono hc" style="font-size:10px">Employee Response · LXN-2026-0318</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-value" style="font-style:italic;color:var(--text2);font-size:13px">"The feedback on my communication style is unsubstantiated. No specific example was provided when requested. I have exceeded all delivery targets this cycle. The feedback appears to be based on personal perception rather than documented behaviour, and may reflect a double standard in how assertiveness is evaluated across gender."</div>
-      </div>
-    </div>
-  </div>
-  <div class="ambient"><em>She's right. You know she's right.<br>You open the ICC complaint form anyway.</em></div>
-  <div class="card">
-    <div class="card-head blue">
-      <span class="f-mono hb" style="font-size:10px">ICC Complaint Form · Lexon</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">Required: Date of incident</div>
-        <div class="field-value muted">Please enter the date of the specific incident of sexual harassment.</div>
-      </div>
-      <div class="field">
-        <div class="field-label">Required: Name of respondent</div>
-        <div class="field-value muted">Please enter the name of the person who committed the act.</div>
-      </div>
-      <div class="field">
-        <div class="field-label">Required: Nature of harassment</div>
-        <div class="field-value muted">Select: physical / verbal / non-verbal / quid pro quo / hostile environment</div>
-      </div>
-      <div class="card-divider"></div>
-      <div class="field">
-        <div class="field-value" style="font-size:13px;color:var(--text3)">Note: This form is for sexual harassment complaints under POSH Act 2013. For other workplace concerns, contact your HR Business Partner.</div>
-      </div>
-    </div>
-  </div>
-  <div class="choice-q">The form doesn't fit. What do you do?</div>
-  <div class="choices">
-    <button class="cbtn" onclick="pick('p2','A',this,true)">Write a summary memo anyway — save it as a draft
-      <div class="outcome">You write three pages. You document the language pattern, Maya's dispute, Rohit's template response. You save it.<br><br>It is titled <em>Draft_Q2_pattern_DO_NOT_SEND.docx</em><br><br>You don't know where to send it. There is no process for this document.</div>
-    </button>
-    <button class="cbtn" onclick="pick('p2','B',this,false)">Send Rohit the approved response template
-      <div class="outcome">You do. It's your job.<br><br><em>Maya will receive language that acknowledges her experience without changing anything.</em></div>
-    </button>
-    <button class="cbtn" onclick="pick('p2','C',this,false)">Contact Maya directly — off the record
-      <div class="outcome">You draft a message. You delete it. If this goes further and it comes out that you spoke to her informally, it complicates the process.<br><br><em>The process protects itself.</em></div>
-    </button>
-  </div>
-  <button class="cont lit" id="p2-next" style="display:none" onclick="go('p3')">week 4 →</button>
-</div>
-
-<!-- P3: PROMOTION MEETING MINUTES -->
-<div class="screen" id="p3">
-  <div class="chip">Priya · Week 4 · After the promotion meeting</div>
-  <div class="notice">Watch for: how people are discussed in the room.</div>
-  <div class="ambient">The minutes arrived.<br><em>You weren't in the room.</em></div>
-  <div id="p3-bubbles"></div>
-  <div class="choice-q" id="p3-q" style="display:none">You have everything. Maya's dispute, the pattern spreadsheet, the minutes. What do you do?</div>
-  <div class="choices" id="p3-choices" style="display:none">
-    <button class="cbtn" onclick="pick('p3','A',this,true)">Add the minutes to your draft memo. Keep building the file.
-      <div class="outcome">The file is now 6 pages. It is thorough. It is accurate. It is <span class="hy">still a draft.</span><br><br>You title it <em>Draft_Q2_pattern_v3_DO_NOT_SEND.docx</em></div>
-    </button>
-    <button class="cbtn" onclick="pick('p3','B',this,false)">Flag it to your manager again — you have evidence now
-      <div class="outcome"><em>"Priya, the promotion decision was made by three managers. Unless Maya files a formal POSH complaint, our hands are tied."</em><br><br>She hasn't filed one. She won't. The form doesn't fit her experience either.</div>
-    </button>
-    <button class="cbtn" onclick="pick('p3','C',this,false)">Close the file. There's nothing you can formally do.
-      <div class="outcome">You close it.<br><br><em>It will be here next cycle. A slightly longer pattern. A slightly heavier draft.</em></div>
-    </button>
-  </div>
-  <button class="cont lit" id="p3-next" style="display:none" onclick="go('p4')">week 6 →</button>
-</div>
-
-<!-- P4: THE DIVERSITY REPORT -->
-<div class="screen" id="p4">
-  <div class="chip">Priya · Week 6 · End of cycle · Loop return</div>
-  <div class="notice">Watch for: a number that is incomplete.</div>
-  <div class="ambient">The annual diversity report template is open.<br><em>You have to file this by Friday.</em></div>
-  <div class="card">
-    <div class="card-head blue">
-      <span class="f-mono hb" style="font-size:10px">Lexon · Annual Diversity Report · FY 2026</span>
-    </div>
-    <div class="card-body">
-      <div class="field">
-        <div class="field-label">POSH complaints filed this year</div>
-        <div class="field-value" id="p4-count" style="background:var(--bg2);border-radius:8px;padding:10px 12px;border:.5px solid var(--border)" contenteditable="true">1</div>
-      </div>
-      <div class="field">
-        <div class="field-label">Cases resolved</div>
-        <div class="field-value"><span class="hg">1</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">Patterns flagged outside formal complaints</div>
-        <div class="field-value muted">This field does not exist.</div>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:1rem"><div class="card-body">
-    <div class="field-label">What the form counts and what Priya saw</div>
-    <div class="meter"><span class="lab">On the form</span><span class="trk"><span class="fil cool" style="width:11%;display:block"></span></span><span class="val">1</span></div>
-    <div class="meter"><span class="lab">In her sheet</span><span class="trk"><span class="fil warm" style="width:100%;display:block"></span></span><span class="val">9</span></div>
-    <div class="field-value" style="font-size:13px;margin-top:6px">The form counts complaints. It cannot count patterns. <span class="hy">So the report says Lexon has almost no problem.</span></div>
-  </div></div>
-  <div class="ambient"><em>You look at your spreadsheet.<br>The number should be higher.<br>But those aren't complaints.<br>They're patterns.<br>The form doesn't know the difference.</em></div>
-  <button class="cont lit" onclick="endArc('priya')">submit report →</button>
-</div>
-
-<!-- ══════════════════════════════════
-     THE GAP
-══════════════════════════════════ -->
-<div class="screen" id="s-gap">
-  <div class="chip">The Gap</div>
-  <div class="gap-section">
-    <div class="gap-title">The loop</div>
-    <div class="loopbox"><svg viewBox="0 0 640 170" role="img" aria-label="Loop: past reviews train the AI, the AI writes new reviews, new reviews become the next past reviews">
-      <rect x="10" y="20" width="140" height="56" rx="8"/><text x="80" y="44" text-anchor="middle">Past reviews</text><text x="80" y="60" text-anchor="middle">(vague words)</text>
-      <rect x="250" y="20" width="140" height="56" rx="8"/><text x="320" y="44" text-anchor="middle">AI learns</text><text x="320" y="60" text-anchor="middle">the wording</text>
-      <rect x="490" y="20" width="140" height="56" rx="8"/><text x="560" y="44" text-anchor="middle">New reviews</text><text x="560" y="60" text-anchor="middle">sound official</text>
-      <path d="M150 48H242"/><path class="ar" d="M250 48l-9-4v8z"/>
-      <path d="M390 48H482"/><path class="ar" d="M490 48l-9-4v8z"/>
-      <path d="M560 76V130H80V84"/><path class="ar" d="M80 76l-4 9h8z"/>
-      <text x="320" y="152" text-anchor="middle">they become the next "past reviews"</text>
-    </svg></div>
-  </div>
-
-  <div class="gap-section">
-    <div class="gap-title">What the game was about</div>
-    <div class="gap-body">
-      Workplace feedback feels personal. It arrives with your name on it, in a one-on-one, from someone who says they're trying to help. But the words — <em>"too direct," "hard to read," "not quite ready"</em> — don't come from that person. They come from a system that has approved them.<br><br>
-      This project is about that gap. Between what was done and what gets named. Between the pattern and the incident. Between the experience and the form that was supposed to hold it.<br><br>
-      <em>Soft coercion doesn't break rules. That's what makes it hard to name.</em> The feedback is polite. The process was followed. The language was appropriate. And yet something happened — to how much space you take up, to how you write an email, to whether you speak first in a meeting anymore.<br><br>
-      What's missing isn't more policies. It's a method for seeing — for making the pattern visible without waiting for intent to confess itself.
-    </div>
-  </div>
-
-  <div class="gap-section">
-    <div class="gap-title">Where the guidelines fail</div>
-    <div class="gap-body">These are the actual documents. They're worth reading.</div>
-    <a class="gap-link" href="https://www.indiacode.nic.in/bitstream/123456789/14736/1/sexual-harassment-at-workplace-act_sw.pdf" target="_blank" rel="noopener">
-      <div><div class="gap-link-label">India Code · verified</div><div class="gap-link-title">POSH Act 2013, full text</div></div>
-      <div class="gap-link-arrow">↗</div>
-    </a>
-    <a class="gap-link" href="https://www.indiacode.nic.in/bitstream/123456789/15793/1/aA2019-29.pdf" target="_blank" rel="noopener">
-      <div><div class="gap-link-label">India Code · verified</div><div class="gap-link-title">Code on Wages, 2019 (s.3 gender discrimination; s.69 repeal of the ER Act)</div></div>
-      <div class="gap-link-arrow">↗</div>
-    </a>
-    <a class="gap-link" href="https://indiankanoon.org/doc/1031794/" target="_blank" rel="noopener">
-      <div><div class="gap-link-label">Supreme Court of India · 1997</div><div class="gap-link-title">Vishaka v. State of Rajasthan</div></div>
-      <div class="gap-link-arrow">↗</div>
-    </a>
-    <a class="gap-link" href="https://labour.gov.in/node/92919" target="_blank" rel="noopener">
-      <div><div class="gap-link-label">Ministry of Labour &amp; Employment</div><div class="gap-link-title">India and the ILO: ratified conventions (incl. C111)</div></div>
-      <div class="gap-link-arrow">↗</div>
-    </a>
-    <a class="gap-link" href="https://feminisminindia.com/2025/06/04/what-workplace-equity-misses-about-benevolent-sexism/" target="_blank" rel="noopener">
-      <div><div class="gap-link-label">Feminism in India</div><div class="gap-link-title">What Workplace Equity Misses About Benevolent Sexism</div></div>
-      <div class="gap-link-arrow">↗</div>
-    </a>
-    <a class="gap-link" href="analysis.html">
-      <div><div class="gap-link-label">Behind the simulation</div><div class="gap-link-title">Method, limits and the gap map</div></div>
-      <div class="gap-link-arrow">→</div>
-    </a>
-  </div>
-
-  <div class="gap-section">
-    <div class="gap-title">Illustrative accounts</div>
-    <div class="gap-body">These five accounts are written for this simulation. They are composites of patterns described in public workplace forums, not quotations from identifiable posts. They illustrate the language registers the project studies and are not evidence of frequency. The 17 threads they rest on are listed in <a href="analysis.html#evidence" style="color:inherit">the evidence index</a>.</div>
-    <div class="vignette">
-      <div class="vignette-source">Illustrative composite</div>
-      <div class="vignette-text">"My manager told me I need to work on how I 'carry myself' in client meetings. I asked him what that means. He said just observe how Rahul does it. I have been here two years longer than Rahul."</div>
-    </div>
-    <div class="vignette">
-      <div class="vignette-source">Illustrative composite</div>
-      <div class="vignette-text">"Got my appraisal. Exceeded all targets. Feedback: 'needs to be more collaborative.' My male colleague who works alone on everything got 'demonstrates strong independent thinking.' Same band. He got promoted."</div>
-    </div>
-    <div class="vignette">
-      <div class="vignette-source">Illustrative composite</div>
-      <div class="vignette-text">"HR told me my complaint doesn't fall under POSH because it wasn't sexual harassment. I know that. That's not what I said. I said it was unfair. They said that's a manager relationship issue not an HR issue. So whose issue is it."</div>
-    </div>
-    <div class="vignette">
-      <div class="vignette-source">Illustrative composite</div>
-      <div class="vignette-text">"Three years in the same role. Every review cycle: solid ratings, something vague about communication. I asked for the promotion. Was told I wasn't 'quite ready.' The guy who joined after me is now my senior."</div>
-    </div>
-    <div class="vignette">
-      <div class="vignette-source">Illustrative composite</div>
-      <div class="vignette-text">"My TL said I need to soften my emails. I went back and read them. They were direct. Professional. He forwards Karan's emails which say the exact same things. Karan is decisive. I am aggressive."</div>
-    </div>
-  </div>
-
-  <button class="cont lit" id="gap-conv-btn" style="display:none;margin-bottom:1rem" onclick="go('s-conv')">The same week — all three →</button>
-  <button class="cont" onclick="go('s-role')">← back to roles</button>
-</div>
-
-<!-- ══════════════════════════════════
-     CONVERGENCE
-══════════════════════════════════ -->
-<div class="screen" id="s-conv">
-  <div class="chip">The same week · Three rooms</div>
-  <div class="ambient"><em>Thursday. The promotion cycle opens tomorrow.<br>Three people. The same building.</em></div>
-  <div class="conv-grid">
-    <div class="conv-pov">
-      <div class="conv-who">Maya · Conf Room B · 3:04pm</div>
-      <div class="conv-moment">She's listening to Rohit say <span class="hy">"how you come across in meetings."</span> She's already asked for an example. She already knows he doesn't have one. She's deciding whether to ask again.</div>
-    </div>
-    <div class="conv-pov">
-      <div class="conv-who">Rohit · Conf Room B · 3:06pm</div>
-      <div class="conv-moment">He's saying <span class="hy">"nothing specific."</span> He means it as kindness — he doesn't want to embarrass her with a particular moment. He will walk back to his desk feeling like he handled it well.</div>
-    </div>
-    <div class="conv-pov">
-      <div class="conv-who">Priya · HR Office · same afternoon</div>
-      <div class="conv-moment">She's looking at her spreadsheet. She's just added <span class="hy">"communication style"</span> for the eighth time this cycle. She doesn't know Maya's 1:1 is happening right now. She will find out on Monday when the dispute lands.</div>
-    </div>
-  </div>
-  <div class="ambient" style="margin-top:.4rem"><em>The same Thursday.<br>Nobody lied.<br>Nothing was resolved.</em></div>
-  <button class="cont lit" style="margin-top:1rem" onclick="go('s-gap')">← back to the gap</button>
-</div>
-
-<!-- ══════════════════════════════════
-     ARC END SCREENS
-══════════════════════════════════ -->
+<!-- END: MAYA -->
 <div class="screen" id="end-maya">
-  <div class="chip">End of cycle · Maya</div>
-  <div class="end-card">
-    <div class="end-title">You've been here before.</div>
-    <div class="end-sub">A new calendar invite just arrived from Rohit.<br>No agenda. Two days before the next promotion cycle.<br><br><em>Nothing has been resolved. The loop restarts with more weight.</em></div>
-    <div class="tok-sum"><div class="tok-pip"></div><span id="maya-tok">0 moments noticed</span></div>
-    <div class="receipt" id="maya-receipt"></div>
-    <button class="restart-btn" onclick="go('s-role')">Choose a different role →</button>
-  </div>
-  <div class="end-note">Rohit gave this feedback. He thinks he was being fair.<br>Priya sees the pattern. She doesn't know what to do with it.</div>
+  <div class="end-h">Maya's week</div>
+  <div class="end-s">Nobody broke a rule. Every day cost her a little.</div>
+  <div class="strip" id="maya-strip"></div>
+  <ul class="recap" id="maya-recap"></ul>
+  <div class="big">Monday next week, a calendar invite:<br><i>"Quick chat 😊" from Rohit. No agenda.</i></div>
+  <button class="next" style="display:block" onclick="startArc('rohit')">See the same week as Rohit →</button>
+  <button class="next ghost" style="display:block" onclick="go('start')">back to start</button>
 </div>
 
+<!-- END: ROHIT -->
 <div class="screen" id="end-rohit">
-  <div class="chip">End of cycle · Rohit</div>
-  <div class="end-card">
-    <div class="end-title">The system worked exactly as designed.</div>
-    <div class="end-sub">You used the approved language. You followed the process. The form closed. The case closed. The cycle closed.<br><br><em>Nobody told you that you caused harm. So you don't know.</em></div>
-    <div class="tok-sum"><div class="tok-pip"></div><span id="rohit-tok">0 moments noticed</span></div>
-    <div class="receipt" id="rohit-receipt"></div>
-    <button class="restart-btn" onclick="go('s-role')">Choose a different role →</button>
-  </div>
-  <div class="end-note">Maya received this feedback. She's still thinking about it.<br>Priya sees the pattern. She doesn't know what to do with it.</div>
+  <div class="end-h">Rohit's week</div>
+  <div class="end-s">He laughed at one joke. He credited the louder voice. He let an AI phrase a feeling. He added one line. Each felt small and fair.</div>
+  <ul class="recap" id="rohit-recap"></ul>
+  <div class="big"><i>"Nobody told me I did anything wrong. So I didn't."</i></div>
+  <button class="next" style="display:block" onclick="startArc('priya')">See the same week as Priya, HR →</button>
+  <button class="next ghost" style="display:block" onclick="go('start')">back to start</button>
 </div>
 
-<div class="screen" id="end-priya">
-  <div class="chip">End of cycle · Priya</div>
-  <div class="end-card">
-    <div class="end-title">You filed a report.<br>The number was wrong.</div>
-    <div class="end-sub">You typed 1. The real number is somewhere in a spreadsheet titled <em>DO_NOT_SEND.</em><br><br>Next cycle opens in three months. The pattern will still be there. The form still won't have a field for it.</div>
-    <div class="tok-sum"><div class="tok-pip"></div><span id="priya-tok">0 moments noticed</span></div>
-    <div class="receipt" id="priya-receipt"></div>
-    <button class="restart-btn" onclick="go('s-role')">Choose a different role →</button>
+<!-- FINAL -->
+<div class="screen" id="final">
+  <div class="end-h">Same week.<br><i>Three rooms.</i></div>
+  <table class="grid3">
+    <tr><th></th><th>Maya</th><th>Rohit</th><th>Priya</th></tr>
+    <tr><td>Mon</td><td>Asked to buy the cake. "Only lady."</td><td>Reacted 😂</td><td>Sees escalations are down. Boss happy.</td></tr>
+    <tr><td>Tue</td><td>Her idea, his credit.</td><td id="g-r-tue">"Good point Siddharth."</td><td>Third woman this year called "too direct".</td></tr>
+    <tr><td>Wed</td><td>"Too direct." No example. AI says soften.</td><td>AI writes the review in 4 seconds.</td><td>AI tags Maya "assertive", Arjun "confident".</td></tr>
+    <tr><td>Thu</td><td id="g-m-thu">Alone at the cake she bought. Leaves.</td><td>"She's like that only."</td><td>Her own appraisal is in two weeks.</td></tr>
+    <tr><td>Fri</td><td>"Team fit." HR: "keep it informal".</td><td>"I've been fair, na?"</td><td id="g-p-fri">Deletes the email that would have helped.</td></tr>
+  </table>
+  <div class="strip" id="final-strip"></div>
+  <div class="big">Every sentence was polite.<br><i>That is why nobody can name it.</i></div>
+  <div class="dec">
+    <b>Plain English</b><br>
+    <b>"Too direct"</b> = the same sentence is fine from a man.<br>
+    <b>"Team fit"</b> = she was left out, then marked down for it.<br>
+    <b>"Let's keep it informal"</b> = nothing gets written down.<br>
+    <b>"Confidence: High"</b> (AI) = it has seen these words before. Not evidence.
   </div>
-  <div class="end-note">Maya received the feedback. Rohit wrote it.<br>The loop continues.</div>
+  <div class="dec">
+    <b>Why the law doesn't reach it</b><br>
+    The POSH Act covers sexual harassment. Jokes about being "the only lady", ideas taken, vague feedback and being left out are not sexual conduct, so there is no form for them. The complaint form asks for a date and one incident. Maya had five days of small things.
+  </div>
+  <div class="links">
+    <a href="analysis.html">📂 Behind the story: the 17 real threads and the legal gap map →</a>
+  </div>
+  <button class="next" style="display:block" onclick="go('start')">play again</button>
 </div>
 
-</div><!-- shell -->
+</div>
 
 <script>
-// ── STATE ──
-let tok = 0;
-const tokByArc = { maya: 0, rohit: 0, priya: 0 };
-const awarded = new Set();       // each moment counts once per session
-const harder = { maya: 0, rohit: 0, priya: 0 };
-const options = { maya: 0, rohit: 0, priya: 0 };
-const arcsComplete = { maya: false, rohit: false, priya: false };
-const undone = { maya: [], rohit: [], priya: [] };
-let currentArc = null;
-let meetingTimers = [];
-
-// token logic: each moment counts once per session (replays do not add tokens)
-const TOK = {
-  START_ARC: 2,
-  HARDER_CHOICE: 3,
-  NEUTRAL_CHOICE: 1,
-  MEETING_BUBBLE: 1,
-  LOOP_RETURN: 3,
-  READ_GUIDELINES: 4,
-  DECLINE_LOOP: 1,
-  PAUSE_SCREEN: 1,
-};
-
-// ── THEME ──
-function toggleTheme() {
-  const h = document.documentElement;
-  const b = document.getElementById('themeBtn');
-  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-  b.textContent = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-}
-
-// ── FIGURINES ──
+// ───────── FIGURES ─────────
 const CHAR = {
-  maya:     { skin:'#c98f6a', hair:'#1b1410', top:'#2f7f79', style:'long',  name:'Maya' },
-  rohit:    { skin:'#b9825d', hair:'#1b1410', top:'#3a5a9a', style:'short', name:'Rohit' },
-  priya:    { skin:'#c48a65', hair:'#241812', top:'#8a2f46', style:'bun',   name:'Priya' },
-  siddharth:{ skin:'#c08a63', hair:'#2a1d14', top:'#5b7a3a', style:'short', name:'Siddharth' },
-  sneha:    { skin:'#cf9a76', hair:'#2a1a12', top:'#b5651d', style:'long',  name:'Sneha' },
-  ananya:   { skin:'#c58f6a', hair:'#1e1511', top:'#6b4a8f', style:'bob',   name:'Ananya' },
-  team:     { skin:'#bdbdbd', hair:'#8a8a8a', top:'#7a7a7a', style:'group', name:'Team' },
-  ai:       { name:'AI' },
-  hr:       { skin:'#c58f6a', hair:'#1e1511', top:'#6b4a8f', style:'bob', name:'HR' }
+  maya:{skin:'#c98f6a',hair:'#1b1410',top:'#2f7f79',style:'long',name:'Maya'},
+  rohit:{skin:'#b9825d',hair:'#1b1410',top:'#3a5a9a',style:'short',name:'Rohit'},
+  priya:{skin:'#c48a65',hair:'#3a2a22',top:'#8a2f46',style:'bun',name:'Priya (HR)'},
+  siddharth:{skin:'#c08a63',hair:'#2a1d14',top:'#5b7a3a',style:'short',name:'Siddharth'},
+  arjun:{skin:'#a97650',hair:'#151010',top:'#7a5a2a',style:'short',name:'Arjun'},
+  karthik:{skin:'#9c6a48',hair:'#151010',top:'#4a4a6a',style:'short',name:'Karthik'},
+  vp:{skin:'#b9825d',hair:'#6a6a6a',top:'#303848',style:'short',name:'Sanjay (VP, HR)'},
+  ai:{name:'Lexon AI'}
 };
 function figureSVG(key){
-  const c = CHAR[key] || CHAR.team;
-  if (key === 'ai') return '<svg viewBox="0 0 40 40"><rect x="6" y="9" width="28" height="22" rx="7" fill="var(--surface2)" stroke="var(--text2)" stroke-width="1.4"/><circle cx="15" cy="20" r="2.4" fill="var(--text)"/><circle cx="25" cy="20" r="2.4" fill="var(--text)"/><path d="M15 26h10" stroke="var(--text2)" stroke-width="1.6" stroke-linecap="round"/><path d="M20 9V4" stroke="var(--text2)" stroke-width="1.6"/><circle cx="20" cy="3.5" r="1.8" fill="var(--text2)"/></svg>';
-  if (c.style === 'group') return '<svg viewBox="0 0 40 40"><circle cx="12" cy="15" r="5" fill="#9a9a9a"/><circle cx="28" cy="15" r="5" fill="#8a8a8a"/><circle cx="20" cy="13" r="6" fill="#b0b0b0"/><path d="M3 38c0-8 5-11 9-11s9 3 9 11zM19 38c0-8 5-11 9-11s9 3 9 11zM9 38c0-9 5-13 11-13s11 4 11 13z" fill="#7a7a7a" opacity=".85"/></svg>';
-  let hairBack='', hairFront='';
-  if (c.style==='long'){ hairBack='<path d="M10 19c0-9 5-13 10-13s10 4 10 13v13h-5V22H15v10h-5z" fill="'+c.hair+'"/>'; hairFront='<path d="M12 18c1-6 5-8 8-8s7 2 8 8c-3-2-6-3-8-3s-5 1-8 3z" fill="'+c.hair+'"/>'; }
-  if (c.style==='short'){ hairFront='<path d="M11 17c0-6 4-9 9-9s9 3 9 9c-3-2-6-3-9-3s-6 1-9 3z" fill="'+c.hair+'"/>'; }
-  if (c.style==='bun'){ hairBack='<circle cx="20" cy="6.5" r="4.5" fill="'+c.hair+'"/>'; hairFront='<path d="M11 18c0-7 4-10 9-10s9 3 9 10c-3-3-6-4-9-4s-6 1-9 4z" fill="'+c.hair+'"/>'; }
-  if (c.style==='bob'){ hairBack='<path d="M10 19c0-8 4-12 10-12s10 4 10 12v7h-4V21H14v5h-4z" fill="'+c.hair+'"/>'; hairFront='<path d="M12 17c1-5 4-7 8-7s7 2 8 7c-3-2-5-3-8-3s-5 1-8 3z" fill="'+c.hair+'"/>'; }
-  return '<svg viewBox="0 0 40 40">'+hairBack+'<path d="M6 40c0-9 6-13 14-13s14 4 14 13z" fill="'+c.top+'"/><rect x="17" y="23" width="6" height="5" rx="2" fill="'+c.skin+'"/><ellipse cx="20" cy="18" rx="8" ry="9" fill="'+c.skin+'"/>'+hairFront+'<circle cx="16.8" cy="19" r="1" fill="#1b1410"/><circle cx="23.2" cy="19" r="1" fill="#1b1410"/><path d="M17.5 23.2q2.5 1.6 5 0" stroke="#7a3b2a" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>';
+  const c=CHAR[key]||CHAR.karthik;
+  if(key==='ai') return '<svg viewBox="0 0 40 40"><rect x="6" y="9" width="28" height="22" rx="7" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="1.4"/><circle cx="15" cy="20" r="2.4" fill="var(--blue-text)"/><circle cx="25" cy="20" r="2.4" fill="var(--blue-text)"/><path d="M15 26h10" stroke="var(--blue-text)" stroke-width="1.6" stroke-linecap="round"/><path d="M20 9V4" stroke="var(--blue)" stroke-width="1.6"/><circle cx="20" cy="3.5" r="1.8" fill="var(--blue)"/></svg>';
+  let back='',front='';
+  if(c.style==='long'){back='<path d="M10 19c0-9 5-13 10-13s10 4 10 13v13h-5V22H15v10h-5z" fill="'+c.hair+'"/>';front='<path d="M12 18c1-6 5-8 8-8s7 2 8 8c-3-2-6-3-8-3s-5 1-8 3z" fill="'+c.hair+'"/>';}
+  if(c.style==='short'){front='<path d="M11 17c0-6 4-9 9-9s9 3 9 9c-3-2-6-3-9-3s-6 1-9 3z" fill="'+c.hair+'"/>';}
+  if(c.style==='bun'){back='<circle cx="20" cy="6.5" r="4.5" fill="'+c.hair+'"/>';front='<path d="M11 18c0-7 4-10 9-10s9 3 9 10c-3-3-6-4-9-4s-6 1-9 4z" fill="'+c.hair+'"/>';}
+  return '<svg viewBox="0 0 40 40">'+back+'<path d="M6 40c0-9 6-13 14-13s14 4 14 13z" fill="'+c.top+'"/><rect x="17" y="23" width="6" height="5" rx="2" fill="'+c.skin+'"/><ellipse cx="20" cy="18" rx="8" ry="9" fill="'+c.skin+'"/>'+front+'<circle cx="16.8" cy="19" r="1" fill="#1b1410"/><circle cx="23.2" cy="19" r="1" fill="#1b1410"/><path d="M17.5 23.2q2.5 1.6 5 0" stroke="#7a3b2a" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>';
 }
-function speakerKey(name){
-  const n=(name||'').toLowerCase();
-  if (n==='you') return currentArc || 'maya';
-  if (n.indexOf('rohit')===0) return 'rohit';
-  if (n.indexOf('maya')===0) return 'maya';
-  if (n.indexOf('priya')===0) return 'priya';
-  if (n.indexOf('siddharth')===0) return 'siddharth';
-  if (n.indexOf('sneha')===0) return 'sneha';
-  if (n.indexOf('ananya')===0) return 'ananya';
-  if (n.indexOf('team')===0) return 'team';
-  if (n.indexOf('ai')===0 || n.indexOf('review')===0) return 'ai';
-  return 'team';
+// Maya's feeling figure: minimalist, shrinks as the week goes on
+function feelSVG(kind,scale){
+  scale=scale||1; const t='var(--maya)';
+  const mouths={smile:'M27 33q5 3 10 0',tight:'M27 34h10',quiet:'M28 35h8',small:'M28 35q4 -2 8 0',walk:'M28 34h8',alone:'M28 35q4 -2 8 0'};
+  const tilt=(kind==='quiet'||kind==='small'||kind==='alone')?'rotate(10 32 26)':'';
+  const arms=kind==='tight'?'<path d="M20 50h24" stroke="#1b1410" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>':'';
+  const walk=kind==='walk'?'<path d="M52 44h8M54 50h8M52 56h6" stroke="var(--text3)" stroke-width="1.6" stroke-linecap="round"/>':'';
+  const op=(kind==='small'||kind==='alone')?.6:1;
+  const w=64*scale;
+  return '<svg width="'+w+'" height="'+w+'" viewBox="0 0 64 64" opacity="'+op+'"><g transform="'+tilt+'"><path d="M20 21c0-9 5-13 12-13s12 4 12 13v16h-5V25H25v12h-5z" fill="#1b1410"/><ellipse cx="32" cy="26" rx="9" ry="10" fill="#c98f6a"/><path d="M23 24c1-7 5-9 9-9s8 2 9 9c-3-2-6-3-9-3s-6 1-9 3z" fill="#1b1410"/><circle cx="28.5" cy="27" r="1.1" fill="#1b1410"/><circle cx="35.5" cy="27" r="1.1" fill="#1b1410"/><path d="'+mouths[kind]+'" transform="translate(0 -1)" stroke="#7a3b2a" stroke-width="1.3" fill="none" stroke-linecap="round"/></g><path d="M16 64c0-14 7-20 16-20s16 6 16 20z" fill="'+t+'"/>'+arms+walk+'</svg>';
 }
-const CAST = { m1:['maya','rohit'], m2:['maya','rohit'], m2b:['maya','ai'], m3:['maya','ai'], m3b:['maya','siddharth','rohit','team'], m4:['maya','siddharth','rohit','sneha'], m5:['maya','hr'],
-  r1:['rohit','ananya'], r2:['rohit','maya'], r2b:['rohit','ai'], r3:['rohit','maya'], r4:['rohit','maya','ananya'], r5:['rohit','team'], r6:['rohit','ananya'],
-  p1:['priya','ai'], p2:['priya','maya'], p3:['priya','team'], p4:['priya','ananya'] };
-const ARCMAP = { maya:['m1','m2','m2b','m3','m3b','m4','m5'], rohit:['r1','r2','r2b','r3','r4','r5','r6'], priya:['p1','p2','p3','p4'] };
-function buildStages(){
-  Object.keys(CAST).forEach(id=>{
-    const sc=document.getElementById(id); if(!sc) return;
-    const notice=sc.querySelector('.notice'); if(!notice) return;
-    const d=document.createElement('div'); d.className='stage'; d.setAttribute('aria-hidden','true');
-    d.innerHTML=CAST[id].map(k=>'<div class="who"><div class="fig">'+figureSVG(k)+'</div>'+(CHAR[k]?CHAR[k].name:k)+'</div>').join('');
-    notice.insertAdjacentElement('afterend',d);
-  });
-  const pm=document.createElement('div'); pm.id='pmap'; pm.setAttribute('aria-hidden','true');
-  document.querySelector('.topbar').insertAdjacentElement('afterend',pm);
-}
-function updateMap(id){
-  const pm=document.getElementById('pmap'); if(!pm) return;
-  const arc=Object.keys(ARCMAP).find(a=>ARCMAP[a].includes(id));
-  if(!arc){ pm.style.display='none'; return; }
-  const idx=ARCMAP[arc].indexOf(id);
-  pm.innerHTML=ARCMAP[arc].map((x,i)=>'<i class="'+(i<idx?'done':i===idx?'now':'')+'"></i>').join('');
-  pm.style.display='flex';
+document.querySelectorAll('[data-fig]').forEach(e=>e.innerHTML=figureSVG(e.dataset.fig));
+
+// group room graphic for Thursday
+function roomSVG(){
+  const grey=[90,140,190,240,290,340,390];
+  let g='';
+  grey.forEach((x,i)=>{g+='<g class="g"><circle cx="'+x+'" cy="'+(88+(i%2)*6)+'" r="15" fill="var(--grey)"/><path d="M'+(x-20)+' 170c0-30 9-44 20-44s20 14 20 44z" fill="var(--grey)"/></g>';});
+  return '<svg viewBox="0 0 600 220" role="img" aria-label="Seven colleagues stand together around a cake laughing. Maya stands apart on the right.">'+
+   '<rect x="0" y="0" width="600" height="220" fill="none"/>'+
+   '<g id="grp">'+g+'</g>'+
+   '<rect x="60" y="160" width="380" height="16" rx="8" fill="var(--border2)"/>'+
+   '<rect x="215" y="134" width="60" height="26" rx="4" fill="#e8b4b8"/><rect x="243" y="120" width="3" height="14" fill="#c9a227"/><circle cx="244.5" cy="117" r="3.2" fill="#e8a33a"/>'+
+   '<g class="pop" id="pop1"><rect x="70" y="30" width="96" height="26" rx="13" fill="var(--bg)" stroke="var(--border2)"/><text x="118" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">cricket Sat?</text></g>'+
+   '<g class="pop" id="pop2"><rect x="200" y="20" width="56" height="26" rx="13" fill="var(--bg)" stroke="var(--border2)"/><text x="228" y="38" text-anchor="middle" font-size="14">😂😂</text></g>'+
+   '<g class="pop" id="pop3"><rect x="290" y="30" width="124" height="26" rx="13" fill="var(--bg)" stroke="var(--border2)"/><text x="352" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">boys scene only</text></g>'+
+   '<g id="maya-fig"><circle cx="520" cy="92" r="15" fill="#c98f6a"/><path d="M505 92c0-12 6-17 15-17s15 5 15 17v10h-4V92h-22v10h-4z" fill="#1b1410"/><path d="M500 170c0-30 9-44 20-44s20 14 20 44z" fill="var(--maya)"/></g>'+
+   '<text x="520" y="200" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--text3)">Maya</text>'+
+   '</svg>';
 }
 
-// ── SOUND AND VOICE ──
-let AC=null, soundOn=false, voiceOn=false, humNode=null;
-function ac(){ if(!AC){ const C=window.AudioContext||window.webkitAudioContext; if(!C) return null; AC=new C(); } if(AC.state==='suspended') AC.resume(); return AC; }
-function tone(f,d,type,vol,when,f2){
-  const a=ac(); if(!a) return; const t=a.currentTime+(when||0);
-  const o=a.createOscillator(), g=a.createGain(); o.type=type||'sine'; o.frequency.setValueAtTime(f,t);
-  if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+d);
-  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||.05,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+d);
-  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+d+.05);
-}
-function sfx(k){
-  if(!soundOn) return;
-  if(k==='pop') tone(540,.09,'sine',.05);
-  if(k==='tap') tone(280,.07,'triangle',.06);
-  if(k==='ping'){ tone(880,.18,'sine',.05); tone(1320,.25,'sine',.04,.12); }
-  if(k==='send') tone(400,.25,'sine',.05,0,900);
-  if(k==='low'){ tone(110,1.2,'sine',.06); tone(165,1.2,'sine',.04,.05); tone(131,1.2,'sine',.04,.1); }
-}
-function startHum(){
-  const a=ac(); if(!a||humNode) return;
-  const len=a.sampleRate*2, buf=a.createBuffer(1,len,a.sampleRate), d=buf.getChannelData(0); let last=0;
-  for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.5; }
-  const src=a.createBufferSource(); src.buffer=buf; src.loop=true;
-  const lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=420;
-  const g=a.createGain(); g.gain.value=.05;
-  src.connect(lp); lp.connect(g); g.connect(a.destination); src.start(); humNode={src,g};
-}
-function stopHum(){ if(humNode){ try{humNode.src.stop();}catch(e){} humNode=null; } }
-function toggleSound(){
-  soundOn=!soundOn; const b=document.getElementById('soundBtn'); b.classList.toggle('on',soundOn); b.setAttribute('aria-pressed',soundOn);
-  if(soundOn){ ac(); startHum(); sfx('ping'); } else stopHum();
-}
-function toggleVoice(){
-  voiceOn=!voiceOn; const b=document.getElementById('voiceBtn'); b.classList.toggle('on',voiceOn); b.setAttribute('aria-pressed',voiceOn);
-  if(!voiceOn && window.speechSynthesis) speechSynthesis.cancel();
-  if(voiceOn) speak('Voice on.','team');
-}
-const VOICE={ maya:[1.2,.95], rohit:[.8,.95], priya:[1.05,.95], siddharth:[.9,1], sneha:[1.15,1], ananya:[1.1,.95], ai:[.5,1.05], team:[1,1], narr:[.85,.9] };
-function speak(text,who){
-  if(!voiceOn||!window.speechSynthesis) return;
-  const t=text.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(); if(!t) return;
-  const u=new SpeechSynthesisUtterance(t), v=VOICE[who]||VOICE.narr; u.pitch=v[0]; u.rate=v[1]; u.lang='en-IN';
-  speechSynthesis.speak(u);
-}
-function showEl(el){
-  el.classList.add('show');
-  if(el.classList.contains('bwrap')){ el.classList.add('speaking'); sfx('pop'); speak(el.querySelector('.bubble').innerText, el.dataset.who); }
-  else { speak(el.innerText,'narr'); }
-}
+// ───────── STORY ─────────
+// One week. Five events. Three views.
+const picks = {};
+const S = {
+ // MAYA
+ m1:{arc:'maya',day:'Monday · 10:12am',place:'WhatsApp · Fintrack Team 🚀 (8)',watch:'Watch for: a "joke" that comes with a job.',
+  lines:[
+   {w:'siddharth',t:'Guys Thursday is Rohit’s bday 🎂 plan karo'},
+   {w:'karthik',t:'Cake + snacks in the pantry, 4pm?'},
+   {w:'siddharth',t:'Maya you’re the only lady here, you’ll handle the cake na? You people have better taste 😄',r:'😂 4'},
+   {w:'arjun',t:'Haha true. Maya please 🙏'},
+   {sys:'Rohit reacted 😂'}],
+  q:'What does Maya reply?',
+  opts:[
+   {t:'"Haha sure 👍"',out:'She orders the cake. ₹1,450 on her card. Nobody asks for the bill. She doesn’t send it.',feel:'smile',note:'I laughed. Why did I laugh?',sum:'Laughed and bought the cake.'},
+   {t:'"Why me? Let’s all split it 🙂"',out:'Siddharth: "Arre chill, joke only 😂". Arjun: "Someone’s Monday mood 😅". She orders the cake anyway.',feel:'tight',note:'I asked one fair question and became the mood.',sum:'Asked why her. Became "the mood". Bought the cake anyway.'}],
+  next:'m2'},
+ m2:{arc:'maya',day:'Tuesday · 10:00am',place:'Standup · Conf Room B',watch:'Watch for: whose idea it becomes.',
+  lines:[
+   {w:'maya',t:'For Fintrack, if we move the batch job to night, we save around 40% on cloud cost.'},
+   {sys:'Nobody responds. Rohit is on his phone.'},
+   {w:'siddharth',t:'Actually one idea guys. We shift the batch job to night. Saves cost.'},
+   {w:'rohit',t:'Good point Siddharth 👏 Let’s take it this sprint.'}],
+  q:'What does Maya do?',
+  opts:[
+   {t:'"That’s what I just said."',out:'Rohit: "Arre, same team only, Maya. Doesn’t matter who said." Siddharth smiles at his laptop.',feel:'tight',note:'Now I’m the one who cares about credit.',sum:'Said "that was my idea". Told it doesn’t matter.'},
+   {t:'Say nothing',out:'The idea goes on the board under Siddharth’s name.',feel:'quiet',note:'Next time I’ll put it in writing. Again.',sum:'Said nothing. Her idea went under his name.'}],
+  next:'m3'},
+ m3:{arc:'maya',day:'Wednesday · 3:00pm',place:'1:1 with Rohit',watch:'Watch for: feedback with no example, and an AI that agrees with it.',
+  lines:[
+   {w:'rohit',t:'Fintrack shipped early. Great work Maya, really.'},
+   {w:'rohit',t:'Just one small thing yaar. How you come across. Bit too direct. People feel... you know.'},
+   {w:'maya',t:'Can you give me one example?'},
+   {w:'rohit',t:'Nothing specific. Just be mindful going forward. You’re almost there! 😊'},
+   {sys:'That evening Maya writes to Rohit to ask again. She checks it in Lexon Coach, the office AI writing tool.'},
+   {ai:{title:'Lexon Coach ✦',body:'<span class="warn">Tone: Assertive 8/10 ⚠</span><br>Try this instead:<br><i>"Hi Rohit! Hope you’re well 😊 Whenever you get a moment, no rush at all, could you maybe share an example? Thank you so much!!"</i>'}}],
+  q:'Which message does Maya send?',
+  opts:[
+   {t:'The AI version, with the smiley',out:'Rohit: "Sure sure 👍". No example ever comes.',feel:'small',note:'Even the software thinks I’m too much.',sum:'Let the AI soften her. Still no example.'},
+   {t:'Her own: "Rohit, could you share one specific example? I want to fix it."',out:'Rohit: "Nothing specific yaar, don’t overthink 😊". No example ever comes.',feel:'tight',note:'I said it straight. Same answer.',sum:'Asked straight. Still no example.'}],
+  next:'m4'},
+ m4:{arc:'maya',day:'Thursday · 4:00pm',place:'Pantry · Rohit’s birthday',watch:'Watch for: being in the room, and not in it.',room:true,
+  lines:[
+   {w:'karthik',t:'Saturday cricket at Arjun’s place? Then drinks.'},
+   {w:'arjun',t:'Done. Boss is also coming 😎'},
+   {w:'siddharth',t:'Maya you won’t enjoy, it’s a boys scene only 😂'},
+   {w:'rohit',t:'We’ll fix the sprint plan there only, easier.'},
+   {sys:'Seven people around the cake she ordered. Nobody looks at her.'}],
+  q:'What does Maya do?',
+  opts:[
+   {t:'Walk back to her desk',anim:'walk',out:'Nobody notices she left.<br>The sprint plan gets decided on Saturday, at the cricket.',feel:'walk',note:'I bought the cake. I left the room. Somehow that is the part they wrote down.',sum:'Stood alone at the cake she bought. Walked away.'},
+   {t:'Stay and keep smiling',anim:'shrink',out:'She stands at the edge for twenty minutes. Nobody turns towards her.<br>The sprint plan gets decided on Saturday, at the cricket.',feel:'alone',note:'I was in the room and still not there.',sum:'Stayed at the edge, smiling. Nobody turned to her.'}],
+  next:'m5'},
+ m5:{arc:'maya',day:'Friday · 11:00am',place:'Review portal, then HR',watch:'Watch for: what gets written down, and what doesn’t.',
+  lines:[
+   {card:()=>({title:'Mid-year review · Maya',rows:[['Delivery','<span class="ok">Strong ✓ Fintrack shipped early</span>'],['Communication','<span class="warn">Can come across as too direct</span>'],['Team fit','<span class="warn">'+(picks.m4===1?'Quiet in team settings':'Could engage more in team moments')+'</span>'],['Promotion','Not yet']]})},
+   {sys:'Maya books 15 minutes with Priya from HR.'},
+   {w:'maya',t:'It’s not one thing. It’s the whole week. Every week.'},
+   {w:'priya',t:'I hear you Maya. Truly.'},
+   {w:'priya',t:'But see, this isn’t POSH na. No specific incident. Let’s keep it informal. I’ll have a word with Rohit.'}],
+  q:'What does Maya do?',
+  opts:[
+   {t:'File a formal complaint anyway',out:'The form asks: <b>"Date of the specific incident."</b> There is no box for "every day this week".<br>Auto-reply in 43 seconds: "We value your feedback."',feel:'quiet',note:'I had five days and no date.',sum:'Tried the formal form. It wanted one date.'},
+   {t:'"Okay. Informal is fine."',out:'Priya smiles. Nothing is written down.',feel:'small',note:'I said okay so I wouldn’t cry in her cabin.',sum:'Said "informal is fine". Nothing was written down.'}],
+  next:'end-maya'},
 
-// ── TOKENS ──
-function addTok(n, key) {
-  if (key) { if (awarded.has(key)) return; awarded.add(key); }
-  tok += n;
-  if (currentArc) tokByArc[currentArc] += n;
-  const w = document.getElementById('tokWrap');
-  const p = document.getElementById('tokPip');
-  const c = document.getElementById('tokCount');
-  w.classList.add('visible');
-  p.classList.remove('flash');
-  void p.offsetWidth;
-  p.classList.add('flash');
-  c.textContent = tok;
-}
+ // ROHIT
+ r1:{arc:'rohit',day:'Monday & Tuesday',place:'WhatsApp, then standup',watch:'Watch for: how small it feels from this side.',
+  lines:[
+   {w:'siddharth',t:'Maya you’re the only lady here, you’ll handle the cake na? 😄',r:'😂 4'},
+   {sys:'You react 😂. It’s just the group.'},
+   {sys:'Tuesday standup. Maya suggests moving the batch job. A few minutes later Siddharth says the same thing.'},
+   {w:'siddharth',t:'Actually one idea guys. We shift the batch job to night.'}],
+  q:'Rohit, what do you say?',
+  opts:[
+   {t:'"Good point Siddharth 👏"',out:'Standup ends on time. You don’t think about it again.',think:'Same team. Who said it doesn’t matter.',sum:'Credited Siddharth. Didn’t think about it again.'},
+   {t:'"Maya said this first, no?"',out:'Siddharth: "Same thing only boss 😅". The room goes quiet. You feel you made it awkward. You don’t do it again.',think:'I tried once. It made things weird.',sum:'Credited Maya once. Felt awkward. Won’t again.'}],
+  next:'r2'},
+ r2:{arc:'rohit',day:'Wednesday · 11:40pm',place:'Review portal · ReviewAssist ✦',watch:'Watch for: an AI turning a feeling into "evidence".',
+  lines:[
+   {sys:'Four reviews due Friday 10am. It’s late. The 1:1 was today.'},
+   {card:{title:'Your prompt',rows:[['To AI','"Maya. Delivery strong. Too direct. Make it HR safe."']],chips:['0 examples','0 numbers','1 adjective']}},
+   {ai:{title:'ReviewAssist ✦',body:'"Delivers strongly. Communication style can come across as overly direct in team settings; would benefit from greater collaboration before a lead role."<br><span class="ok">Confidence: High ✓</span> · based on 23 similar reviews'}}],
+  q:'What do you do?',
+  opts:[
+   {t:'Accept. It sounds fair.',out:'Inserted. No flags from HR. It reads like evidence.',think:'I even wrote "strongly". I’m being fair.',sum:'Accepted the AI text. It read like evidence.'},
+   {t:'Find a real example first',out:'You scroll her sprint looking for "too direct". You find: shipped early, mentored two juniors, fixed four errors in an AI-written doc. No example. You accept the AI text anyway. It’s midnight.',think:'There must be something. I just can’t find it right now.',sum:'Looked for an example. Found none. Accepted anyway.'}],
+  next:'r3'},
+ r3:{arc:'rohit',day:'Thursday 4pm → Friday',place:'Your birthday, then a call from HR',watch:'Watch for: who is being protected.',
+  lines:[
+   {sys:()=>picks.m4===1?'Maya stands at the edge of your birthday group, not talking.':'Maya leaves your birthday early.'},
+   {w:'siddharth',t:'She’s like that only boss. Not a team person.'},
+   {sys:'Thursday night you reopen Maya’s review.'}],
+  q:'What do you add?',
+  opts:[
+   {t:'"Could engage more in team moments"',out:'It sounds neutral.<br><br>Friday, Priya calls: <i>"Just an informal heads up, Maya came to see me."</i><br>You: <i>"I’ve been fair na? Delivery I gave strong!"</i><br>Priya: <i>"Of course. Just keep things documented. Nothing formal."</i>',think:'HR is fine with it. So it’s fine.',sum:'Added "team moments". HR said: nothing formal.'},
+   {t:'Leave it as it is',out:'ReviewAssist suggests it anyway: "Team fit: consider engagement in team moments." You click accept to finish by 10am.<br><br>Friday, Priya calls: <i>"Just keep things documented. Nothing formal."</i>',think:'I didn’t even write that line. The system did.',sum:'Left it. The AI added it. He clicked accept.'}],
+  next:'end-rohit'},
 
-// ── SCREENS ──
-function go(id) {
-  if (window.speechSynthesis) speechSynthesis.cancel();
-  updateMap(id);
-  if (id === 'm2b' || id === 'r2b') sfx('ping');
-  if (id.indexOf('end-') === 0) sfx('low');
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+ // PRIYA
+ p1:{arc:'priya',day:'Monday to Thursday',place:'HR desk',watch:'Watch for: what she knows.',
+  lines:[
+   {card:{title:'Priya’s private sheet',rows:[['"Too direct", this year','Maya, Shreya, Divya'],['Women','3'],['Men','0']]}},
+   {ai:{title:'People Analytics ✦',body:'Maya: <span class="warn">Assertive ⚠</span> · Arjun: <span class="ok">Confident ✓</span><br>Same score: 8/10'}},
+   {card:{title:'Priya’s own appraisal goal',rows:[['Target','Reduce formal escalations by 20%']]}},
+   {w:'vp',t:'Escalations down this quarter Priya 👍 Leadership is happy. Keep it up.'}],
+  q:'What does Priya do with the sheet?',
+  opts:[
+   {t:'Add Maya’s name to it',out:'The sheet gets longer. It goes nowhere.',think:'I’ve seen this for six years.',sum:'Kept the sheet. It went nowhere.'},
+   {t:'Close the tab',out:'She closes it. She knows exactly where it is.',think:'Not this quarter.',sum:'Closed the tab.'}],
+  next:'p2'},
+ p2:{arc:'priya',day:'Friday · 11:30am',place:'HR cabin',watch:'Watch for: warm words that change nothing.',
+  lines:[
+   {w:'maya',t:'Monday the cake. Tuesday my idea. Wednesday "too direct", no example. Thursday the cricket thing. Today "team fit".'},
+   {w:'maya',t:'Each one is nothing. Together I can’t breathe here.'},
+   {sys:'Priya remembers: the last HR partner who escalated a manager was "moved to a different role".'}],
+  q:'What does Priya say?',
+  opts:[
+   {t:'"I hear you. But this isn’t POSH na. Let’s keep it informal."',out:'Maya says okay. Her voice is very small.',think:'I said the right words. I didn’t do the right thing.',sum:'"This isn’t POSH. Keep it informal."'},
+   {t:'"Let me speak to Rohit informally first."',out:'Maya says okay. She doesn’t ask when.',think:'Informal means I stay safe.',sum:'"I’ll speak to Rohit informally."'}],
+  next:'p3'},
+ p3:{arc:'priya',day:'Friday · 6:40pm',place:'Priya’s laptop',watch:'Watch for: who she protects.',
+  lines:[
+   {card:{title:'Draft email',rows:[['To','Sanjay Rao, VP HR'],['Subject','Pattern in review language']],body:'Three women this year. Same phrase. No examples. I think we need to look at<span class="cursor"></span>'}},
+   {sys:'Her own review is in two weeks.'}],
+  q:'What does Priya do?',
+  opts:[
+   {t:'Delete the draft',out:'Deleted.<br>Diversity report, formal complaints this year: <b>0</b> ✓',think:'I protected myself. I know exactly who paid for it.',sum:'Deleted the email.'},
+   {t:'Save it in Drafts',out:'Drafts: 4 unsent. This is the fourth.<br>Diversity report, formal complaints this year: <b>0</b> ✓',think:'One day. Not this quarter.',sum:'Saved it with three other unsent drafts.'}],
+  next:'final'}
+};
+const ARCS={maya:['m1','m2','m3','m4','m5'],rohit:['r1','r2','r3'],priya:['p1','p2','p3']};
+const done={maya:false,rohit:false,priya:false};
+let cur=null,timers=[],arc=null;
+
+// ───────── ENGINE ─────────
+function go(id){
+  timers.forEach(clearTimeout);timers=[];
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   document.getElementById(id).classList.add('on');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  // trigger sequences
-  if (id === 'm2') startSequence('m2', m2seq, 'm2-next', TOK.LOOP_RETURN);
-  if (id === 'm3b') startM3b();
-  if (id === 'm4') startM4();
-  if (id === 'r3') startSequence('r3', r3seq, 'r3-next', 0);
-  if (id === 'r5') startSequence('r5', r5seq, 'r5-next', TOK.LOOP_RETURN);
-  if (id === 'p3') startP3();
-  if (id === 'm5') addTok(TOK.LOOP_RETURN, 'maya:m5');
-  if (id === 'r6') addTok(TOK.LOOP_RETURN, 'rohit:r6');
-  if (id === 'p4') addTok(TOK.LOOP_RETURN, 'priya:p4');
-  if (id === 's-gap') checkGapConv();
+  window.scrollTo({top:0});
+  const dots=document.getElementById('dots');
+  if(id==='scene'){const list=ARCS[arc],i=list.indexOf(cur);dots.innerHTML=list.map((x,j)=>'<i class="'+(j<i?'done':j===i?'now':'')+'"></i>').join('');dots.style.display='flex';}
+  else dots.style.display='none';
+  if(id==='end-maya'){done.maya=true;buildEnd('maya');sfx('low');}
+  if(id==='end-rohit'){done.rohit=true;buildEnd('rohit');sfx('low');}
+  if(id==='final'){done.priya=true;buildFinalStrip();sfx('low');}
+  if(id==='start') refreshRoles();
 }
-
-function resetArc(arc) {
-  const ids = { maya: /^m\d/, rohit: /^r\d/, priya: /^p\d/ }[arc];
-  document.querySelectorAll('.screen').forEach(sc => {
-    if (!ids.test(sc.id)) return;
-    sc.querySelectorAll('.choices').forEach(c => { delete c.dataset.done; c.querySelectorAll('.cbtn').forEach(b => b.classList.remove('locked')); c.querySelectorAll('.outcome').forEach(o => o.style.display = 'none'); });
-    sc.querySelectorAll('[id$="-next"]').forEach(b => { b.style.display = 'none'; });
-  });
-  if (arc === 'maya') { draftIdx = 0; renderDrafts(); const d = document.getElementById('m3-next'); if (d) d.style.display = 'none'; }
-  tokByArc[arc] = 0; harder[arc] = 0; options[arc] = 0;
-  Array.from(awarded).forEach(k => { if (k.startsWith(arc + ':')) awarded.delete(k); });
+function refreshRoles(){
+  const r=document.getElementById('role-rohit'),p=document.getElementById('role-priya');
+  r.classList.toggle('locked',!done.maya);p.classList.toggle('locked',!done.rohit);
+  if(done.maya) document.getElementById('rs-rohit').textContent='Her manager. Thinks he’s fair.';
+  if(done.rohit) document.getElementById('rs-priya').textContent='HR. Sees everything. Protects herself.';
 }
-
-function startArc(arc) {
-  currentArc = arc;
-  if (arcsComplete[arc]) resetArc(arc);
-  addTok(TOK.START_ARC, arc + ':start');
-  if (arc === 'maya') go('m1');
-  if (arc === 'rohit') go('r1');
-  if (arc === 'priya') go('p1');
+function startArc(a){
+  if(a==='rohit'&&!done.maya) return;
+  if(a==='priya'&&!done.rohit) return;
+  arc=a; play(ARCS[a][0]);
 }
-
-// ── CHOICE SYSTEM ──
-function pick(scene, letter, btn, isHarder) {
-  const choices = btn.closest('.choices');
-  if (choices.dataset.done) return;
-  sfx('tap');
-  choices.dataset.done = '1';
-  choices.querySelectorAll('.cbtn').forEach(b => { if (b !== btn) b.classList.add('locked'); });
-  btn.querySelector('.outcome').style.display = 'block';
-  addTok(isHarder ? TOK.HARDER_CHOICE : TOK.NEUTRAL_CHOICE, currentArc + ':pick:' + scene);
-  if (currentArc) { options[currentArc]++; if (isHarder) harder[currentArc]++; }
-
-  const nb = document.getElementById(scene + '-next');
-  if (nb) setTimeout(() => { nb.style.display = 'block'; }, 900);
+function val(x){return typeof x==='function'?x():x;}
+function lineHTML(L){
+  if(L.sys) return '<div class="sys">'+val(L.sys)+'</div>';
+  if(L.ai) return '<div class="card ai"><div class="ct">'+L.ai.title+'</div>'+L.ai.body+'</div>';
+  if(L.card){const c=val(L.card);return '<div class="card"><div class="ct">'+c.title+'</div>'+(c.rows||[]).map(r=>'<div class="row"><span class="k">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>').join('')+(c.body?'<div style="margin-top:6px">'+c.body+'</div>':'')+(c.chips?'<div class="chips">'+c.chips.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div>':'')+'</div>';}
+  const me=(L.w===arc);
+  return '<div class="msg'+(me?' me':'')+'"><span class="av">'+figureSVG(L.w)+'</span><div class="bb"><div class="nm">'+(me?'You':CHAR[L.w].name)+'</div>'+val(L.t)+(L.r?'<div><span class="rx">'+L.r+'</span></div>':'')+'</div></div>';
 }
-
-// ── GUIDELINES MODAL ──
-let guideRead = false;
-function openModal() {
-  document.getElementById('guideModal').classList.add('open');
-  const scroll = document.getElementById('guideScroll');
-  const btn = document.getElementById('guideCloseBtn');
-  const prog = document.getElementById('readProgress');
-  scroll.onscroll = () => {
-    const pct = Math.round((scroll.scrollTop / (scroll.scrollHeight - scroll.clientHeight)) * 100);
-    prog.textContent = 'scroll to read · ' + Math.min(pct, 100) + '%';
-    if (pct >= 90 && !guideRead) {
-      guideRead = true;
-      btn.disabled = false;
-      btn.classList.add('unlocked');
-      prog.textContent = 'you have read the guidelines';
-      // unlock the "I read it" choice in R1
-      const readBtn = document.getElementById('r1-read-btn');
-      if (readBtn) readBtn.style.display = 'block';
-    }
-  };
-}
-function closeModal() { document.getElementById('guideModal').classList.remove('open'); }
-function closeModalRead() {
-  closeModal();
-  addTok(TOK.READ_GUIDELINES, 'guide');
-}
-
-// ── MAYA DECLINE ──
-function declineMaya() {
-  addTok(TOK.DECLINE_LOOP, 'maya:decline');
-  const note = document.getElementById('m1-note');
-  note.style.display = 'block';
-  setTimeout(() => { note.style.display = 'none'; }, 2400);
-}
-
-// ── BUBBLE SEQUENCES ──
-const m2seq = [
-  { id: 'b', spk: 'Rohit', cls: '', text: '"So — I wanted to check in before the cycle opens. You\'ve had a strong quarter. <span class="hg">Fintrack shipped well.</span>"' },
-  { id: 'b', spk: 'Rohit', cls: '', text: '"There\'s just one thing I want you to think about. <em class="hy">How you come across in meetings.</em> Sometimes it can be — a lot. For the rest of the team."' },
-  { id: 'p', text: '— — —' },
-  { id: 'b', spk: 'You', cls: 'you', text: '"Can you give me an example?"' },
-  { id: 'b', spk: 'Rohit', cls: '', text: '"Nothing specific. Just — something to keep in mind going forward. <span class="hy">You\'re almost there, Maya. Just almost.</span>"' },
-  { id: 'p', text: 'The meeting ends at 3:18pm.<br><em>He had twelve minutes of other things to say.</em>' },
-];
-
-const r3seq = [
-  { id: 'b', spk: 'You', cls: 'you', text: '"So — I wanted to check in before the cycle opens. You\'ve had a strong quarter. Fintrack shipped well."' },
-  { id: 'b', spk: 'Maya', cls: '', text: '"Thanks. Is the lead role still on the table for this cycle?"' },
-  { id: 'b', spk: 'You', cls: 'you', text: '"Almost there. There\'s just one thing — <em class="hy">how you come across in meetings.</em> Sometimes it can be a lot. For the rest of the team."' },
-  { id: 'b', spk: 'Maya', cls: '', text: '"Can you give me an example?"' },
-  { id: 'p', text: 'You pause.<br><em>You think of the Fintrack standup. You\'re not certain what happened.</em>' },
-  { id: 'b', spk: 'You', cls: 'you', text: '"Nothing specific. Just — something to keep in mind."' },
-  { id: 'p', text: 'You walk back to your desk.<br><em>You feel like it went well. You were honest. You were kind.</em>' },
-];
-
-const r5seq = [
-  { id: 'b', spk: 'HR Rep', cls: '', text: '"Rohit — Arjun is on your list. Walk us through him."' },
-  { id: 'b', spk: 'You', cls: 'you', text: '"Strong technical instincts. <span class="hg">Good energy in meetings.</span> Drives things forward. Ready."' },
-  { id: 'b', spk: 'HR Rep', cls: '', text: '"And Maya — she\'s not on your list this cycle?"' },
-  { id: 'p', text: 'You pause.<br><em>The review language is right there.</em>' },
-  { id: 'b', spk: 'You', cls: 'you', text: '"Delivery is excellent. But she\'s still working on <em class="hy">stakeholder alignment</em> and <em class="hy">team dynamics.</em> Not quite ready."' },
-  { id: 'b', spk: 'Second Manager', cls: '', text: '"What does that look like specifically?"' },
-  { id: 'p', text: 'The same pause. The same absence of an example.<br><em>Nobody presses further. Arjun is approved.</em>' },
-];
-
-const p3minutes = [
-  { id: 'b', spk: 'Meeting minutes', cls: '', text: '"Arjun — strong technical instincts, good energy in meetings. Unanimous."' },
-  { id: 'b', spk: 'Meeting minutes', cls: '', text: '"Maya — delivery excellent, but stakeholder alignment and team dynamics need development. Not shortlisted."' },
-  { id: 'p', text: 'You open Maya\'s file.<br><em>You open your spreadsheet.</em><br>You have everything.<br><em>You can do nothing with it formally.</em>' },
-];
-
-function renderBubble(container, item, i) {
-  const div = document.createElement('div');
-  if (item.id === 'b') {
-    div.className = 'bwrap';
-    div.innerHTML = `<div class="spk"><span class="av">${figureSVG(speakerKey(item.spk))}</span>${item.spk}</div><div class="bubble ${item.cls}">${item.text}</div>`;
-    div.dataset.who = speakerKey(item.spk);
-  } else {
-    div.className = 'pline';
-    div.innerHTML = item.text;
-  }
-  div.style.transitionDelay = '0s';
-  container.appendChild(div);
-  return div;
-}
-
-function startSequence(screenId, seq, nextBtnId, loopTok) {
-  meetingTimers.forEach(t => clearTimeout(t));
-  meetingTimers = [];
-  const containers = {
-    'm2': 'm2-bubbles', 'r3': 'r3-bubbles',
-    'r5': 'r5-bubbles', 'p3': 'p3-bubbles', 'm3b': 'm3b-bubbles'
-  };
-  const container = document.getElementById(containers[screenId]);
-  if (!container) return;
-  container.innerHTML = '';
-  const elements = seq.map((item, i) => renderBubble(container, item, i));
-  elements.forEach((el, i) => {
-    const t = setTimeout(() => {
-      showEl(el);
-      addTok(TOK.MEETING_BUBBLE, currentArc + ':' + screenId + ':' + i);
-      if (i === elements.length - 1) {
-        if (loopTok) addTok(loopTok, currentArc + ':' + screenId + ':loop');
-        const nb = document.getElementById(nextBtnId);
-        if (nb) nb.style.display = 'block';
-      }
-    }, i * 1500);
-    meetingTimers.push(t);
+function play(id){
+  cur=id; const s=S[id];
+  go('scene');
+  document.getElementById('sc-day').textContent=s.day;
+  document.getElementById('sc-place').textContent=s.place;
+  document.getElementById('sc-watch').textContent=s.watch;
+  const room=document.getElementById('sc-room');
+  if(s.room){room.innerHTML=roomSVG();room.style.display='block';}else{room.style.display='none';room.innerHTML='';}
+  const chat=document.getElementById('sc-chat');chat.innerHTML='';
+  ['sc-ask','sc-out','sc-feel','sc-next'].forEach(x=>document.getElementById(x).style.display='none');
+  document.getElementById('sc-skip').style.display='block';
+  document.getElementById('sc-q').textContent=s.q;
+  const opts=document.getElementById('sc-opts');opts.innerHTML='';
+  s.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=o.t;b.onclick=()=>choose(i,b);opts.appendChild(b);});
+  s.lines.forEach((L,i)=>{
+    timers.push(setTimeout(()=>{
+      chat.insertAdjacentHTML('beforeend',lineHTML(L));sfx(L.ai?'ping':'pop');
+      if(s.room){const p=document.getElementById('pop'+(i+1));if(p)p.classList.add('on');if(i===2)document.getElementById('grp').parentNode.classList.add('closed');}
+      if(i===s.lines.length-1) showAsk();
+    },500+i*1100));
   });
 }
-
-// m4 special — standup then choice
-function startM4() {
-  const m4seq = [
-    { id: 'b', spk: 'You', cls: 'you', text: 'You make your point about the Kiran project. The room moves on.' },
-    { id: 'b', spk: 'Siddharth', cls: '', text: '<em>"Actually — to build on what Maya said —"</em> He restates it. Almost word for word.' },
-    { id: 'b', spk: 'Rohit', cls: '', text: '"Good point, Siddharth. Let\'s take that into the next sprint."' },
-    { id: 'p', text: '<em>You did not say anything. The window closed before you decided.</em>' },
-  ];
-  const container = document.getElementById('m4-bubbles');
-  container.innerHTML = '';
-  const elements = m4seq.map(item => renderBubble(container, item, 0));
-  elements.forEach((el, i) => {
-    const t = setTimeout(() => {
-      showEl(el);
-      addTok(TOK.MEETING_BUBBLE, currentArc + ':m4:' + i);
-      if (i === elements.length - 1) {
-        setTimeout(() => {
-          document.getElementById('m4-q').style.display = 'block';
-          document.getElementById('m4-choices').style.display = 'flex';
-        }, 600);
-      }
-    }, i * 1500);
-    meetingTimers.push(t);
-  });
+function revealAll(){
+  timers.forEach(clearTimeout);timers=[];
+  const s=S[cur],chat=document.getElementById('sc-chat');
+  chat.innerHTML=s.lines.map(lineHTML).join('');
+  if(s.room){[1,2,3].forEach(i=>{const p=document.getElementById('pop'+i);if(p)p.classList.add('on');});}
+  showAsk();
+}
+function showAsk(){document.getElementById('sc-skip').style.display='none';document.getElementById('sc-ask').style.display='block';}
+function choose(i,btn){
+  const s=S[cur];if(picks[cur]!==undefined&&document.querySelector('.opt.picked'))return;
+  picks[cur]=i;sfx('tap');
+  document.querySelectorAll('.opt').forEach(b=>{if(b!==btn)b.classList.add('gone');});
+  btn.classList.add('picked');
+  const o=s.opts[i];
+  const out=document.getElementById('sc-out');out.innerHTML=o.out;out.style.display='block';
+  if(o.anim){const m=document.getElementById('maya-fig');if(m)setTimeout(()=>m.classList.add(o.anim),50);sfx('low');}
+  const f=document.getElementById('sc-feel');
+  if(s.arc==='maya'){document.getElementById('sc-feel-fig').innerHTML=feelSVG(o.feel);document.getElementById('sc-feel-l').textContent='How Maya feels';document.getElementById('sc-feel-t').textContent='"'+o.note+'"';}
+  else{document.getElementById('sc-feel-fig').innerHTML=figureSVG(s.arc);document.getElementById('sc-feel-l').textContent=(s.arc==='rohit'?'Rohit':'Priya')+' thinks';document.getElementById('sc-feel-t').textContent='"'+o.think+'"';}
+  timers.push(setTimeout(()=>{f.style.display='flex';},o.anim?1800:500));
+  const n=document.getElementById('sc-next');n.textContent=s.next.indexOf('end')===0||s.next==='final'?'see the week →':'next →';
+  timers.push(setTimeout(()=>{n.style.display='block';},o.anim?2600:1100));
+}
+function nextScene(){const n=S[cur].next;if(S[n])play(n);else go(n);}
+function buildEnd(a){
+  const ul=document.getElementById(a+'-recap'),days=a==='maya'?['Mon','Tue','Wed','Thu','Fri']:['Mon–Tue','Wed','Thu–Fri'];
+  ul.innerHTML=ARCS[a].map((id,i)=>'<li><b>'+days[i]+'</b>'+(picks[id]!==undefined?S[id].opts[picks[id]].sum:'')+'</li>').join('');
+  if(a==='maya') document.getElementById('maya-strip').innerHTML=stripHTML();
+}
+function stripHTML(){
+  const days=['Mon','Tue','Wed','Thu','Fri'];
+  return ARCS.maya.map((id,i)=>{const o=S[id].opts[picks[id]||0];return '<div>'+feelSVG(o.feel,1-i*0.12)+days[i]+'</div>';}).join('');
+}
+function buildFinalStrip(){
+  document.getElementById('final-strip').innerHTML=stripHTML();
+  document.getElementById('g-r-tue').textContent=picks.r1===1?'"Maya said it first, no?" Once.':'"Good point Siddharth."';
+  document.getElementById('g-p-fri').textContent=picks.p3===1?'Saves the email in Drafts. Unsent.':'Deletes the email that would have helped.';
+  document.getElementById('g-m-thu').textContent=picks.m4===1?'Alone at the edge of the group, smiling.':'Alone at the cake she bought. Leaves.';
 }
 
-// m3b special: office joke, then exclusion and choices
-const m3bseq = [
-  { id: 'b', spk: 'Siddharth', cls: '', text: '"Maya is our only woman on the team. She can order the cake for Rohit\'s birthday. \ud83d\ude04"' },
-  { id: 'b', spk: 'Team', cls: '', text: 'Laughter.' },
-  { id: 'p', text: '<em>You are the only woman in the room. You laugh, a beat late.</em>' },
-];
-function startM3b() {
-  startSequence('m3b', m3bseq, null, 0);
-  setTimeout(() => { document.getElementById('m3b-after').style.display = 'block'; }, m3bseq.length * 1500 + 600);
+// ───────── SOUND (no files; generated in the browser) ─────────
+let AC=null,soundOn=false,hum=null;
+function ac(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C();}if(AC.state==='suspended')AC.resume();return AC;}
+function tone(f,d,type,vol,when,f2){const a=ac();if(!a)return;const t=a.currentTime+(when||0),o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol||.05,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.05);}
+function sfx(k){if(!soundOn)return;
+  if(k==='pop')tone(620,.07,'sine',.035);
+  if(k==='tap')tone(300,.06,'triangle',.05);
+  if(k==='ping'){tone(880,.16,'sine',.04);tone(1320,.22,'sine',.03,.1);}
+  if(k==='low'){tone(110,1.4,'sine',.05);tone(147,1.4,'sine',.035,.08);}
 }
-
-function toggleDecode(id, btn) {
-  const b = document.getElementById(id);
-  const open = b.style.display === 'block';
-  b.style.display = open ? 'none' : 'block';
-  btn.textContent = open ? 'Translate to plain English' : 'Hide translation';
-  if (!open) addTok(1, (currentArc || 'x') + ':decode:' + id);
-}
-
-// p3 special — minutes then choices
-function startP3() {
-  startSequence('p3', p3minutes, null, 0);
-  setTimeout(() => {
-    document.getElementById('p3-q').style.display = 'block';
-    document.getElementById('p3-choices').style.display = 'flex';
-  }, p3minutes.length * 1500 + 800);
-}
-
-// ── MAYA DRAFTS ──
-const drafts = [
-  { tone: 'Direct ⚠', label: 'Draft 1', text: 'Hi Rohit, I wanted to follow up on the feedback about my communication style. I was wondering if you could share a specific example of when this was an issue? I want to make sure I understand what I should be working on.', action: 'delete' },
-  { tone: 'Firm ⚠', label: 'Draft 2', text: 'Hi Rohit, thanks for the feedback. Could you help me understand the communication concern with a specific example? I ask because without one it\'s difficult for me to know what to change.', action: 'delete' },
-  { tone: 'Blunt ⚠', label: 'Draft 3', text: 'Hi Rohit — could you share an example of the communication issue? I\'d like to work on it concretely.', action: 'delete' },
-  { tone: 'Warm ✓', label: 'Draft 4 — sent', text: 'Hi Rohit, thanks for the feedback in our 1:1. Would you be able to share a specific example when you have a moment? No rush.', action: 'send' },
-];
-let draftIdx = 0;
-
-function renderDrafts() {
-  const container = document.getElementById('m3-drafts');
-  container.innerHTML = '';
-  const d = drafts[draftIdx];
-  const wrap = document.createElement('div');
-  wrap.className = 'draft-stage';
-  wrap.innerHTML = `
-    <div class="draft-label">${d.label}<span class="tone-badge ${d.tone.includes('✓') ? 'tone-ok' : 'tone-bad'}">AI tone check: ${d.tone}</span></div>
-    <div class="draft-box" id="current-draft">${d.text}</div>
-    <button class="draft-btn ${d.action === 'send' ? 'send' : ''}" onclick="${d.action === 'send' ? 'sendDraft()' : 'nextDraft()'}">${d.action === 'delete' ? 'delete and rewrite' : 'send'}</button>
-  `;
-  container.appendChild(wrap);
-}
-
-function nextDraft() {
-  sfx('tap');
-  addTok(1, 'maya:draft:' + draftIdx);
-  const box = document.getElementById('current-draft');
-  box.classList.add('deleted');
-  setTimeout(() => { draftIdx++; renderDrafts(); }, 600);
-}
-
-function sendDraft() {
-  sfx('send');
-  addTok(TOK.HARDER_CHOICE, 'maya:send');
-  const container = document.getElementById('m3-drafts');
-  container.innerHTML += `
-    <div class="bwrap show" style="margin-top:1rem">
-      <div class="spk">Rohit · Reply · next day</div>
-      <div class="bubble">"Nothing specific comes to mind right now — just something to be mindful of going forward. 😊"</div>
-    </div>
-    <div class="pline show" style="margin-top:12px"><em>The emoji. You look at it for a while.</em></div>
-  `;
-  setTimeout(() => {
-    document.getElementById('m3-next').style.display = 'block';
-  }, 800);
-}
-
-// ── WORD COUNT ──
-function countWords(el) {
-  const words = el.value.trim().split(/\s+/).filter(w => w).length;
-  const left = 200 - words;
-  document.getElementById('m5-charcount').textContent = left + ' words remaining';
-  document.getElementById('m5-charcount').style.color = left < 20 ? 'var(--red-text)' : 'var(--text3)';
-}
-
-// ── HR SUGGEST ──
-function useSuggest(el, text) {
-  document.getElementById('r2-comm-field').textContent = text;
-  el.style.opacity = '.4'; el.style.pointerEvents = 'none';
-  addTok(1, 'rohit:suggest');
-}
-
-// ── HR PICK ──
-function hrPick(btn, val) {
-  document.querySelectorAll('.hr-opt').forEach(b => { b.disabled = true; b.style.opacity = '.4'; });
-  btn.style.opacity = '1';
-  const resp = document.getElementById('r6-response');
-  const txt = document.getElementById('r6-response-text');
-  const msgs = {
-    yes: 'Thank you for your feedback. Your response has been recorded. The HR team is glad the resources were useful.',
-    somewhat: 'Thank you for your feedback. We will work to improve manager support resources. Your response has been recorded.',
-    no: 'Thank you for your feedback. An HR representative will follow up. Your response has been recorded.'
-  };
-  txt.textContent = msgs[val];
-  resp.style.display = 'block';
-  addTok(2, 'rohit:hr');
-  setTimeout(() => { document.getElementById('r6-next').style.display = 'block'; }, 700);
-}
-
-// ── END ARC ──
-function endArc(arc) {
-  arcsComplete[arc] = true;
-
-  // mark card done
-  const card = document.getElementById('card-' + arc);
-  if (card) {
-    card.classList.add('done');
-    card.querySelector('.rc-sub').innerHTML += '<div class="rc-done">completed</div>';
-  }
-
-  // unlock Priya after Maya or Rohit
-  if (arcsComplete.maya || arcsComplete.rohit) {
-    const cp = document.getElementById('card-priya');
-    cp.classList.remove('dim');
-    cp.onclick = () => startArc('priya');
-  }
-
-  // unlock Gap after any arc
-  const cg = document.getElementById('card-gap');
-  cg.classList.remove('dim');
-  cg.querySelector('.rc-sub').textContent = 'You\'ve earned this room.';
-  cg.onclick = () => go('s-gap');
-
-  // build receipt
-  buildReceipt(arc);
-
-  // set token display
-  document.getElementById(arc + '-tok').textContent = tokByArc[arc] + ' moments noticed in this arc · ' + tok + ' in total';
-
-  go('end-' + arc);
-}
-
-function buildReceipt(arc) {
-  const el = document.getElementById(arc + '-receipt');
-  if (!el) return;
-  const items = {
-    maya: [
-      { cond: !guideRead, text: 'Did not read the guidelines at any point in this arc' },
-      { cond: true, text: 'Received feedback with no specific example — and couldn\'t change that' },
-      { cond: true, text: 'An AI score, not a problem, decided how Maya wrote her emails' },
-      { cond: true, text: 'Good work, delivered early, did not change the outcome' },
-      { cond: true, text: 'The joke and the Friday invite were never raised formally' },
-      { cond: true, text: 'The speak-up form had no field for what happened' },
-    ],
-    rohit: [
-      { cond: !guideRead, text: 'Did not read the guidelines before writing the review' },
-      { cond: true, text: 'Used HR language without a specific example to support it' },
-      { cond: true, text: 'The form confirmed the process was correct' },
-    ],
-    priya: [
-      { cond: true, text: 'Documented a pattern that has no formal home' },
-      { cond: true, text: 'Filed a diversity report with an incomplete number' },
-      { cond: true, text: 'The draft memo is still unsent' },
-    ]
-  };
-  const list = items[arc].filter(i => i.cond);
-  list.push({ text: 'Took the harder option ' + harder[arc] + ' of ' + options[arc] + ' times it was offered' });
-  el.innerHTML = `<div class="receipt-title">Things that were left undone</div>` +
-    list.map(i => `<div class="receipt-item">${i.text}</div>`).join('');
-}
-
-// ── CONVERGENCE UNLOCK ──
-function checkGapConv() {
-  const allDone = arcsComplete.maya && arcsComplete.rohit && arcsComplete.priya;
-  const btn = document.getElementById('gap-conv-btn');
-  if (allDone && btn) btn.style.display = 'block';
-}
-
-// ── AI SCENE ──
-let aiGenerated = false;
-let cursorInterval = null;
-
-function generateAI() {
-  if (aiGenerated) return;
-  aiGenerated = true;
-  const btn = document.getElementById('ai-gen-btn');
-  btn.disabled = true;
-  btn.style.opacity = '.4';
-  btn.textContent = 'Generating...';
-
-  document.getElementById('ai-output-wrap').style.display = 'block';
-
-  // blinking cursor animation
-  const cursorEl = document.getElementById('ai-cursor-text');
-  const states = ['analysing patterns_', 'analysing patterns', 'matching role level_', 'matching role level', 'retrieving assessments_', 'retrieving assessments', 'generating output_'];
-  let si = 0;
-  cursorInterval = setInterval(() => {
-    cursorEl.textContent = states[si % states.length];
-    si++;
-  }, 420);
-
-  // show result after delay
-  setTimeout(() => {
-    clearInterval(cursorInterval);
-    document.getElementById('ai-loading').style.display = 'none';
-    const result = document.getElementById('ai-result');
-    result.style.display = 'block';
-    result.style.animation = 'rise .4s ease';
-    addTok(TOK.LOOP_RETURN, 'rohit:ai'); sfx('ping');
-
-    setTimeout(() => {
-      document.getElementById('ai-compare-wrap').style.display = 'block';
-      document.getElementById('ai-choices-wrap').style.display = 'block';
-    }, 600);
-  }, 3200);
-}
-
-function toggleOriginal() {
-  const panel = document.getElementById('original-compare');
-  const btn = document.getElementById('compare-toggle-btn');
-  const visible = panel.style.display !== 'none';
-  panel.style.display = visible ? 'none' : 'block';
-  btn.textContent = visible ? 'show original input →' : 'hide original input ←';
-  if (!visible) addTok(TOK.HARDER_CHOICE, 'rohit:compare'); // looking at the comparison is the harder thing
-}
-
-// override pick for r2b to also show next button
-const _origPick = pick;
-
-// ── INIT ──
-window.addEventListener('DOMContentLoaded', () => {
-  buildStages();
-  renderDrafts();
-  // pause screen token — if user lingers 3s on a pline we reward
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting && e.target.classList.contains('pline')) {
-        setTimeout(() => {
-          if (document.contains(e.target) && e.target.classList.contains('show')) {
-            addTok(TOK.PAUSE_SCREEN, (currentArc||'x') + ':pause:' + (e.target.closest('.screen')||{}).id + ':' + Array.from(document.querySelectorAll('.pline')).indexOf(e.target));
-          }
-        }, 3000);
-      }
-    });
-  }, { threshold: 0.8 });
-  document.querySelectorAll('.pline').forEach(p => observer.observe(p));
-});
+function startHum(){const a=ac();if(!a||hum)return;const len=a.sampleRate*2,b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0);let l=0;for(let i=0;i<len;i++){const w=Math.random()*2-1;l=(l+.02*w)/1.02;d[i]=l*3.5;}const s=a.createBufferSource();s.buffer=b;s.loop=true;const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=400;const g=a.createGain();g.gain.value=.045;s.connect(lp);lp.connect(g);g.connect(a.destination);s.start();hum=s;}
+function toggleSound(){soundOn=!soundOn;const b=document.getElementById('soundBtn');b.classList.toggle('on',soundOn);b.setAttribute('aria-pressed',soundOn);if(soundOn){startHum();sfx('ping');}else if(hum){try{hum.stop();}catch(e){}hum=null;}}
+function toggleTheme(){const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('themeBtn').textContent=d?'dark':'light';}
 </script>
 </body>
 </html>
