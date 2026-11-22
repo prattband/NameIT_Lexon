@@ -9,7 +9,7 @@
 :root {
   --bg: #f0ebe2; --bg2: #e6e0d6; --surface: #f8f4ee; --surface2: #efe9e0;
   --border: #c8c0b4; --border2: #a8a098;
-  --text: #1c1a16; --text2: #4a4640; --text3: #88827a; --text4: #b8b0a6;
+  --text: #1c1a16; --text2: #4a4640; --text3: #6b655d; --text4: #b8b0a6;
   --yellow: #966000; --yellow-bg: #f0e4c8; --yellow-text: #744a00;
   --red: #a82818; --red-bg: #f0e0dc; --red-text: #8a1e10;
   --blue: #164e72; --blue-bg: #d8eaf4; --blue-text: #103c58;
@@ -20,7 +20,7 @@
 [data-theme="dark"] {
   --bg: #100f0d; --bg2: #171612; --surface: #1c1a16; --surface2: #221f1a;
   --border: #2c2820; --border2: #3a3528;
-  --text: #e4ddd4; --text2: #9a9288; --text3: #585048; --text4: #38322a;
+  --text: #e4ddd4; --text2: #9a9288; --text3: #8a8278; --text4: #38322a;
   --yellow: #c89028; --yellow-bg: #201808; --yellow-text: #c89028;
   --red: #d85040; --red-bg: #281410; --red-text: #e87060;
   --blue: #4888b8; --blue-bg: #0c1820; --blue-text: #68a8d8;
@@ -165,6 +165,21 @@ body{
 .end-note-body{font-family:'Source Serif 4',serif;font-size:14px;color:var(--text2);line-height:1.85;font-style:italic}
 
 @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.ev-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.ev-chip{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:6px 11px;border:.5px solid var(--border);background:transparent;color:var(--text2);border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.ev-chip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.ev-chip.on{background:var(--text);color:var(--bg)}
+.ev-count{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:12px}
+.ev-card{border:.5px solid var(--border);border-left-width:5px;border-radius:10px;background:var(--surface);margin-bottom:10px;overflow:hidden}
+.ev-card.dim{display:none}
+.ev-head{padding:12px 14px;cursor:pointer}
+.ev-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.ev-title{font-family:'Source Serif 4',serif;font-size:15px;color:var(--text);line-height:1.4}
+.ev-body{display:none;padding:0 14px 14px;font-family:'Source Serif 4',serif;font-size:14px;line-height:1.75;color:var(--text2)}
+.ev-card.open .ev-body{display:block}
+.ev-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;border:.5px solid var(--border2);margin-right:6px}
+.ev-body a{color:var(--text);border-bottom:1px solid var(--text2);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
 </style>
 </head>
 <body>
@@ -180,12 +195,12 @@ body{
 <!-- HERO -->
 <div class="wrap section">
   <div class="lbl">Research basis</div>
-  <div class="h1">This is<br><em>not fiction.</em></div>
-  <div class="sub">NameIT : Lexon is a simulation. The characters are invented. The situations are not.</div>
+  <div class="h1">Fiction built<br><em>on a pattern.</em></div>
+  <div class="sub">NameIT : Lexon is a simulation. The characters, the company and the scenes are invented. The language patterns they dramatise come from published research and from public forum posts.</div>
   <div class="disclaimer">
     <div class="disclaimer-head">What this page is</div>
     <div class="disclaimer-body">
-      The scenarios in this simulation are drawn from a dataset of 50 Reddit posts and comments collected from r/womenintech, r/TwoXChromosomes, r/womenEngineers, and r/AskIndianWomen. The posts describe real workplace experiences — vague feedback, double standards, patterns that no single policy can name. Maya, Rohit, and Priya are composite characters, but the language they use, the feedback Maya receives, and the bureaucratic walls Priya hits are sourced directly from what real people described online. This page shows you the source material.
+      The simulation is part of an M.Sc. thesis project on how polite, HR-compliant language can carry gendered harm. Maya, Rohit, Priya and Lexon are invented, and the scenes are written, not transcribed. They rest on 17 anonymous public Reddit threads that the researcher found, read and summarised by hand, plus published research. Nothing here is a count, a prevalence estimate or proof of how common the pattern is.
     </div>
   </div>
 </div>
@@ -194,20 +209,13 @@ body{
 
 <!-- THE DATA -->
 <div class="wrap tight section">
-  <div class="lbl">The dataset</div>
-  <div class="h2">50 posts. 4 communities. One pattern.</div>
+  <div class="lbl">The language</div>
+  <div class="h2">A vocabulary, not a statistic</div>
   <div class="body" style="margin-bottom:1.8rem">
-    The posts were collected from Indian and global tech/professional communities on Reddit. They span 2020–2024. What emerged across all of them was not a set of isolated incidents — it was a vocabulary. The same words, used by different managers, in different companies, about different women, across different years.
+    Across the 17 threads in the index, and across published studies of performance feedback, the same small set of words keeps appearing in feedback given to women: about tone, style, warmth and readiness rather than about work. The simulation turns those registers into scenes. The project reads them in three groups: personality language, institutional language and comparative language.
   </div>
 
-  <div class="stat-grid">
-    <div class="stat-card"><div class="stat-num">50</div><div class="stat-label">posts &amp; comments analysed</div></div>
-    <div class="stat-card"><div class="stat-num">17</div><div class="stat-label">unique post threads</div></div>
-    <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">communities</div></div>
-    <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">recurring vocabulary</div></div>
-  </div>
-
-  <div class="lbl" style="margin-top:2rem">The recurring words — used about women, not men</div>
+  <div class="lbl" style="margin-top:2rem">Recurring words in the threads and in the research literature</div>
   <div class="tag-row">
     <span class="tag red">too direct</span>
     <span class="tag red">intimidating</span>
@@ -229,240 +237,166 @@ body{
     <span class="tag green">drives things forward</span>
   </div>
   <div class="body" style="margin-top:.6rem;font-size:13px">
-    <em>Green tags = language used about men in the same contexts. Red and yellow = language used exclusively about women.</em>
+    <em>Green tags = praise language that the threads describe being used about men in comparable situations. Red, yellow and blue = language the threads describe being directed at women. This is the researcher's illustrative grouping, not a counted result.</em>
   </div>
 </div>
 
 <div class="div"></div>
 
-<!-- SOURCE POSTS -->
+<!-- EVIDENCE INDEX -->
+<div class="wrap tight section" id="evidence">
+  <div class="lbl">The evidence index</div>
+  <div class="h2">17 public threads, read by hand</div>
+  <div class="body" style="margin-bottom:1.2rem">
+    Each entry is the researcher's own summary of one anonymous public Reddit thread. No usernames and no verbatim text are reproduced. Where the thread is public, a link is given. Register is an interpretive label assigned by the researcher. Tap a card to open it.
+  </div>
+  <div class="ev-controls" id="evControls">
+    <button class="ev-chip on" data-v="all">All</button>
+    <button class="ev-chip" data-v="personality"><i style="background:#a6461f"></i>Personality</button>
+    <button class="ev-chip" data-v="institutional"><i style="background:#243447"></i>Institutional</button>
+    <button class="ev-chip" data-v="comparative"><i style="background:#59613f"></i>Comparative</button>
+    <button class="ev-chip" data-v="structural"><i style="background:#5c2233"></i>Structural</button>
+  </div>
+  <div class="ev-count" id="evCount"></div>
+  <div id="evList"></div>
+  <div class="body" style="font-size:13px;margin-top:1rem"><em>Personality = feedback about who she is. Institutional = polite process used as a shield. Comparative = the same behaviour read differently by gender. Structural = ambient exclusion and jokes. "Adjacent" entries are not feedback from a boss and are kept separate so they do not inflate the core count.</em></div>
+</div>
+
+<div class="div"></div>
+
+<!-- POLITE ON PAPER -->
 <div class="wrap tight section">
-  <div class="lbl">The source posts</div>
-  <div class="h2">What people actually wrote</div>
-  <div class="body" style="margin-bottom:2rem">
-    Each cluster below is one thread from the dataset — the original post and the responses it received. These are edited for length but the language is unchanged. Click to expand.
+  <div class="lbl">Polite on paper</div>
+  <div class="h2">Courteous words, unequal effect</div>
+  <div class="body" style="margin-bottom:1.6rem">
+    In these threads nobody is shouting. The feedback arrives in HR-approved, courteous language. The harm is in what the words do.
   </div>
-
-  <!-- CLUSTER 1 -->
-  <div class="post-cluster">
-    <div class="cluster-head" onclick="toggle('c1')">
-      <div>
-        <div class="cluster-sub">r/TwoXChromosomes</div>
-        <div class="cluster-title">"I finally learned how to be assertive at work, got told the stern approach is 'de-humanizing.'"</div>
-      </div>
-      <div class="cluster-toggle" id="c1-arrow">+</div>
-    </div>
-    <div class="cluster-body" id="c1">
-      <div class="cluster-inner">
-        <div class="post-text">
-          "Every single performance review I've had since I joined the workforce 5 years ago has told me to be more assertive and speak up. I only managed to do so this ONE TIME because I'm so burnt out I just wanted to get my point across. But whatever — if I was a man and went into a meeting like that no one would bat an eye. <em>They are passionate leaders. I am 'dehumanizing.'</em>"
-        </div>
-        <div class="comment-block">
-          <div class="comment-label">Community response</div>
-          <div class="comment-text">"Yeah, this is SO on brand. People love giving women feedback about the minutia of their personalities and tone policing us to fucking death. I remember when I first decided I'd had it with my conditioning, and that I was going to communicate as succinctly and confidently at work as men always did. Hoo boy, were there reactions. Immediately brought into offices. Where of course I asked them to show me emails from other male colleagues and point out where mine differed. And of course their little faces got all confused as they realized they were fucking identical."</div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text">"I had a coworker ask some tough questions of a consultant. Afterward she was told she cared too much and they were worried about her health. She was concerned that they were paying a consultant who wasn't doing the job. Imagine telling an employee to care less about their work."</div>
-        </div>
-        <div class="pattern-note">Pattern: Assertiveness instructed, then penalised when demonstrated. The double bind is the mechanism — there is no compliant version of this feedback.</div>
-      </div>
-    </div>
+  <div class="connection-row"><div class="conn-source">"Intimidating", "unapproachable", "too confident" (#1, #13)</div><div class="conn-real" style="font-style:normal">Logged on the record. No example. The concern is how others feel, not what was produced.</div><div class="conn-arrow">→</div><div class="conn-game">A trait is put on file and cannot be disproved.</div></div>
+  <div class="connection-row"><div class="conn-source">"Care and compassion" (#2)</div><div class="conn-real" style="font-style:normal">"Several people" raised it, but the examples are withheld to protect them.</div><div class="conn-arrow">→</div><div class="conn-game">Confidentiality becomes a reason no example is ever given.</div></div>
+  <div class="connection-row"><div class="conn-source">"Too stern", "de-humanizing", "curt" (#4, #16)</div><div class="conn-real" style="font-style:normal">After years of being told to be more assertive, the first plain statement is penalised.</div><div class="conn-arrow">→</div><div class="conn-game">A double bind: there is no safe version.</div></div>
+  <div class="connection-row"><div class="conn-source">Emoji and exclamation points (#10)</div><div class="conn-real" style="font-style:normal">Warmth coached as a professional skill, for her and not for male colleagues.</div><div class="conn-arrow">→</div><div class="conn-game">Same content, a different standard for tone.</div></div>
+  <div class="connection-row"><div class="conn-source">A formal recap email (#3); a "reference project" (#38)</div><div class="conn-real" style="font-style:normal">Written, procedural, correct in form. Inside it: false data points, and her own work returned to her as the standard.</div><div class="conn-arrow">→</div><div class="conn-game">The process is followed. The substance is wrong.</div></div>
+  <div class="connection-row"><div class="conn-source">"Friendly banter", "diversity hire" (#47, #43)</div><div class="conn-real" style="font-style:normal">Jokes and insinuations. Naming them gets her told she is overreacting.</div><div class="conn-arrow">→</div><div class="conn-game">Undermining relabelled as humour.</div></div>
+  <div class="connection-row"><div class="conn-source">A family-plans prediction (#49)</div><div class="conn-real" style="font-style:normal">Heard second hand. A candidate is passed over inside HR process with no stated criterion.</div><div class="conn-arrow">→</div><div class="conn-game">No criterion means nothing to challenge.</div></div>
+  <div class="body" style="margin-top:1.4rem">
+    The pattern matches published work: in 248 technology-sector reviews collected by Snyder (2014), 87.9% of those received by women contained critical feedback against 58.9% of those received by men, and personality criticism appeared in 71 of 94 critical reviews received by women against 2 of 83 received by men.
   </div>
+</div>
 
-  <!-- CLUSTER 2 -->
-  <div class="post-cluster">
-    <div class="cluster-head" onclick="toggle('c2')">
-      <div>
-        <div class="cluster-sub">r/womenEngineers — thread with 13 responses</div>
-        <div class="cluster-title">"Let's share the irritating and sexist feedback we've received"</div>
-      </div>
-      <div class="cluster-toggle" id="c2-arrow">+</div>
-    </div>
-    <div class="cluster-body" id="c2">
-      <div class="cluster-inner">
-        <div class="post-text">"A recent post about being called 'blunt' in a negative context during a performance review made me think that maybe sharing our experiences would be helpful. I know performance reviews are around this time of year."</div>
-        <div class="comment-block">
-          <div class="comment-label">Responses — direct quotes from reviews</div>
-          <div class="comment-text">"It is sometimes clear she's frustrated and she needs to be careful to modulate that to a client and <em>hold a smile whenever possible.</em>"</div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text"><em>"Her laughter is sharp and piercing. We ask that when she thinks something funny is happening, she close her door first."</em> (I wish I was joking!) <br><br>"She makes too many facial expressions in meetings. I should not be able to see her thoughts just by looking at her face."</div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text">"You should smile more, it makes you seem more warm and approachable." Paired with, "If you're smiling it's hard to know if you're serious about this." <em>Same person.</em></div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text">"I'm a manager. A couple of years ago I was told I wasn't maternal enough towards my team. I responded with, 'would you say that to a man, that he wasn't paternal enough?'"</div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text">"I've been told I'm 'too critical of others' because I was calling out poor performance which was adversely affecting my work. 100% sure if I was a man it would have been praised as being a 'straight shooter'."</div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text">"Intimidating, cold, direct, blunt and my personal favourite — unapproachable. I just have a hard time believing that any man ever in the workplace would've gotten such labels."</div>
-        </div>
-        <div class="pattern-note">Pattern: 13 different women, 13 different companies, the same vocabulary. The feedback is about controlling presence, affect, and physical expression — not performance.</div>
-      </div>
-    </div>
+<div class="div"></div>
+
+<!-- HOW IT WAS DONE -->
+<div class="wrap tight section">
+  <div class="lbl">How it was done</div>
+  <div class="h2">Manual, interpretive, anonymous</div>
+  <div class="body">
+    <strong>1. Find.</strong> Threads about feedback, tone and promotion were located by hand in public workplace and women-in-tech subreddits (r/womenintech, r/womenEngineers, r/TwoXChromosomes, r/AskIndianWomen, r/AskHR).<br><br>
+    <strong>2. Read.</strong> Each thread was read in full. No scraping and no automated classification was used.<br><br>
+    <strong>3. Summarise.</strong> Each was summarised in the researcher's own words. Usernames and verbatim text are left out, so no person can be identified from this page.<br><br>
+    <strong>4. Code.</strong> Each summary was assigned one register: personality, institutional, comparative or structural. This is an interpretive judgement by one coder.<br><br>
+    <strong>5. Record.</strong> A row number in a working spreadsheet was kept for each, and a link wherever the thread is public. Five entries have no public link recorded and are marked.<br><br>
+    <strong>6. Separate.</strong> Three entries are not workplace feedback from a boss (#7, #11, #42). They are labelled "adjacent" and are not counted as core evidence.<br><br>
+    <strong>What this can and cannot show.</strong> It shows that the same polite vocabulary recurs across unconnected workplaces and years. It does not show how common that is. People tend to post when something has gone wrong, accounts cannot be verified, one coder judged them, and the set is mostly outside India: four of the 17 come from r/AskIndianWomen. The reading is interpretive, and the simulation is fiction built on it.
   </div>
-
-  <!-- CLUSTER 3 -->
-  <div class="post-cluster">
-    <div class="cluster-head" onclick="toggle('c3')">
-      <div>
-        <div class="cluster-sub">r/womenintech</div>
-        <div class="cluster-title">"Feedback on communication style: anyone else told to use more exclamation points and heart/smiley emojis?"</div>
-      </div>
-      <div class="cluster-toggle" id="c3-arrow">+</div>
-    </div>
-    <div class="cluster-body" id="c3">
-      <div class="cluster-inner">
-        <div class="post-text">
-          "My mostly male colleagues communicate in a very straightforward and blunt written style — no exclamation points, just periods. If I match that energy, I get told my writing style comes across as 'demanding', condescending, and rude. I have been coached to end most of my sentences with exclamation points and to use more heart and smiley face emojis.<br><br>I agreed to do so and the feedback was that my communication style has much improved.<br><br><em>I've been in this field for decades. It feels odd to be told to use more emojis like I'm an enthusiastic teenager.</em>"
-        </div>
-        <div class="pattern-note">Pattern: The standard for 'professional communication' is applied selectively. The same blunt style is competence in men, aggression in women. Warmth is demanded as a tax.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CLUSTER 4 -->
-  <div class="post-cluster">
-    <div class="cluster-head" onclick="toggle('c4')">
-      <div>
-        <div class="cluster-sub">r/womenintech</div>
-        <div class="cluster-title">"Received feedback that I'm not showing up with 'care & compassion' from male manager"</div>
-      </div>
-      <div class="cluster-toggle" id="c4-arrow">+</div>
-    </div>
-    <div class="cluster-body" id="c4">
-      <div class="cluster-inner">
-        <div class="post-text">
-          "My manager was previously my colleague on the same team. He refused to give me specific examples of how I'm not showing up to the team with 'care and compassion.' I asked repeatedly for specific examples. He said he could not share that with me for the sake of their privacy. He wouldn't tell me ANYTHING. Except that multiple people came to him, apparently."
-        </div>
-        <div class="pattern-note">Pattern: Vague feedback that cannot be actioned, cannot be challenged, and cannot be disproven. Privacy of the complainants is used to prevent any accountability for the claim itself. This appears in Maya's arc — Rohit's "nothing specific comes to mind."</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CLUSTER 5 -->
-  <div class="post-cluster">
-    <div class="cluster-head" onclick="toggle('c5')">
-      <div>
-        <div class="cluster-sub">r/womenEngineers</div>
-        <div class="cluster-title">"Help — people don't take me seriously"</div>
-      </div>
-      <div class="cluster-toggle" id="c5-arrow">+</div>
-    </div>
-    <div class="cluster-body" id="c5">
-      <div class="cluster-inner">
-        <div class="post-text">"I feel like I'm generally liked at work, but I keep noticing that concerns/questions/ideas I bring up get dismissed — but when most other people talk, they get accepted as good ideas. My team has almost all men and 2 women."</div>
-        <div class="comment-block">
-          <div class="comment-label">Community response</div>
-          <div class="comment-text">"Gender is definitely a factor. I can't tell you how many times I've mentioned something at a meeting and got ignored. Then 20 minutes later, a guy says the same thing, and he's now brilliant. It happens to other women I know, even those that don't work in STEM."</div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text">"So I had to learn how to navigate this because I feel I am the same 'bubbly' personality. When I walk into a meeting where decisions are made, I turn off absolutely all emotion. Very cold. I ask a clarifying question and I do not elaborate or speak before I have a clear concise thought prepared."</div>
-        </div>
-        <div class="pattern-note">Pattern: The standup scene in Maya's arc — her idea repeated by Siddharth and credited to him — comes directly from this. This was described by multiple commenters as a near-universal experience.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CLUSTER 6 -->
-  <div class="post-cluster">
-    <div class="cluster-head" onclick="toggle('c6')">
-      <div>
-        <div class="cluster-sub">r/AskIndianWomen</div>
-        <div class="cluster-title">"I have been subtly shamed by men for being a diversity hire at work"</div>
-      </div>
-      <div class="cluster-toggle" id="c6-arrow">+</div>
-    </div>
-    <div class="cluster-body" id="c6">
-      <div class="cluster-inner">
-        <div class="post-text">"While nobody directly says it, they basically mean to say that I have no merit and have been hired to meet the company's diversity goal. Is it a common experience?"</div>
-        <div class="comment-block">
-          <div class="comment-label">Community response</div>
-          <div class="comment-text">"I have been shamed directly or indirectly in the face for being a diversity hire or hired for my looks. I currently work in a team that has only 2 women in a group of 20 men. I just play dumb and ask them to explain again and again what they mean."</div>
-        </div>
-        <div class="comment-block">
-          <div class="comment-text">"I have seen many men butt hurt that more women are being taken in than men, and are convinced it's only to fill the 'women quota'. They proceed to rant how in the name of equality more opportunities are for women now."</div>
-        </div>
-        <div class="pattern-note">Pattern: The India-specific dimension. Legitimate achievement is attributed to diversity policy rather than competence. This operates as ambient background noise — too diffuse for HR, too constant to ignore.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CLUSTER 7 -->
-  <div class="post-cluster">
-    <div class="cluster-head" onclick="toggle('c7')">
-      <div>
-        <div class="cluster-sub">r/AskIndianWomen</div>
-        <div class="cluster-title">"Subtle misogyny at work ruining my mental peace"</div>
-      </div>
-      <div class="cluster-toggle" id="c7-arrow">+</div>
-    </div>
-    <div class="cluster-body" id="c7">
-      <div class="cluster-inner">
-        <div class="post-text">"I recently got promoted, and ever since, a few male colleagues have been making snide comments like, 'It's a crime to be a man in this company,' 'Women have it easy; you just have to smile, and the work gets done.' One guy in particular keeps making these comments in front of others — like it's a joke."</div>
-        <div class="comment-block">
-          <div class="comment-label">Community response</div>
-          <div class="comment-text">"People tell me — especially my ex-boyfriend — that life will be easier for me at work because I am a pretty woman. I find it misogynistic. Once I complained to a childhood friend about how I couldn't get internships anywhere on LinkedIn. He told me to butter up HR because being a woman is my advantage."</div>
-        </div>
-        <div class="pattern-note">Pattern: Promotion triggers backlash framed as humour. The comment 'can't be taken seriously' as harassment — it doesn't meet any threshold. This is where Priya's spreadsheet lives: patterns with no incident dates.</div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <div class="div"></div>
 
 <!-- REAL → SIMULATION CONNECTION -->
 <div class="wrap tight section">
-  <div class="lbl">Real → simulation</div>
-  <div class="h2">How the source material became the game</div>
+  <div class="lbl">Pattern → scene</div>
+  <div class="h2">How the material became the game</div>
   <div class="body" style="margin-bottom:2rem">
-    Every significant moment in NameIT : Lexon traces back to something in the data. This is the mapping.
+    The scenes are original writing. Each one dramatises a pattern named in the threads or in the literature. Row numbers refer to the evidence index above.
   </div>
 
   <div class="connection-row">
-    <div class="conn-source">r/womenintech<br>r/womenEngineers</div>
-    <div class="conn-real">"Nothing specific comes to mind — just something to keep in mind going forward 😊"</div>
+    <div class="conn-source">Index #1, #2</div>
+    <div class="conn-real">Feedback that cannot be actioned: the manager declines to give an example.</div>
     <div class="conn-arrow">→</div>
-    <div class="conn-game">Rohit's 1:1 with Maya. He has no example. He sends the emoji. She looks at it for a while.</div>
+    <div class="conn-game">Rohit's 1:1 with Maya. He has no example. He replies with a smiley. She looks at it for a while.</div>
   </div>
   <div class="connection-row">
-    <div class="conn-source">r/womenEngineers<br>multiple threads</div>
-    <div class="conn-real">"Then 20 minutes later, a guy says the same thing, and he's now brilliant."</div>
+    <div class="conn-source">Index #17</div>
+    <div class="conn-real">Ideas dismissed in the room until someone else repeats them.</div>
     <div class="conn-arrow">→</div>
     <div class="conn-game">Maya's standup. Her idea. Siddharth repeats it. Rohit credits Siddharth.</div>
   </div>
   <div class="connection-row">
-    <div class="conn-source">r/womenintech</div>
-    <div class="conn-real">"Can come across as too direct in cross-team settings. Makes it difficult for others to contribute."</div>
+    <div class="conn-source">Literature: Snyder (2014); Correll et al. (2020)</div>
+    <div class="conn-real">Tone and style language appears in women's reviews with little tied to specific results.</div>
     <div class="conn-arrow">→</div>
-    <div class="conn-game">Maya's mid-year review. The exact HR phrasing. Rohit uses the suggested language from the toolkit.</div>
+    <div class="conn-game">Maya's review phrasing and the ReviewAssist scene. The wording is invented for the simulation.</div>
   </div>
   <div class="connection-row">
-    <div class="conn-source">r/AskIndianWomen<br>r/TwoXChromosomes</div>
-    <div class="conn-real">"HR told me my complaint doesn't fall under POSH because it wasn't sexual harassment."</div>
+    <div class="conn-source">Law: POSH Act 2013</div>
+    <div class="conn-real">A complaint of unfair but non-sexual conduct falls outside the Act's definition.</div>
     <div class="conn-arrow">→</div>
     <div class="conn-game">Priya opens the ICC form. Required fields: date, name, incident. No field for pattern.</div>
   </div>
   <div class="connection-row">
-    <div class="conn-source">r/womenEngineers</div>
-    <div class="conn-real">"Communication style needs refinement" appearing in 8 of 9 women's reviews, 0 of men's.</div>
+    <div class="conn-source">Index #43, #47</div>
+    <div class="conn-real">Diversity-hire insinuations and jokes that become "overreacting" when named.</div>
     <div class="conn-arrow">→</div>
-    <div class="conn-game">Priya's language audit spreadsheet. The pattern is documented. It has no formal home.</div>
+    <div class="conn-game">The only-woman cake joke and the Friday invite Maya is left off.</div>
   </div>
   <div class="connection-row">
-    <div class="conn-source">r/TwoXChromosomes</div>
-    <div class="conn-real">"I sometimes feel bad that I have allowed sexism to change my behavior, but I just do my best."</div>
+    <div class="conn-source">Index #3 and the literature</div>
+    <div class="conn-real">Formal, procedural written feedback with no example behind it.</div>
     <div class="conn-arrow">→</div>
-    <div class="conn-game">Maya's fourth draft. She softens it. She sends: "Would you be able to share an example when you have a moment? No rush."</div>
+    <div class="conn-game">The AI scenes (ReviewAssist, Lexon Coach, People Analytics) are invented to show how such wording could be reproduced at scale. No such tool is claimed to exist.</div>
+  </div>
+  <div class="connection-row">
+    <div class="conn-source">Author's design</div>
+    <div class="conn-real">A pattern only becomes visible when many reviews are read side by side.</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Priya's language audit spreadsheet. Its figures are invented. The pattern it shows has no formal home.</div>
+  </div>
+  <div class="connection-row">
+    <div class="conn-source">Index #4, #10</div>
+    <div class="conn-real">Women describe softening their tone, with emoji and exclamation points, to avoid being penalised.</div>
+    <div class="conn-arrow">→</div>
+    <div class="conn-game">Maya's four drafts. Each is softer than the last. She sends the fourth.</div>
   </div>
 </div>
 
 <div class="div"></div>
+
+<!-- GAP MAP -->
+<div class="wrap tight section">
+  <div class="lbl">The legal gap map</div>
+  <div class="h2">What each instrument can and cannot see</div>
+  <div class="body" style="margin-bottom:1.4rem">
+    Facts below were checked against primary text on India Code or the Ministry of Labour where noted. This is a plain-language summary, not legal advice.
+  </div>
+  <div class="connection-row"><div class="conn-source">POSH Act 2013</div><div class="conn-real" style="font-style:normal">Covers unwelcome conduct of a sexual nature (s.2(n)). Internal Committee at every office (s.4). Complaint within 3 months of the incident or last incident in a series, extendable by 3 months. Inquiry in 90 days. Fine up to ₹50,000, doubled on repeat (s.26).</div><div class="conn-arrow">→</div><div class="conn-game"><strong>Gap:</strong> tone, style and readiness feedback is not sexual conduct, so a pattern of it has no route in.</div></div>
+  <div class="connection-row"><div class="conn-source">Code on Wages 2019, s.3</div><div class="conn-real" style="font-style:normal">In force 21 Nov 2025. Replaces the Equal Remuneration Act 1976 (repealed by s.69). Bars gender discrimination in wages and in recruitment for the same or similar work.</div><div class="conn-arrow">→</div><div class="conn-game"><strong>Gap:</strong> addresses pay and hiring. It does not regulate how performance is described.</div></div>
+  <div class="connection-row"><div class="conn-source">Maternity Benefit Act 1961 (2017 amendment)</div><div class="conn-real" style="font-style:normal">26 weeks for the first two children, 12 weeks for a third.</div><div class="conn-arrow">→</div><div class="conn-game"><strong>Gap:</strong> silent on how leave is reflected in appraisals.</div></div>
+  <div class="connection-row"><div class="conn-source">ILO C100 and C111</div><div class="conn-real" style="font-style:normal">Ratified by India. Equal remuneration; no discrimination in employment and occupation.</div><div class="conn-arrow">→</div><div class="conn-game"><strong>Gap:</strong> binds the State; an employee cannot enforce it directly against an employer.</div></div>
+  <div class="connection-row"><div class="conn-source">Ministry of Labour advisory, Jan 2024</div><div class="conn-real" style="font-style:normal">Reminds employers of existing duties toward women employees.</div><div class="conn-arrow">→</div><div class="conn-game"><strong>Gap:</strong> non-binding; creates no new duty.</div></div>
+</div>
+
+<div class="div"></div>
+
+<!-- METHOD, SOURCES, CITE -->
+<div class="wrap tight section">
+  <div class="lbl">Method and sources</div>
+  <div class="h2">How to read this project</div>
+  <div class="body">
+    The reading is interpretive. It is not a computational analysis, and the threads are not a sample. Only four of the 17 are India-specific, so the simulation should not be taken as a portrait of Indian workplaces in general. The caste and gender layer is not built. A small number of testers have played it.<br><br>
+    <strong>Literature.</strong> Snyder, K. (2014), "The abrasiveness trap: High-achieving men and women are described differently in reviews," Fortune. Correll, S. J., Weisshaar, K. R., Wynn, A. T. and Wehner, J. (2020), "Inside the black box of organizational life: The gendered language of performance assessment," American Sociological Review 85(6).<br><br>
+    <strong>Primary sources.</strong>
+    <a href="https://www.indiacode.nic.in/bitstream/123456789/14736/1/sexual-harassment-at-workplace-act_sw.pdf" target="_blank" rel="noopener">POSH Act 2013</a> ·
+    <a href="https://www.indiacode.nic.in/bitstream/123456789/15793/1/aA2019-29.pdf" target="_blank" rel="noopener">Code on Wages 2019</a> ·
+    <a href="https://indiankanoon.org/doc/1031794/" target="_blank" rel="noopener">Vishaka v. State of Rajasthan (1997)</a> ·
+    <a href="https://labour.gov.in/node/92919" target="_blank" rel="noopener">Ministry of Labour: ILO conventions ratified by India</a>.<br><br>
+    <strong>Cite as.</strong> Bandyopadhyay, P. (2026). NameIT : Lexon, a simulation of gendered feedback in Indian IT. Prepared for DH2027. Evidence: 17 anonymous public threads, summarised by the researcher.
+  </div>
+</div>
+
+<div class="div"></div>
+
+
 
 <!-- WHAT THE SIMULATION CANNOT DO -->
 <div class="wrap tight section">
@@ -472,7 +406,7 @@ body{
     This simulation does not resolve anything. Maya does not get her promotion. Rohit does not have a revelation. Priya's memo remains unsent.<br><br>
     The simulation is not a training module. It does not teach you what to do. It is designed to let you sit inside a situation long enough to feel what makes it hard to name — not because the harm is subtle, but because the system is designed to make naming it costly.<br><br>
     <em>The gap is not in the law. The gap is between what the law can see and what actually happens.</em><br><br>
-    The Reddit posts in this dataset were not resolved either. Most of them end with the original poster saying they are still in the same role, still receiving the same feedback, still deciding whether it is worth saying anything.
+    Many of the threads are likewise unresolved: the writers describe still being in the same role and still deciding whether it is worth saying anything.
   </div>
 </div>
 
@@ -481,17 +415,39 @@ body{
 <!-- ENDING -->
 <div class="wrap tight">
   <div class="end-note">
-    <div class="end-note-title">These are not edge cases.<br>This is the pattern.</div>
+    <div class="end-note-title">A pattern, not a count.</div>
     <div class="end-note-body">
-      50 posts. 4 communities. Different companies, different sectors, different years.<br>
-      The same words. The same absence of a specific example.<br>
+      Different writers, different workplaces, similar words.<br>
+      The same absence of a specific example.<br>
       The same form with no field for what actually happened.<br><br>
-      Lexon is fictional. The vocabulary it runs on is not.
+      Lexon is fictional. The vocabulary it dramatises is documented in research and in public posts.
     </div>
   </div>
 </div>
 
 <script>
+
+const EV = [{"row": 1, "sub": "r/AskHR", "reg": "personality", "kind": "core", "theme": "Marked \"intimidating\" with no examples given", "desc": "A woman is told during a sit-down that management has received several unspecified complaints that she is \"unapproachable\" or \"intimidating,\" which then gets logged on her performance evaluation. She notes she is often the one blamed when things go wrong on her team, and reads the label as a reaction to her simply holding her ground rather than to any rule she has broken.", "url": "https://www.reddit.com/r/AskHR/comments/15rfrkg/can_i_get_fired_for_being/"}, {"row": 2, "sub": "r/womenintech", "reg": "institutional", "kind": "core", "theme": "\"Care & compassion\" feedback with no example", "desc": "A manager tells a report she isn't showing up with enough \"care and compassion,\" citing that \"multiple people\" raised concerns, but declines every request for a specific instance, citing the confidentiality of the people who supposedly complained. The feedback is procedurally delivered and impossible to act on.", "url": "https://www.reddit.com/r/womenintech/comments/1h8jb2i/received_feedback_that_im_not_showing_up_with/"}, {"row": 3, "sub": "r/womenintech", "reg": "institutional", "kind": "core", "theme": "Performance recap email with false datapoints", "desc": "After seven-plus years at a FAANG company, a 1:1 is followed by a formal performance-gap recap email containing claims she says are simply false, with no example offered when she pushes back. She is burned out and staying largely for financial stability while her manager holds out a vague chance of \"bouncing back.\"", "url": ""}, {"row": 4, "sub": "r/TwoXChromosomes", "reg": "personality", "kind": "core", "theme": "Direct meeting style called \"de-humanizing\"", "desc": "After years of being told in reviews to be more assertive, a woman finally speaks up plainly in one meeting and is immediately told the tone was too stern and came across as de-humanizing. She contrasts this with how the same directness reads as decisive leadership when men use it.", "url": "https://www.reddit.com/r/TwoXChromosomes/comments/1alm3s5/i_finally_learned_how_to_be_assertive_at_work_got/"}, {"row": 7, "sub": "r/TwoXChromosomes", "reg": "comparative", "kind": "adjacent", "theme": "Treatment shifted once gender became visible", "desc": "After swapping an anonymous avatar for one that read as visibly feminine, a longtime forum participant noticed how differently she began to be addressed online. The same posts and arguments, read through a newly gendered lens, drew a different tone of response.", "url": "https://www.reddit.com/r/TwoXChromosomes/comments/1ho908z/experiencing_people_treating_you_differently_as/"}, {"row": 10, "sub": "r/womenintech", "reg": "comparative", "kind": "core", "theme": "Told to add more exclamation points and emoji", "desc": "A remote worker notices her male colleagues write blunt, punctuation-light messages that are read as normal, while she is coached to soften her written tone with more exclamation points and emoji. The same technical content is held to different affective standards by gender.", "url": "https://www.reddit.com/r/womenintech/comments/1fvjcre/feedback_on_communication_style_anyone_else_told/"}, {"row": 11, "sub": "r/TwoXChromosomes", "reg": "personality", "kind": "adjacent", "theme": "\"I don't like your tone\" as a conversation-ender", "desc": "A disagreement about division of labour is redirected the moment a partner says he doesn't like her tone, shifting the subject from the substance of the complaint to the manner of delivery, which she identifies as a familiar derailing move.", "url": "https://www.reddit.com/r/TwoXChromosomes/comments/1jtn0fd/i_dont_like_your_tone_why_is_tone_policing_so/"}, {"row": 13, "sub": "r/TwoXChromosomes", "reg": "personality", "kind": "core", "theme": "Called in for speaking \"too confidently\"", "desc": "A corporate employee is called into her boss's boss's office and told she comes across as intimidating and too confident, and that this makes others in the room feel inadequate. The feedback is about the effect of her tone on other people's feelings rather than about her actual output.", "url": "https://www.reddit.com/r/TwoXChromosomes/comments/10t1qwe/work_told_me_that_i_speak_with_too_much_confidence/"}, {"row": 16, "sub": "r/womenEngineers", "reg": "personality", "kind": "core", "theme": "Professional emails flagged as \"curt\"", "desc": "A sales engineer's factual, efficient replies to client-facing reps are reported up the chain as too short and to the point, despite the emails simply answering the question asked and signing off politely.", "url": "https://www.reddit.com/r/womenEngineers/comments/188vb3b/told_i_was_too_curt_in_my_emails_to_reps/"}, {"row": 17, "sub": "r/womenEngineers", "reg": "comparative", "kind": "core", "theme": "Ideas dismissed until repeated by someone else", "desc": "On a team that is mostly men, one engineer notices her questions and suggestions are consistently waved off in the room, even though her performance ratings and promotion track are strong, while another woman on the same team seems to be heard without the same friction.", "url": "https://www.reddit.com/r/womenEngineers/comments/1b94jgy/helppeople_dont_take_me_seriously/"}, {"row": 21, "sub": "r/womenEngineers", "reg": "personality", "kind": "core", "theme": "Crowd-sourced thread: recurring sexist review language", "desc": "A post inviting other women engineers to share the sexist feedback lines from their own reviews drew thirteen replies, effectively a smaller, live version of this exact dataset, compiling the same vocabulary (\"blunt,\" \"abrasive,\" and similar) independently across different companies.", "url": ""}, {"row": 35, "sub": "r/TwoXChromosomes", "reg": "comparative", "kind": "core", "theme": "Positive recognition unevenly distributed by gender", "desc": "The only woman kept on permanently after a contractor cohort was hired describes a department that is roughly three-quarters male and notices male peers receiving more visible positive feedback for comparable output than she does.", "url": ""}, {"row": 38, "sub": "r/TwoXChromosomes", "reg": "institutional", "kind": "core", "theme": "Sent to \"reference\" her own uncredited work", "desc": "After being denied a promotion for doing two people's jobs at one salary, a worker is told her output is wrong and pointed to a reference project as the correct standard, only to discover the reference project was her own earlier work, laundered back to her as an external example of the right way to do it.", "url": ""}, {"row": 42, "sub": "r/AskIndianWomen", "reg": "structural", "kind": "adjacent", "theme": "Passive-aggressive gatekeeping between women colleagues", "desc": "A reviewer flags real errors in a colleague's submitted work and is met with a defensive, passive-aggressive response rather than a correction, a dynamic she frames as common among women at her workplace and asks how others have handled it without it curdling into open conflict.", "url": "https://www.reddit.com/r/AskIndianWomen/comments/1oje0d3/how_to_deal_with_passive_aggressive_people_at/"}, {"row": 43, "sub": "r/AskIndianWomen", "reg": "structural", "kind": "core", "theme": "\"Diversity hire\" used to deny merit", "desc": "Nobody says it outright, but colleagues repeatedly imply that a hire only got the job to meet a diversity target rather than on merit, a framing replies confirm is common in Indian tech workplaces specifically, often surfacing as resentment toward a perceived \"women's quota.\"", "url": ""}, {"row": 47, "sub": "r/AskIndianWomen", "reg": "structural", "kind": "core", "theme": "Undermining relabelled as \"friendly banter\"", "desc": "After a promotion, a colleague escalates snide comments about her work being \"easy,\" and when she pushes back directly she is told she is overreacting. The same dismissiveness is reframed each time as a joke whenever she names it as a problem.", "url": "https://www.reddit.com/r/AskIndianWomen/comments/1h7rzq9/subtle_misogyny_at_work_ruining_my_mental_peace/"}, {"row": 49, "sub": "r/AskIndianWomen", "reg": "institutional", "kind": "core", "theme": "A candidate quietly ruled out over marriage plans", "desc": "An HR conversation overheard secondhand: a promising candidate is passed over not for her qualifications but because a senior HR leader predicts she will soon be planning for a family. The decision is made entirely inside institutional process, with no stated criterion that could ever be challenged.", "url": ""}];
+const EVCOL = {"personality": "#a6461f", "institutional": "#243447", "comparative": "#59613f", "structural": "#5c2233"};
+let evF = 'all';
+function evRender(){
+  const L = document.getElementById('evList'); L.innerHTML='';
+  let n=0, core=0;
+  EV.forEach((d,i)=>{
+    const vis = evF==='all' || d.reg===evF; if(vis){n++; if(d.kind==='core') core++;}
+    const c=document.createElement('div'); c.className='ev-card'+(vis?'':' dim'); c.style.borderLeftColor=EVCOL[d.reg];
+    const link = d.url ? '<a href="'+d.url+'" target="_blank" rel="noopener">Read source ↗</a>' : '<em style="font-size:12px;color:var(--text3)">No public link recorded for this entry. Held in the researcher\'s working file.</em>';
+    c.innerHTML='<div class="ev-head"><div class="ev-meta">'+d.sub+' · #'+d.row+(d.kind==='adjacent'?' · adjacent':'')+'</div><div class="ev-title">'+d.theme+'</div></div><div class="ev-body"><span class="ev-tag">'+d.reg+' register</span><p>'+d.desc+'</p>'+link+'</div>';
+    c.querySelector('.ev-head').onclick=()=>c.classList.toggle('open');
+    L.appendChild(c);
+  });
+  document.getElementById('evCount').textContent = n+' of '+EV.length+' shown · '+core+' core, '+(n-core)+' adjacent';
+}
+document.getElementById('evControls').addEventListener('click',e=>{
+  const b=e.target.closest('.ev-chip'); if(!b) return;
+  document.querySelectorAll('.ev-chip').forEach(x=>x.classList.remove('on')); b.classList.add('on'); evF=b.dataset.v; evRender();
+});
+evRender();
 function toggle(id) {
   const body = document.getElementById(id);
   const arrow = document.getElementById(id+'-arrow');
